@@ -1,29 +1,33 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 0 — done (2026-11-21). Next: Phase 1.
+Phase 1 — done (2026-11-21). Next: Phase 2.
 
 ## Done
-- Phase 0: Next.js 16.4 (App Router, TS strict + noUncheckedIndexedAccess, src/), Tailwind 4, shadcn/ui (radix, RTL on), next-intl 4 (en/ar, `/[locale]` prefix always, `src/proxy.ts`), ESLint (no-explicit-any = error, 0 warnings), Prettier, Vitest (10 tests), Playwright smoke (5 tests).
-- SPEC §16 tokens in `src/app/globals.css`: staff (default), `[data-theme="student"]`, `.dark`, CEFR scale, `--reward` (= SPEC amber accent), `[data-font="dyslexia"]`. Fonts: Inter, IBM Plex Sans Arabic, Atkinson Hyperlegible.
-- Env: `src/lib/env.schema.ts` (Zod, tested) → `serverEnv()` (server-only, lazy) and `publicEnv()`.
-- Skeleton: `src/app/[locale]/(gates)`, `src/gates`, `src/features`, `src/lib/{auth,storage,mail,billing,scheduler,ai}`, `src/lib/registry.ts` (empty, typed), `supabase/{config.toml,migrations,seed}`, `scripts/db-seed.sh`, `src/types/db.ts` placeholder.
-- CI: `.github/workflows/ci.yml` (typecheck, lint, format:check, test, build). Screenshots in `docs/screenshots/`.
+- Phase 0: Next 16.4 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar, `/[locale]`), SPEC §16 tokens, Zod env, skeleton, CI.
+- Phase 1 DB (`supabase/migrations/2026112100000{1..5}`): core + access tables, RLS on all (default deny, anon revoked), `auth_can()`, `auth_can_user()`, anti-escalation `auth_can_grant()` / `auth_can_assign_role()`, append-only `audit_log` via triggers + `log_audit()`, RPCs `assign_class`, `apply_supervision_defaults`. Catalogue (39 permissions, 8 roles, supervision defaults) is a migration.
+- Auth: staff magic link (invite-only) + Google; students school code + username + 6-digit PIN (`username@<code>.students.local`); `/auth/callback` rejects accounts without an active profile.
+- `src/lib/auth/`: `engine.ts` (pure, mirrors SQL), `can.ts`, `authority.ts`, `session.ts` (view-as), `guard.ts`, `student-identity.ts`.
+- Owner console `src/app/[locale]/(gates)/owner/`: schools/years/grades/classes, users (invite, add student, reset PIN, disable), CSV import (preview → apply → one-time PINs + printable cards), class login cards, roles matrix, user detail (roles, overrides, effective permissions with "why"), supervision, audit log, view-as (audited, read-only, 60 min).
+- Seed `supabase/seed/10_demo.sql`: RIY01, grades 1–6, 4A/4B, one user per role, 20 students (PIN 246810).
+- Tests: 53 unit, 16 DB (`npm run test:db`: isolation, escalation, audit, acceptance, TS↔SQL agreement on 1,440 cases), 7 Playwright. CI has a `database` job.
+- `npm run owner:create -- --email … --name …` bootstraps the real Owner.
 
 ## Next
-- Phase 1 (see docs/PHASES.md). Needs Docker for `npm run db:start` (local Supabase).
+- Phase 2 (gates, registry, visibility, entitlements). Move the owner console onto `src/gates/owner.config.ts`; replace `features/owner/sections.ts` with registry keys; `/home` becomes gate landing.
 
 ## Decisions (with one-line reasons)
-- Stack fixed in CLAUDE.md.
-- Gates live in `src/app/[locale]/(gates)/` (not `src/app/(gates)/`) so every gate is bilingual; CLAUDE.md updated.
-- Kept Next 16 defaults `cacheComponents` + `partialPrefetching`; locale pages prerender statically via `generateStaticParams` + `setRequestLocale`.
-- next-themes: light/dark class toggle without a flash on load (standard shadcn pairing).
-- `cn` (shadcn's own package) replaces clsx + tailwind-merge — installed by shadcn init.
-- @types/node 22 (matches Node 22 runtime; required by Vitest 5 peer range). @playwright/test pinned 1.63.0 (matches cloud browser).
-- prettier-plugin-tailwindcss: consistent class order. supabase CLI as devDependency: same version for everyone.
-- Owner docs (CLAUDE.md, START-HERE.md, docs/) excluded from Prettier to keep their formatting.
-- Env: Google/Resend vars optional until their phases; Supabase, ENCRYPTION_KEY, CRON_SECRET required when server env is first used.
+- Stack fixed in CLAUDE.md. Gates live in `src/app/[locale]/(gates)/` (bilingual).
+- `cacheComponents` off: every console page is per-user; it forced Suspense around every cookie read.
+- Permissions catalogue + default roles in a migration (not `seed/`), so seed-free production gets them.
+- Teacher "own classes" = class-scoped `user_roles` + `teaching_assignments` written together (`assign_class`). Coach→teacher is supervision data, not permission.
+- Grant rules: you can only grant/assign permissions you hold, in your scope. Principal defaults ⊇ in-school roles so they can manage their school. Owner role (system, platform) is locked in the matrix.
+- Login cards = print-styled HTML (browser prints Arabic correctly; "Save as PDF" gives the PDF). PINs are hashed, so cards are made when PINs are (re)set.
+- CSV import creates staff silently (no email burst); they sign in from /login. Max 300 rows/file.
+- IDs validated with `z.guid()` (Postgres accepts any UUID; `z.uuid()` rejects non-v4).
+- Deps: `@supabase/supabase-js` + `@supabase/ssr` (auth/DB), `papaparse` (CSV), `pg` (dev, DB tests), `next-themes`, `cn`.
 
 ## Open questions for the Owner
-- `.env.example` not created: `.claude/settings.json` denies `./.env.*`, which also blocks the example file. Allow it or add it yourself (draft ready).
-- GitHub repo to push to (CI only runs once pushed).
+- `.env.example` still blocked by `.claude/settings.json` deny `./.env.*` (draft ready). Allow it or add it yourself.
+- GitHub repo to push to (connect GitHub, then send `owner/repo`).
+- Before real staff: hosted Supabase → Auth → SMTP = Resend (built-in email is a few/hour); enable Google provider; set Site URL + redirect URLs to your domain.

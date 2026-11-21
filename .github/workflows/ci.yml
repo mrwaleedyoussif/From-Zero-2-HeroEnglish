@@ -24,3 +24,21 @@ jobs:
       - run: npm run format:check
       - run: npm run test
       - run: npm run build
+
+  # RLS / permission tests against a real local Supabase (migrations + demo seed).
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Start Supabase (database + auth only)
+        run: npx supabase start -x studio,imgproxy,vector,logflare,realtime,storage-api,edge-runtime,supavisor,postgres-meta
+      - run: npx supabase db reset
+      - run: npm run test:db
+      - if: always()
+        run: npx supabase stop --no-backup

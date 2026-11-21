@@ -23,7 +23,27 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "academic_years": {
+            "ability_priors": {
+                  Row: {
+                    "created_at": string,"department_id": string,"grade_band": string,"id": string,"theta0": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"department_id": string,"grade_band": string,"id"?: string,"theta0"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"department_id"?: string,"grade_band"?: string,"id"?: string,"theta0"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ability_priors_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"academic_years": {
                   Row: {
                     "created_at": string,"ends_on": string,"id": string,"is_current": boolean,"name": string,"school_id": string,"starts_on": string,"updated_at": string
                   }
@@ -88,6 +108,40 @@ isOneToOne: false
       referencedRelation: "academic_years"
       referencedColumns: ["id"]
     }
+                  ]
+                },"cut_scores": {
+                  Row: {
+                    "cefr": string,"created_at": string,"department_id": string,"id": string,"max_theta": number,"min_theta": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cefr": string,"created_at"?: string,"department_id": string,"id"?: string,"max_theta": number,"min_theta": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "cefr"?: string,"created_at"?: string,"department_id"?: string,"id"?: string,"max_theta"?: number,"min_theta"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "cut_scores_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"departments": {
+                  Row: {
+                    "code": string,"created_at": string,"description": string | null,"id": string,"name_ar": string,"name_en": string,"placement_max_items": number,"placement_min_items": number,"placement_target_se": number,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"created_at"?: string,"description"?: string | null,"id"?: string,"name_ar": string,"name_en": string,"placement_max_items"?: number,"placement_min_items"?: number,"placement_target_se"?: number,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name_ar"?: string,"name_en"?: string,"placement_max_items"?: number,"placement_min_items"?: number,"placement_target_se"?: number,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 },"enrolments": {
                   Row: {
@@ -158,6 +212,184 @@ isOneToOne: false
       columns: ["school_id"]
 isOneToOne: false
       referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"import_jobs": {
+                  Row: {
+                    "applied_at": string | null,"created_at": string,"errors": NonNullable<Json>,"id": string,"missing_media": NonNullable<Json>,"payload": Json | null,"started_by": string | null,"status": string,"summary": NonNullable<Json>,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "applied_at"?: string | null,"created_at"?: string,"errors"?: NonNullable<Json>,"id"?: string,"missing_media"?: NonNullable<Json>,"payload"?: Json | null,"started_by"?: string | null,"status"?: string,"summary"?: NonNullable<Json>,"updated_at"?: string
+                  }
+                  Update: {
+                    "applied_at"?: string | null,"created_at"?: string,"errors"?: NonNullable<Json>,"id"?: string,"missing_media"?: NonNullable<Json>,"payload"?: Json | null,"started_by"?: string | null,"status"?: string,"summary"?: NonNullable<Json>,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"integration_secrets": {
+                  Row: {
+                    "account_email": string | null,"ciphertext": string,"connected_by": string | null,"created_at": string,"id": string,"provider": string,"scopes": (string)[],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "account_email"?: string | null,"ciphertext": string,"connected_by"?: string | null,"created_at"?: string,"id"?: string,"provider": string,"scopes"?: (string)[],"updated_at"?: string
+                  }
+                  Update: {
+                    "account_email"?: string | null,"ciphertext"?: string,"connected_by"?: string | null,"created_at"?: string,"id"?: string,"provider"?: string,"scopes"?: (string)[],"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"item_options": {
+                  Row: {
+                    "body": string,"created_at": string,"id": string,"item_id": string,"label": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"created_at"?: string,"id"?: string,"item_id": string,"label": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "body"?: string,"created_at"?: string,"id"?: string,"item_id"?: string,"label"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "item_options_item_id_fkey"
+      columns: ["item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"items": {
+                  Row: {
+                    "author": string | null,"b_calibrated": number | null,"b_initial": number | null,"cefr": string | null,"code": string,"correct": string | null,"created_at": string,"department_id": string,"difficulty": number,"explanation": string | null,"grade_band": string | null,"id": string,"item_type": string,"media_asset_id": string | null,"media_file": string | null,"passage_id": string | null,"skill_id": string,"status": string,"stem": string,"sub_skill": string | null,"tags": (string)[],"time_limit_sec": number | null,"updated_at": string,"version": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author"?: string | null,"b_calibrated"?: number | null,"b_initial"?: never,"cefr"?: string | null,"code": string,"correct"?: string | null,"created_at"?: string,"department_id": string,"difficulty": number,"explanation"?: string | null,"grade_band"?: string | null,"id"?: string,"item_type": string,"media_asset_id"?: string | null,"media_file"?: string | null,"passage_id"?: string | null,"skill_id": string,"status"?: string,"stem": string,"sub_skill"?: string | null,"tags"?: (string)[],"time_limit_sec"?: number | null,"updated_at"?: string,"version"?: number
+                  }
+                  Update: {
+                    "author"?: string | null,"b_calibrated"?: number | null,"b_initial"?: never,"cefr"?: string | null,"code"?: string,"correct"?: string | null,"created_at"?: string,"department_id"?: string,"difficulty"?: number,"explanation"?: string | null,"grade_band"?: string | null,"id"?: string,"item_type"?: string,"media_asset_id"?: string | null,"media_file"?: string | null,"passage_id"?: string | null,"skill_id"?: string,"status"?: string,"stem"?: string,"sub_skill"?: string | null,"tags"?: (string)[],"time_limit_sec"?: number | null,"updated_at"?: string,"version"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "items_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "items_media_asset_id_fkey"
+      columns: ["media_asset_id"]
+isOneToOne: false
+      referencedRelation: "media_assets"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "items_passage_id_fkey"
+      columns: ["passage_id"]
+isOneToOne: false
+      referencedRelation: "passages"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "items_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"lesson_items": {
+                  Row: {
+                    "created_at": string,"id": string,"item_id": string,"lesson_id": string,"sort_order": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"item_id": string,"lesson_id": string,"sort_order"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"item_id"?: string,"lesson_id"?: string,"sort_order"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lesson_items_item_id_fkey"
+      columns: ["item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "lesson_items_lesson_id_fkey"
+      columns: ["lesson_id"]
+isOneToOne: false
+      referencedRelation: "lessons"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"lessons": {
+                  Row: {
+                    "cefr": string | null,"code": string,"content_link": string | null,"content_url": string | null,"created_at": string,"department_id": string,"duration_min": number | null,"format": string,"grade_band": string | null,"id": string,"media_asset_id": string | null,"objectives": string | null,"prerequisites": (string)[],"skill_id": string,"status": string,"tags": (string)[],"title_ar": string,"title_en": string,"updated_at": string,"version": number,"xp": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cefr"?: string | null,"code": string,"content_link"?: string | null,"content_url"?: string | null,"created_at"?: string,"department_id": string,"duration_min"?: number | null,"format": string,"grade_band"?: string | null,"id"?: string,"media_asset_id"?: string | null,"objectives"?: string | null,"prerequisites"?: (string)[],"skill_id": string,"status"?: string,"tags"?: (string)[],"title_ar": string,"title_en": string,"updated_at"?: string,"version"?: number,"xp"?: number
+                  }
+                  Update: {
+                    "cefr"?: string | null,"code"?: string,"content_link"?: string | null,"content_url"?: string | null,"created_at"?: string,"department_id"?: string,"duration_min"?: number | null,"format"?: string,"grade_band"?: string | null,"id"?: string,"media_asset_id"?: string | null,"objectives"?: string | null,"prerequisites"?: (string)[],"skill_id"?: string,"status"?: string,"tags"?: (string)[],"title_ar"?: string,"title_en"?: string,"updated_at"?: string,"version"?: number,"xp"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lessons_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "lessons_media_asset_id_fkey"
+      columns: ["media_asset_id"]
+isOneToOne: false
+      referencedRelation: "media_assets"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "lessons_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"media_assets": {
+                  Row: {
+                    "created_at": string,"drive_file_id": string,"drive_modified_at": string | null,"file_name": string,"folder": string | null,"id": string,"last_seen_at": string,"mime_type": string,"size_bytes": number | null,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"drive_file_id": string,"drive_modified_at"?: string | null,"file_name": string,"folder"?: string | null,"id"?: string,"last_seen_at"?: string,"mime_type": string,"size_bytes"?: number | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"drive_file_id"?: string,"drive_modified_at"?: string | null,"file_name"?: string,"folder"?: string | null,"id"?: string,"last_seen_at"?: string,"mime_type"?: string,"size_bytes"?: number | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"passages": {
+                  Row: {
+                    "body": string,"cefr": string | null,"code": string,"created_at": string,"id": string,"media_asset_id": string | null,"media_file": string | null,"source_note": string | null,"status": string,"tags": (string)[],"title": string,"updated_at": string,"version": number,"word_count": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"cefr"?: string | null,"code": string,"created_at"?: string,"id"?: string,"media_asset_id"?: string | null,"media_file"?: string | null,"source_note"?: string | null,"status"?: string,"tags"?: (string)[],"title": string,"updated_at"?: string,"version"?: number,"word_count"?: number | null
+                  }
+                  Update: {
+                    "body"?: string,"cefr"?: string | null,"code"?: string,"created_at"?: string,"id"?: string,"media_asset_id"?: string | null,"media_file"?: string | null,"source_note"?: string | null,"status"?: string,"tags"?: (string)[],"title"?: string,"updated_at"?: string,"version"?: number,"word_count"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "passages_media_asset_id_fkey"
+      columns: ["media_asset_id"]
+isOneToOne: false
+      referencedRelation: "media_assets"
       referencedColumns: ["id"]
     }
                   ]
@@ -269,6 +501,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"rubrics": {
+                  Row: {
+                    "code": string,"created_at": string,"criteria": NonNullable<Json>,"department_id": string | null,"id": string,"skill_id": string | null,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"created_at"?: string,"criteria"?: NonNullable<Json>,"department_id"?: string | null,"id"?: string,"skill_id"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "code"?: string,"created_at"?: string,"criteria"?: NonNullable<Json>,"department_id"?: string | null,"id"?: string,"skill_id"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "rubrics_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "rubrics_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"schools": {
                   Row: {
                     "code": string,"created_at": string,"id": string,"name_ar": string,"name_en": string,"status": string,"theme": NonNullable<Json>,"timezone": string,"updated_at": string,"week_start": number
@@ -282,6 +540,26 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"skills": {
+                  Row: {
+                    "blueprint_min_share": number,"code": string,"created_at": string,"department_id": string,"id": string,"name_ar": string,"name_en": string,"sort_order": number,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "blueprint_min_share"?: number,"code": string,"created_at"?: string,"department_id": string,"id"?: string,"name_ar": string,"name_en": string,"sort_order"?: number,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "blueprint_min_share"?: number,"code"?: string,"created_at"?: string,"department_id"?: string,"id"?: string,"name_ar"?: string,"name_en"?: string,"sort_order"?: number,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "skills_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"subscriptions": {
                   Row: {
@@ -500,6 +778,9 @@ isOneToOne: false
                            },
 "auth_can_user":
 { Args: { "p_perm": string,"p_target": string }; Returns: boolean
+                           },
+"auth_holds":
+{ Args: { "p_perm": string }; Returns: boolean
                            },
 "can_user_on":
 { Args: { "p_actor": string,"p_class": string,"p_grade": string,"p_perm": string,"p_school": string,"p_user": string }; Returns: boolean

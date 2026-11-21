@@ -15,7 +15,7 @@ Multi-role web app for English learning in schools. The **Owner** (super admin) 
 - Vercel hosting. Scheduler: Vercel Cron (daily) + GitHub Actions schedule → `POST /api/cron/tick` (secret header).
 
 ## Commands
-`npm run dev | build | lint | typecheck | test | test:db | test:e2e | db:start | db:migrate | db:types | db:seed | db:reset | owner:create | gen:gate <name>`
+`npm run dev | build | lint | typecheck | test | test:db | test:e2e | db:start | db:migrate | db:types | db:seed | db:reset | owner:create | gen:gate <name> | drive:init`
 (`test:db` = RLS/permission tests; needs `npm run db:start && npm run db:reset` first.)
 
 ## Architecture rules (non-negotiable)

@@ -1,0 +1,5 @@
+lesson_id,department_id,skill_id,title_en,title_ar,cefr,grade_band,objectives,duration_min,format,content_link,practice_item_ids,tags,prerequisites,xp,status
+L-GEN-GRAM-005,GEN,GRAM,Verbs we use every day,أفعال نستخدمها كل يوم,A1,3-5,Recognise common verbs,10,reading,,GEN-GRAM-0002,daily life,,10,active
+L-GEN-GRAM-010,GEN,GRAM,Talking about yesterday,الحديث عن الأمس,A2,3-5,Use past simple regular & irregular verbs,15,interactive,past_simple_slides.pdf,GEN-GRAM-0001;GEN-GRAM-0002,daily life;sports,L-GEN-GRAM-005,20,active
+L-GEN-LIST-001,GEN,LIST,Listen and find the place,استمع واعرف المكان,A1,K-2,Understand places in short audio,8,audio,listen_0001.mp3,GEN-LIST-0001,school,,10,active
+L-MAP-LU-001,MAP,MAP_LU,Capital letters,الحروف الكبيرة,B1,6-8,Use capitals for proper nouns,12,video,https://www.youtube.com/watch?v=dQw4w9WgXcQ,MAP-LU-0001,,,15,active

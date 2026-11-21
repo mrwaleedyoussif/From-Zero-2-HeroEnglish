@@ -65,7 +65,7 @@ export const registry = [
     "teacher.home",
     "student.home",
   ]),
-  ...pages(3, ["owner.content", "teacher.library"]),
+  ...pages(3, ["owner.content", "owner.integrations", "teacher.library"]),
   ...pages(4, ["student.placement"]),
   ...pages(5, ["teacher.assignments", "teacher.groups", "student.lessons", "student.profile"]),
   ...pages(6, ["student.rewards"]),

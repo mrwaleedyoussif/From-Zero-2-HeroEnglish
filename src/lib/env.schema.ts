@@ -32,6 +32,11 @@ export const serverEnvSchema = publicEnvSchema
     GOOGLE_OAUTH_CLIENT_ID: optionalString,
     GOOGLE_OAUTH_CLIENT_SECRET: optionalString,
     GOOGLE_OAUTH_REDIRECT_URI: z.url().optional(),
+    /** Fallback when the Owner has not connected Drive in the app yet (scripts, first deploy). */
+    GOOGLE_REFRESH_TOKEN: optionalString,
+    /** google = the Owner's Drive; fake = a local folder with the same layout (dev/tests). */
+    STORAGE_DRIVER: z.enum(["google", "fake"]).default("google"),
+    FAKE_DRIVE_DIR: optionalString,
     ENCRYPTION_KEY: encryptionKey,
     MAIL_PROVIDER: z.enum(["console", "resend", "gmail"]).default("console"),
     RESEND_API_KEY: optionalString,

@@ -1,0 +1,3 @@
+department_id,name_en,name_ar,description,skills,placement_max_items,placement_min_items,placement_target_se,status
+GEN,General English,اللغة الإنجليزية العامة,Core skills K-12,READ;LIST;GRAM;VOC;WRIT;SPEAK,30,12,0.35,active
+MAP,MAP Growth Prep,التحضير لاختبار MAP,Reading & Language Usage,MAP_READ;MAP_LU,30,15,0.30,active

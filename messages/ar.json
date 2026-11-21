@@ -78,7 +78,10 @@
     "roleLocked": "دور المالك مقفل حتى لا تفقد صلاحياتك.",
     "noCurrentYear": "لا توجد سنة دراسية حالية لهذه المدرسة. أضف واحدة أولًا.",
     "userNotFound": "لا يوجد مستخدم بهذا البريد أو اسم المستخدم.",
-    "lowContrast": "هذا اللون فاتح جدًا للقراءة على الأبيض. اختر لونًا أغمق."
+    "lowContrast": "هذا اللون فاتح جدًا للقراءة على الأبيض. اختر لونًا أغمق.",
+    "driveNotConnected": "لم يتم ربط Google Drive بعد. اربطه من صفحة التكاملات.",
+    "contentFolderMissing": "لم يتم العثور على المجلد LinguaPath/01_Content في Drive. استخدم «إنشاء مجلدات Drive» في صفحة التكاملات.",
+    "previewExpired": "هذه المعاينة قديمة أو طُبّقت من قبل. افحص الجداول مرة أخرى."
   },
   "Done": {
     "saved": "تم الحفظ",
@@ -373,7 +376,8 @@
         "visibility": "استوديو الظهور",
         "plans": "الخطط",
         "content": "المحتوى",
-        "reports": "التقارير"
+        "reports": "التقارير",
+        "integrations": "التكاملات"
       },
       "leadership": {
         "home": "نظرة عامة",
@@ -410,7 +414,8 @@
         "visibility": "استوديو الظهور",
         "plans": "الخطط",
         "content": "المحتوى",
-        "reports": "التقارير"
+        "reports": "التقارير",
+        "integrations": "التكاملات"
       },
       "leadership": {
         "home": "نظرة عامة",
@@ -596,5 +601,138 @@
     },
     "save": "حفظ اللون",
     "reset": "العودة إلى اللون الافتراضي"
+  },
+  "Integrations": {
+    "title": "التكاملات",
+    "intro": "اربط حساب Google Drive الذي يحتوي على المحتوى والوسائط والملفات المرفوعة والتقارير والنسخ الاحتياطية.",
+    "connectedNow": "تم ربط Google Drive.",
+    "fakeDriver": "وضع التطوير: يستخدم التطبيق مجلدًا محليًا تجريبيًا بدلًا من Google Drive (STORAGE_DRIVER=fake).",
+    "statusConnected": "متصل",
+    "statusNotConnected": "غير متصل",
+    "driveHelp": "يبقى Drive ملكًا لك: يحتفظ التطبيق بمفتاح وصول مشفّر فقط، ويعمل داخل مجلد LinguaPath.",
+    "connectedAs": "متصل بالحساب {email} منذ {date}.",
+    "fromEnv": "متصل عبر الإعداد GOOGLE_REFRESH_TOKEN.",
+    "connect": "ربط Google Drive",
+    "reconnect": "إعادة الربط",
+    "createFolders": "إنشاء مجلدات Drive",
+    "foldersReady": "مجلدات Drive جاهزة ({count}).",
+    "disconnect": "قطع الاتصال",
+    "confirmDisconnect": "قطع الاتصال بـ Google Drive؟ ستتوقف الوسائط ومزامنة المحتوى حتى تعيد الربط.",
+    "disconnected": "تم قطع الاتصال بـ Google Drive.",
+    "setupTitle": "إعداد Google لمرة واحدة",
+    "setupIntro": "نفّذ هذا مرة واحدة في Google Cloud بحساب Google الذي يملك Drive، ثم أضف القيمتين إلى إعدادات التطبيق.",
+    "setup": {
+      "s1": "افتح console.cloud.google.com وأنشئ مشروعًا (أي اسم، مثل LinguaPath).",
+      "s2": "APIs & Services ← Library: فعّل «Google Drive API» و«Google Sheets API».",
+      "s3": "شاشة موافقة OAuth: اختر External، واكتب اسم التطبيق وبريدك.",
+      "s4": "في الشاشة نفسها اضغط «Publish app» ليصبح «In production» (وإلا ينتهي الاتصال كل 7 أيام).",
+      "s5": "Credentials ← Create credentials ← OAuth client ID ← Web application.",
+      "s6": "في «Authorised redirect URIs» أضف بالضبط:",
+      "s7": "انسخ Client ID و Client secret إلى إعدادات التطبيق باسم GOOGLE_OAUTH_CLIENT_ID و GOOGLE_OAUTH_CLIENT_SECRET (Vercel ← Settings ← Environment Variables)، ثم أعد النشر وارجع هنا واضغط «ربط»."
+    },
+    "errors": {
+      "forbidden": "المالك فقط يمكنه ربط Google Drive.",
+      "not_configured": "لم يُعدّ ربط Google بعد — اتبع الخطوات أدناه.",
+      "state": "انتهت صلاحية محاولة الربط. حاول مرة أخرى.",
+      "denied": "لم يتم منح الوصول من Google.",
+      "no_refresh_token": "لم يُرجع Google مفتاحًا دائمًا. احذف التطبيق من myaccount.google.com/permissions ثم أعد الربط.",
+      "scopes": "يرجى السماح بالوصول إلى Drive و Sheets في شاشة Google.",
+      "exchange": "رفض Google الاتصال. تحقق من Client ID و secret وعنوان إعادة التوجيه."
+    }
+  },
+  "ContentSync": {
+    "title": "المحتوى",
+    "intro": "دروسك وأسئلتك موجودة في جداول Google داخل Drive › LinguaPath › 01_Content. زامنها من هنا.",
+    "syncTitle": "المزامنة من جداول Google",
+    "syncHelp": "افحص أولًا: سترى الجديد والمتغير والأخطاء مع أرقام الصفوف. لا يتغير شيء قبل الضغط على «تطبيق». لا يُحذف أي شيء — اجعل الحالة «retired» بدلًا من ذلك.",
+    "connectFirst": "اربط Google Drive أولًا.",
+    "goToIntegrations": "الذهاب إلى التكاملات",
+    "readOnly": "اخرج من وضع «العرض كمستخدم» لمزامنة المحتوى.",
+    "check": "فحص الجداول",
+    "checking": "جارٍ قراءة الجداول…",
+    "apply": "تطبيق {count} تغيير",
+    "applied": "تم: حفظ {count} صف.",
+    "upToDate": "كل شيء محدَّث.",
+    "summary": "سيُحفظ {changes} صف. {errors} صفوف بها أخطاء وستُتخطى حتى تُصحَّح.",
+    "sheet": "الجدول",
+    "new": "جديد",
+    "changed": "متغير",
+    "unchanged": "بدون تغيير",
+    "errors": "أخطاء",
+    "notFound": "غير موجود في 01_Content (تم التخطي)",
+    "where": "الموضع",
+    "column": "العمود",
+    "problem": "المشكلة",
+    "rowRef": "{sheet}، الصف {line}",
+    "warning": "تنبيه",
+    "missingMedia": "{count} ملفات وسائط مذكورة في الجداول وغير موجودة في Drive › 02_Media",
+    "inLibrary": "في المكتبة",
+    "counts": {
+      "departments": "الأقسام",
+      "items": "الأسئلة",
+      "lessons": "الدروس",
+      "media_assets": "ملفات الوسائط"
+    },
+    "openLibrary": "فتح مكتبة الدروس",
+    "history": "آخر عمليات المزامنة",
+    "noHistory": "لا توجد عمليات مزامنة بعد.",
+    "statuses": {
+      "previewed": "تم الفحص دون تطبيق",
+      "applied": "طُبّقت",
+      "failed": "فشلت",
+      "expired": "انتهت صلاحيتها"
+    }
+  },
+  "ContentErrors": {
+    "required": "هذه الخلية مطلوبة.",
+    "tooLong": "النص طويل جدًا.",
+    "tooMany": "عدد القيم في هذه القائمة كبير جدًا.",
+    "badId": "استخدم الأحرف والأرقام و - _ . فقط (مثل GEN-GRAM-0001).",
+    "badCode": "استخدم أحرفًا كبيرة أو أرقامًا أو _ (من 2 إلى 20)، مثل GEN.",
+    "integer": "يجب أن يكون عددًا صحيحًا.",
+    "number": "يجب أن يكون رقمًا.",
+    "range": "يجب أن يكون بين {min} و {max}.",
+    "oneOf": "يجب أن يكون واحدًا من: {values}.",
+    "invalid": "هذه القيمة غير صالحة.",
+    "missingColumn": "هذا العمود غير موجود في الصف الأول.",
+    "duplicateId": "هذا المعرّف مستخدم في الصف {line}.",
+    "needOptions": "أضف خيارين على الأقل (option_a و option_b…).",
+    "oneLetter": "يُسمح بحرف صحيح واحد فقط لهذا النوع.",
+    "letterNotAnOption": "الإجابة الصحيحة تشير إلى خيار فارغ.",
+    "maxAboveMin": "يجب أن تكون max_theta أكبر من min_theta.",
+    "unknownDepartment": "القسم {value} غير موجود (راجع جدول Departments).",
+    "unknownSkill": "المهارة {value} غير موجودة لهذا القسم (راجع جدول Skills).",
+    "unknownPassage": "النص {value} غير موجود (راجع جدول Passages).",
+    "unknownItem": "السؤال {value} غير موجود أو به خطأ.",
+    "unknownLesson": "الدرس {value} غير موجود.",
+    "applyFailed": "فشل الحفظ."
+  },
+  "Library": {
+    "title": "مكتبة الدروس",
+    "intro": "كل الدروس المتاحة لك من جداول المحتوى.",
+    "any": "الكل",
+    "department": "القسم",
+    "skill": "المهارة",
+    "gradeBand": "الصفوف",
+    "format": "النوع",
+    "tag": "وسم",
+    "search": "بحث",
+    "filter": "تصفية",
+    "clear": "مسح",
+    "count": "{count, plural, =0 {لا توجد دروس} one {درس واحد} two {درسان} few {# دروس} many {# درسًا} other {# درس}}",
+    "empty": "لا توجد دروس مطابقة لهذه الاختيارات.",
+    "grades": "الصفوف {band}",
+    "minutes": "{n} دقيقة",
+    "practice": "{n, plural, zero {لا أسئلة تدريب} one {سؤال تدريب واحد} two {سؤالا تدريب} few {# أسئلة تدريب} many {# سؤال تدريب} other {# سؤال تدريب}}",
+    "open": "فتح مادة الدرس",
+    "formats": {
+      "video": "فيديو",
+      "audio": "صوت",
+      "reading": "قراءة",
+      "interactive": "تفاعلي",
+      "worksheet": "ورقة عمل",
+      "game": "لعبة",
+      "slides": "شرائح"
+    }
   }
 }

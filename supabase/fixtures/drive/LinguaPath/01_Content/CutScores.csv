@@ -1,0 +1,8 @@
+department_id,cefr,min_theta,max_theta
+GEN,PreA1,-4.0,-3.0
+GEN,A1,-3.0,-1.8
+GEN,A2,-1.8,-0.6
+GEN,B1,-0.6,0.6
+GEN,B2,0.6,1.8
+GEN,C1,1.8,3.0
+GEN,C2,3.0,4.0

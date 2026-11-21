@@ -1,0 +1,9 @@
+skill_id,department_id,name_en,name_ar,blueprint_min_share,order
+READ,GEN,Reading,القراءة,0.25,1
+LIST,GEN,Listening,الاستماع,0.2,2
+GRAM,GEN,Grammar,القواعد,0.2,3
+VOC,GEN,Vocabulary,المفردات,0.15,4
+WRIT,GEN,Writing,الكتابة,0.1,5
+SPEAK,GEN,Speaking,المحادثة,0.1,6
+MAP_READ,MAP,Reading,القراءة,0.5,1
+MAP_LU,MAP,Language Usage,استخدام اللغة,0.5,2

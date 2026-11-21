@@ -6,7 +6,10 @@ export const teacherGate = defineGate({
   permission: "gate:teacher",
   priority: 40,
   theme: "staff",
-  nav: [{ key: "nav.teacher.home", href: "/teacher" }],
+  nav: [
+    { key: "nav.teacher.home", href: "/teacher" },
+    { key: "nav.teacher.library", href: "/teacher/library", permission: "content:view" },
+  ],
   homeWidgets: [
     "widget.teacher.classRoster",
     "widget.teacher.atRiskStudents",

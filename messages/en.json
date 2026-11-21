@@ -78,7 +78,10 @@
     "roleLocked": "The Owner role is locked so you can't lock yourself out.",
     "noCurrentYear": "This school has no current academic year. Add one first.",
     "userNotFound": "No user with that email or username.",
-    "lowContrast": "That colour is too light to read on white. Pick a darker one."
+    "lowContrast": "That colour is too light to read on white. Pick a darker one.",
+    "driveNotConnected": "Google Drive is not connected yet. Connect it in Integrations.",
+    "contentFolderMissing": "The folder LinguaPath/01_Content was not found in Drive. Use “Create Drive folders” in Integrations.",
+    "previewExpired": "This preview is too old or was already applied. Check the sheets again."
   },
   "Done": {
     "saved": "Saved",
@@ -373,7 +376,8 @@
         "visibility": "Visibility Studio",
         "plans": "Plans",
         "content": "Content",
-        "reports": "Reports"
+        "reports": "Reports",
+        "integrations": "Integrations"
       },
       "leadership": {
         "home": "Overview",
@@ -410,7 +414,8 @@
         "visibility": "Visibility Studio",
         "plans": "Plans",
         "content": "Content",
-        "reports": "Reports"
+        "reports": "Reports",
+        "integrations": "Integrations"
       },
       "leadership": {
         "home": "Overview",
@@ -596,5 +601,138 @@
     },
     "save": "Save colour",
     "reset": "Back to the default colour"
+  },
+  "Integrations": {
+    "title": "Integrations",
+    "intro": "Connect the Google Drive that holds your content, media, uploads, reports and backups.",
+    "connectedNow": "Google Drive is connected.",
+    "fakeDriver": "Development mode: the app is using a local sample folder instead of Google Drive (STORAGE_DRIVER=fake).",
+    "statusConnected": "Connected",
+    "statusNotConnected": "Not connected",
+    "driveHelp": "Your Drive stays yours: the app keeps only an encrypted access key and reads/writes inside the LinguaPath folder.",
+    "connectedAs": "Connected as {email} on {date}.",
+    "fromEnv": "Connected through the GOOGLE_REFRESH_TOKEN setting.",
+    "connect": "Connect Google Drive",
+    "reconnect": "Reconnect",
+    "createFolders": "Create Drive folders",
+    "foldersReady": "Drive folders are ready ({count}).",
+    "disconnect": "Disconnect",
+    "confirmDisconnect": "Disconnect Google Drive? Media and content sync stop until you connect again.",
+    "disconnected": "Google Drive disconnected.",
+    "setupTitle": "One-time Google setup",
+    "setupIntro": "Do this once in Google Cloud with the Google account that owns your Drive, then add the two values to the app's settings.",
+    "setup": {
+      "s1": "Open console.cloud.google.com and create a project (any name, e.g. LinguaPath).",
+      "s2": "APIs & Services → Library: enable “Google Drive API” and “Google Sheets API”.",
+      "s3": "OAuth consent screen: choose External, fill in the app name and your email.",
+      "s4": "On the same screen press “Publish app” so it is “In production” (otherwise the connection expires every 7 days).",
+      "s5": "Credentials → Create credentials → OAuth client ID → Web application.",
+      "s6": "Under “Authorised redirect URIs” add exactly:",
+      "s7": "Copy the Client ID and Client secret into the app settings as GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET (Vercel → Settings → Environment Variables), redeploy, then come back here and press Connect."
+    },
+    "errors": {
+      "forbidden": "Only the Owner can connect Google Drive.",
+      "not_configured": "Google sign-in for Drive isn't set up yet — follow the steps below.",
+      "state": "The connection attempt expired. Please try again.",
+      "denied": "Google access was not granted.",
+      "no_refresh_token": "Google didn't return a long-lived key. Remove the app at myaccount.google.com/permissions and connect again.",
+      "scopes": "Please allow both Drive and Sheets access on Google's screen.",
+      "exchange": "Google refused the connection. Check the client ID, secret and redirect address."
+    }
+  },
+  "ContentSync": {
+    "title": "Content",
+    "intro": "Your lessons and questions live in Google Sheets in Drive › LinguaPath › 01_Content. Sync them here.",
+    "syncTitle": "Sync from Google Sheets",
+    "syncHelp": "Check first: you see what's new, what changed and any errors with their row numbers. Nothing changes until you press Apply. Nothing is ever deleted — set status to “retired” instead.",
+    "connectFirst": "Connect Google Drive first.",
+    "goToIntegrations": "Go to Integrations",
+    "readOnly": "Exit “view as” to sync content.",
+    "check": "Check sheets",
+    "checking": "Reading sheets…",
+    "apply": "Apply {count} changes",
+    "applied": "Done: {count} rows saved.",
+    "upToDate": "Everything is up to date.",
+    "summary": "{changes} rows will be saved. {errors} rows have errors and will be skipped until fixed.",
+    "sheet": "Sheet",
+    "new": "New",
+    "changed": "Changed",
+    "unchanged": "Unchanged",
+    "errors": "Errors",
+    "notFound": "Not found in 01_Content (skipped)",
+    "where": "Where",
+    "column": "Column",
+    "problem": "Problem",
+    "rowRef": "{sheet}, row {line}",
+    "warning": "warning",
+    "missingMedia": "{count} media files are named in the sheets but not in Drive › 02_Media",
+    "inLibrary": "In the library",
+    "counts": {
+      "departments": "Departments",
+      "items": "Questions",
+      "lessons": "Lessons",
+      "media_assets": "Media files"
+    },
+    "openLibrary": "Open the lesson library",
+    "history": "Recent syncs",
+    "noHistory": "No syncs yet.",
+    "statuses": {
+      "previewed": "checked, not applied",
+      "applied": "applied",
+      "failed": "failed",
+      "expired": "expired"
+    }
+  },
+  "ContentErrors": {
+    "required": "This cell is required.",
+    "tooLong": "Text is too long.",
+    "tooMany": "Too many values in this list.",
+    "badId": "Use letters, digits, - _ . only (e.g. GEN-GRAM-0001).",
+    "badCode": "Use CAPITAL letters, digits or _ (2–20 characters), e.g. GEN.",
+    "integer": "Must be a whole number.",
+    "number": "Must be a number.",
+    "range": "Must be between {min} and {max}.",
+    "oneOf": "Must be one of: {values}.",
+    "invalid": "This value is not valid.",
+    "missingColumn": "This column is missing from row 1.",
+    "duplicateId": "This id is already used in row {line}.",
+    "needOptions": "Give at least two options (option_a, option_b…).",
+    "oneLetter": "Only one correct letter is allowed for this type.",
+    "letterNotAnOption": "The correct answer points to an empty option.",
+    "maxAboveMin": "max_theta must be bigger than min_theta.",
+    "unknownDepartment": "Department {value} does not exist (check the Departments sheet).",
+    "unknownSkill": "Skill {value} does not exist for this department (check the Skills sheet).",
+    "unknownPassage": "Passage {value} does not exist (check the Passages sheet).",
+    "unknownItem": "Question {value} does not exist or has an error.",
+    "unknownLesson": "Lesson {value} does not exist.",
+    "applyFailed": "Saving failed."
+  },
+  "Library": {
+    "title": "Lesson library",
+    "intro": "Every lesson you can use, from the Owner's content sheets.",
+    "any": "Any",
+    "department": "Department",
+    "skill": "Skill",
+    "gradeBand": "Grades",
+    "format": "Format",
+    "tag": "Tag",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "count": "{count, plural, =0 {No lessons} one {# lesson} other {# lessons}}",
+    "empty": "No lessons match these filters.",
+    "grades": "Grades {band}",
+    "minutes": "{n} min",
+    "practice": "{n, plural, one {# practice question} other {# practice questions}}",
+    "open": "Open lesson material",
+    "formats": {
+      "video": "Video",
+      "audio": "Audio",
+      "reading": "Reading",
+      "interactive": "Interactive",
+      "worksheet": "Worksheet",
+      "game": "Game",
+      "slides": "Slides"
+    }
   }
 }

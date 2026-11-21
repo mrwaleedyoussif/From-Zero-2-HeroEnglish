@@ -1,0 +1,7 @@
+item_id,department_id,skill_id,sub_skill,item_type,stem,passage_id,media_file,option_a,option_b,option_c,option_d,option_e,correct,difficulty,cefr,grade_band,tags,explanation,time_limit_sec,status,author
+GEN-GRAM-0001,GEN,GRAM,past simple,mcq_single,Yesterday she ___ to school.,,,go,goes,went,gone,,C,3,A2,3-5,school;daily life,"""Yesterday"" signals the past simple.",60,active,Owner
+GEN-GRAM-0002,GEN,GRAM,past simple,gap_fill,Last week we ___ (play) football.,,,,,,,,played,4,A2,3-5,sports,Regular verbs add -ed.,60,active,Owner
+GEN-LIST-0001,GEN,LIST,main idea,mcq_single,Listen. Where is the boy going?,,listen_0001.mp3,To the park,To school,To the market,,,B,2,A1,K-2,school,,45,active,Owner
+GEN-READ-0001,GEN,READ,detail,true_false,Omar goes to the market on Fridays.,P-0001,,True,False,,,,A,2,A2,3-5,daily life,The first sentence says so.,60,active,Owner
+GEN-WRIT-0001,GEN,WRIT,paragraph,writing_prompt,Write 3 sentences about your weekend.,,,,,,,,,5,A2,3-5,daily life,,300,active,Owner
+MAP-LU-0001,MAP,MAP_LU,capitalisation,mcq_multi,Which words need a capital letter?,,,monday,riyadh,apple,river,,A;B,5,B1,6-8,,Days and cities are proper nouns.,60,active,Owner

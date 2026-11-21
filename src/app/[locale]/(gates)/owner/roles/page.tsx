@@ -17,7 +17,7 @@ import { createClient } from "@/lib/supabase/server";
 export default async function RolesPage({ params }: PageProps<"/[locale]/owner/roles">) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "roles:view");
+  const actor = await requirePermission(locale, "roles:view", "page.owner.roles");
   const t = await getTranslations("Roles");
   const ts = await getTranslations("Scopes");
   const db = await createClient();

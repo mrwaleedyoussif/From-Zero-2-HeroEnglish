@@ -175,6 +175,40 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"plan_entitlements": {
+                  Row: {
+                    "created_at": string,"id": string,"key": string,"limit_value": number | null,"plan_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"key": string,"limit_value"?: number | null,"plan_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"key"?: string,"limit_value"?: number | null,"plan_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "plan_entitlements_plan_id_fkey"
+      columns: ["plan_id"]
+isOneToOne: false
+      referencedRelation: "plans"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"plans": {
+                  Row: {
+                    "created_at": string,"id": string,"key": string,"name_ar": string,"name_en": string,"sort_order": number,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"key": string,"name_ar": string,"name_en": string,"sort_order"?: number,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"key"?: string,"name_ar"?: string,"name_en"?: string,"sort_order"?: number,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"profiles": {
                   Row: {
                     "consent": boolean,"consent_at": string | null,"created_at": string,"email": string | null,"full_name": string,"id": string,"kind": string,"last_seen_at": string | null,"locale": string,"school_id": string | null,"status": string,"updated_at": string,"username": string | null
@@ -248,6 +282,32 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"subscriptions": {
+                  Row: {
+                    "created_at": string,"current_period_end": string | null,"free_until": string | null,"id": string,"plan_id": string,"provider": string,"provider_ref": string | null,"school_id": string,"status": string,"trial_ends_at": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"current_period_end"?: string | null,"free_until"?: string | null,"id"?: string,"plan_id": string,"provider"?: string,"provider_ref"?: string | null,"school_id": string,"status"?: string,"trial_ends_at"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"current_period_end"?: string | null,"free_until"?: string | null,"id"?: string,"plan_id"?: string,"provider"?: string,"provider_ref"?: string | null,"school_id"?: string,"status"?: string,"trial_ends_at"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "subscriptions_plan_id_fkey"
+      columns: ["plan_id"]
+isOneToOne: false
+      referencedRelation: "plans"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "subscriptions_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: true
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"supervision_defaults": {
                   Row: {
@@ -444,11 +504,17 @@ isOneToOne: false
 "can_user_on":
 { Args: { "p_actor": string,"p_class": string,"p_grade": string,"p_perm": string,"p_school": string,"p_user": string }; Returns: boolean
                            },
+"feature_flags_for":
+{ Args: { "p_user": string }; Returns: string[]
+                           },
 "log_audit":
 { Args: { "p_action": string,"p_details"?: Json,"p_school"?: string,"p_target_id"?: string,"p_target_table": string }; Returns: undefined
                            },
 "my_school_id":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"school_plan":
+{ Args: { "p_school": string }; Returns: string
                            },
 "scope_contains":
 { Args: { "p_class": string,"p_grade": string,"p_holder": string,"p_school": string,"p_scope_id": string,"p_scope_type": string,"p_user": string }; Returns: boolean
@@ -462,7 +528,31 @@ isOneToOne: false
 { Args: { "p_user": string }; Returns: {
               "class_id": string,"grade_id": string,"school_id": string
             }[]
-                           }
+                           },
+"user_subjects":
+{ Args: { "p_user": string }; Returns: {
+              "subject_id": string,"subject_type": string
+            }[]
+                           },
+"visibility_rules_for":
+{ Args: { "p_user": string }; Returns: {
+              "created_at": string,
+"effect": string,
+"ends_at": string | null,
+"id": string,
+"note": string | null,
+"starts_at": string | null,
+"subject_id": string | null,
+"subject_type": string,
+"target_key": string,
+"updated_at": string
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "visibility_rules"
+        isOneToOne: false
+        isSetofReturn: true
+      } }
           }
           Enums: {
             [_ in never]: never

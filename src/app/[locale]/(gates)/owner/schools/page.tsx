@@ -23,7 +23,7 @@ import { localName } from "@/lib/i18n-names";
 export default async function SchoolsPage({ params }: PageProps<"/[locale]/owner/schools">) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "schools:view");
+  const actor = await requirePermission(locale, "schools:view", "page.owner.schools");
   const t = await getTranslations("Schools");
   const schools = await listSchools();
   const canCreate = !actor.viewAs && (await can(actor, "schools:manage", platformTarget));

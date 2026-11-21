@@ -1,33 +1,31 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 1 — done (2026-11-21). Next: Phase 2.
+Phase 2 — done (2026-11-22). Next: Phase 3. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
-- Phase 0: Next 16.4 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar, `/[locale]`), SPEC §16 tokens, Zod env, skeleton, CI.
-- Phase 1 DB (`supabase/migrations/2026112100000{1..5}`): core + access tables, RLS on all (default deny, anon revoked), `auth_can()`, `auth_can_user()`, anti-escalation `auth_can_grant()` / `auth_can_assign_role()`, append-only `audit_log` via triggers + `log_audit()`, RPCs `assign_class`, `apply_supervision_defaults`. Catalogue (39 permissions, 8 roles, supervision defaults) is a migration.
-- Auth: staff magic link (invite-only) + Google; students school code + username + 6-digit PIN (`username@<code>.students.local`); `/auth/callback` rejects accounts without an active profile.
-- `src/lib/auth/`: `engine.ts` (pure, mirrors SQL), `can.ts`, `authority.ts`, `session.ts` (view-as), `guard.ts`, `student-identity.ts`.
-- Owner console `src/app/[locale]/(gates)/owner/`: schools/years/grades/classes, users (invite, add student, reset PIN, disable), CSV import (preview → apply → one-time PINs + printable cards), class login cards, roles matrix, user detail (roles, overrides, effective permissions with "why"), supervision, audit log, view-as (audited, read-only, 60 min).
-- Seed `supabase/seed/10_demo.sql`: RIY01, grades 1–6, 4A/4B, one user per role, 20 students (PIN 246810).
-- Tests: 53 unit, 16 DB (`npm run test:db`: isolation, escalation, audit, acceptance, TS↔SQL agreement on 1,440 cases), 7 Playwright. CI has a `database` job.
-- `npm run owner:create -- --email … --name …` bootstraps the real Owner.
+- Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
+- Phase 1: Core + Access tables with RLS, `auth_can*()`, anti-escalation, audit triggers; staff magic link/Google, student PIN; `src/lib/auth/*` (engine mirrors SQL); Owner console (schools, users, CSV import, login cards, roles matrix, user detail, supervision, audit, view-as); demo seed; `owner:create`.
+- Phase 2:
+  - `src/lib/registry.ts`: 104 keys (gates, modules, pages, nav, widgets, features, limits) for all phases + en/ar labels (`Registry.*`).
+  - Gates: `src/gates/<gate>.config.ts` × 5 (owner, leadership, coach, teacher, student) + generated `index.generated.ts`; shared `GateLayout`/`GateHome`/`WidgetSlot`; `/home` → best gate; switcher; planned widgets render "coming in phase N".
+  - Visibility: SQL `visibility_rules_for(user)` + `feature_flags_for(user)`; pure `src/lib/visibility/engine.ts` (user > class > grade > school > role > plan > default, hide wins at a level, time windows); `isVisible`, `requireVisible`, `<Visible>`, `<Can>`, `<Entitled>`.
+  - Owner: Visibility Studio (rules, who-sees tree, check a person, feature flags), Plans (entitlements, plan per school, free-until), school colour with WCAG check; free-period banner.
+  - Billing: `plans`, `plan_entitlements`, `subscriptions`; `hasEntitlement()`/`limit()`; stub adapter `src/lib/billing/adapter.ts`; `BILLING_ENABLED=false` → free plan (`*`).
+  - `npm run gen:gate <name>`: config + route + labels + permission migration + index (tested with "kiosk", then removed).
+  - Tests: 87 unit, 23 DB, 9 Playwright (incl. acceptance: hide `widget.teacher.atRiskStudents` for 4A → gone for 4A teacher, shown for 4B teacher).
 
 ## Next
-- Phase 2 (gates, registry, visibility, entitlements). Move the owner console onto `src/gates/owner.config.ts`; replace `features/owner/sections.ts` with registry keys; `/home` becomes gate landing.
+- Phase 3 (Google Drive & content pipeline). Needs from Owner: Google Cloud OAuth client (Drive + Sheets API, consent screen "In production").
 
 ## Decisions (with one-line reasons)
-- Stack fixed in CLAUDE.md. Gates live in `src/app/[locale]/(gates)/` (bilingual).
-- `cacheComponents` off: every console page is per-user; it forced Suspense around every cookie read.
-- Permissions catalogue + default roles in a migration (not `seed/`), so seed-free production gets them.
-- Teacher "own classes" = class-scoped `user_roles` + `teaching_assignments` written together (`assign_class`). Coach→teacher is supervision data, not permission.
-- Grant rules: you can only grant/assign permissions you hold, in your scope. Principal defaults ⊇ in-school roles so they can manage their school. Owner role (system, platform) is locked in the matrix.
-- Login cards = print-styled HTML (browser prints Arabic correctly; "Save as PDF" gives the PDF). PINs are hashed, so cards are made when PINs are (re)set.
-- CSV import creates staff silently (no email burst); they sign in from /login. Max 300 rows/file.
-- IDs validated with `z.guid()` (Postgres accepts any UUID; `z.uuid()` rejects non-v4).
-- Deps: `@supabase/supabase-js` + `@supabase/ssr` (auth/DB), `papaparse` (CSV), `pg` (dev, DB tests), `next-themes`, `cn`.
+- Gate entry = permission `gate:<key>` (rule 2: no role names); Owner controls it in the Roles matrix. Gate perms are exempt from the anti-escalation check (no data access).
+- Gate list is a generated file: Next.js can't discover files at runtime; `gen:gate` rewrites it.
+- Visibility precedence is computed in TS from rules SQL returns per user (users never read others' rules).
+- School colour overrides staff gates only; the student gate keeps its playful palette.
+- Phase 1 decisions: cacheComponents off; catalogue in migrations; login cards via browser print; `z.guid()` for ids.
+- Deps: none new in Phase 2. Scripts are `.mts` (Node runs TypeScript directly).
 
 ## Open questions for the Owner
-- `.env.example` still blocked by `.claude/settings.json` deny `./.env.*` (draft ready). Allow it or add it yourself.
-- GitHub repo to push to (connect GitHub, then send `owner/repo`).
-- Before real staff: hosted Supabase → Auth → SMTP = Resend (built-in email is a few/hour); enable Google provider; set Site URL + redirect URLs to your domain.
+- `.env.example` is still blocked by `.claude/settings.json` (deny `./.env.*`); draft ready.
+- Hosted Supabase: create project, set SMTP = Resend, enable Google, set Site URL; run migrations + `owner:create`.

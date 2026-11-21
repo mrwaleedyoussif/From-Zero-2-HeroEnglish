@@ -8,7 +8,7 @@ import { requirePermission } from "@/lib/auth/guard";
 export default async function ImportPage({ params }: PageProps<"/[locale]/owner/users/import">) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "users:import");
+  const actor = await requirePermission(locale, "users:import", "page.owner.import");
   const t = await getTranslations("Import");
 
   return (

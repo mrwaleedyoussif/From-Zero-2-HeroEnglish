@@ -59,18 +59,8 @@
     "welcome": "Welcome, {name}",
     "yourRoles": "Your roles",
     "comingSoon": "Your own portal arrives in the next build phase.",
-    "noRoles": "No roles yet. Ask the Owner to give you one."
-  },
-  "Console": {
-    "title": "Owner console",
-    "nav": {
-      "schools": "Schools",
-      "users": "Users",
-      "import": "Import users",
-      "roles": "Roles & permissions",
-      "supervision": "Supervision",
-      "audit": "Audit log"
-    }
+    "noRoles": "No roles yet. Ask the Owner to give you one.",
+    "noGate": "Your account has no portal yet. Ask the platform owner to give you a role."
   },
   "Errors": {
     "forbidden": "You don't have permission to do that.",
@@ -86,7 +76,9 @@
     "studentsOnly": "PINs are only for student accounts.",
     "notYourself": "You can't do this to your own account.",
     "roleLocked": "The Owner role is locked so you can't lock yourself out.",
-    "noCurrentYear": "This school has no current academic year. Add one first."
+    "noCurrentYear": "This school has no current academic year. Add one first.",
+    "userNotFound": "No user with that email or username.",
+    "lowContrast": "That colour is too light to read on white. Pick a darker one."
   },
   "Done": {
     "saved": "Saved",
@@ -348,5 +340,261 @@
     "what": "Details",
     "system": "System",
     "empty": "Nothing yet."
+  },
+  "Registry": {
+    "gate": {
+      "owner": "Owner console",
+      "leadership": "School leadership",
+      "coach": "Coaching",
+      "teacher": "Teaching",
+      "student": "My learning"
+    },
+    "module": {
+      "core": "Core (people, roles, access)",
+      "billing": "Plans & billing",
+      "content": "Content library",
+      "placement": "Placement tests",
+      "learning": "Lessons & assignments",
+      "rewards": "Rewards",
+      "dashboards": "Dashboards",
+      "supervision": "Supervision & coaching",
+      "reports": "Reports",
+      "ai": "AI scoring"
+    },
+    "page": {
+      "owner": {
+        "schools": "Schools",
+        "users": "Users",
+        "import": "Import users",
+        "roles": "Roles & permissions",
+        "supervision": "Supervision",
+        "audit": "Audit log",
+        "home": "Overview",
+        "visibility": "Visibility Studio",
+        "plans": "Plans",
+        "content": "Content",
+        "reports": "Reports"
+      },
+      "leadership": {
+        "home": "Overview",
+        "supervision": "Supervision",
+        "reports": "Reports"
+      },
+      "coach": {
+        "home": "Overview",
+        "coachingLog": "Coaching log"
+      },
+      "teacher": {
+        "home": "My classes",
+        "library": "Lesson library",
+        "assignments": "Assignments",
+        "groups": "Groups & teams"
+      },
+      "student": {
+        "home": "Home",
+        "placement": "Placement test",
+        "lessons": "Lessons",
+        "profile": "My profile",
+        "rewards": "Rewards"
+      }
+    },
+    "nav": {
+      "owner": {
+        "schools": "Schools",
+        "users": "Users",
+        "import": "Import users",
+        "roles": "Roles & permissions",
+        "supervision": "Supervision",
+        "audit": "Audit log",
+        "home": "Overview",
+        "visibility": "Visibility Studio",
+        "plans": "Plans",
+        "content": "Content",
+        "reports": "Reports"
+      },
+      "leadership": {
+        "home": "Overview",
+        "supervision": "Supervision",
+        "reports": "Reports"
+      },
+      "coach": {
+        "home": "Overview",
+        "coachingLog": "Coaching log"
+      },
+      "teacher": {
+        "home": "My classes",
+        "library": "Lesson library",
+        "assignments": "Assignments",
+        "groups": "Groups & teams"
+      },
+      "student": {
+        "home": "Home",
+        "placement": "Placement test",
+        "lessons": "Lessons",
+        "profile": "My profile",
+        "rewards": "Rewards"
+      }
+    },
+    "widget": {
+      "owner": {
+        "schools": "Schools",
+        "auditLog": "Recent changes",
+        "budgetMeters": "Free-tier budget",
+        "contentHealth": "Content health"
+      },
+      "student": {
+        "placementCta": "Find your level",
+        "fromMyTeacher": "From my teacher",
+        "recommended": "Recommended for you",
+        "streak": "My streak",
+        "badges": "My badges",
+        "leaderboard": "Class leaderboard",
+        "progress": "My progress"
+      },
+      "teacher": {
+        "assignmentTracker": "Assignment tracker",
+        "suggestedGroups": "Suggested groups",
+        "quickActions": "Quick actions",
+        "classRoster": "Class roster",
+        "atRiskStudents": "Students at risk",
+        "skillHeatmap": "Skill heat-map"
+      },
+      "coach": {
+        "supportedTeachers": "Teachers I support",
+        "coachingFollowUps": "Follow-ups due",
+        "growthVsSchool": "Growth vs school"
+      },
+      "leadership": {
+        "schoolOverview": "School overview",
+        "gradeComparison": "Grade comparison",
+        "placementDistribution": "Placement by CEFR",
+        "engagement": "Engagement",
+        "teacherUsage": "Teachers' platform use",
+        "interventionList": "Students needing help",
+        "supervisionTree": "Supervision tree",
+        "reportArchive": "Report archive"
+      }
+    },
+    "feature": {
+      "placementWriting": "Writing placement",
+      "placementSpeaking": "Speaking placement",
+      "leaderboards": "Leaderboards",
+      "coins": "Coins & shop",
+      "streaks": "Streaks",
+      "kaganTeams": "Kagan teams",
+      "webPush": "Web push notifications",
+      "parentGate": "Parent portal"
+    },
+    "limit": {
+      "students": "Max students",
+      "staff": "Max staff",
+      "aiScoringPerMonth": "AI scorings per month"
+    }
+  },
+  "Gates": {
+    "navLabel": "Sections",
+    "switcherLabel": "Switch portal",
+    "welcome": "Signed in as {name}",
+    "noWidgets": "Nothing to show here yet.",
+    "comingSoon": "Coming soon",
+    "plannedFor": "Arrives in build phase {phase}.",
+    "planned": "Planned for a later release.",
+    "freePeriodEnded": "This school's free period ended on {date}. Please contact the platform owner."
+  },
+  "Widgets": {
+    "people": "{count} people",
+    "noSchools": "No schools yet.",
+    "nothingYet": "Nothing yet.",
+    "openAudit": "Open the audit log"
+  },
+  "Visibility": {
+    "title": "Visibility Studio",
+    "intro": "Choose what each school, grade, class, role or person sees. The most specific rule wins: person › class › grade › school › role › plan › default.",
+    "search": "Search",
+    "find": "Find",
+    "noMatch": "No matching items.",
+    "hiddenByDefault": "hidden by default",
+    "pickKey": "Pick an item on the left to see and change who sees it.",
+    "defaultShown": "Shown by default",
+    "defaultHidden": "Hidden by default",
+    "readOnly": "Exit “view as” to change rules.",
+    "rules": "Rules",
+    "rulesHelp": "Hide or show this for someone. If two rules at the same level disagree, hide wins.",
+    "noRules": "No rules — everyone gets the default.",
+    "remove": "Remove",
+    "effect": "Action",
+    "effects": {
+      "hide": "Hide",
+      "show": "Show"
+    },
+    "for": "For",
+    "userIfUser": "Email or username (for a person)",
+    "from": "From (optional)",
+    "until": "Until (optional)",
+    "addRule": "Add rule",
+    "subjects": {
+      "user": "Person",
+      "class": "Class",
+      "grade": "Grade",
+      "school": "School",
+      "role": "Role",
+      "plan": "Plan"
+    },
+    "whoSees": "Who sees it",
+    "whoSeesHelp": "Each school, grade and class, and each role on its own. Rules for individual people are in the list above.",
+    "shown": "shown",
+    "hidden": "hidden",
+    "byDefault": "default",
+    "checkUser": "Check a person",
+    "checkUserHelp": "See exactly what one person gets, and which rule decided it.",
+    "emailOrUsername": "Email or username",
+    "check": "Check",
+    "userNotFound": "No user with that email or username.",
+    "seesIt": "sees it",
+    "doesNotSee": "does not see it",
+    "because": "{level} rule: {effect}",
+    "flags": "Feature flags",
+    "flagsHelp": "Turn unfinished features on for everyone, for chosen schools/classes/roles, or off.",
+    "flagStates": {
+      "off": "Off",
+      "all": "On for everyone",
+      "list": "On for a list"
+    },
+    "flagActions": {
+      "off": "Turn off",
+      "all": "On for everyone",
+      "list": "On for a list"
+    },
+    "addSubject": "Add",
+    "add": "Add"
+  },
+  "Plans": {
+    "title": "Plans",
+    "intro": "What each plan includes, and which plan each school is on.",
+    "billingOff": "Billing is off: every school uses the Free plan, which includes everything. The checks still run, so switching billing on later just works.",
+    "schools": "Schools",
+    "plan": "Plan",
+    "freeUntil": "Free until",
+    "save": "Save",
+    "everything": "Everything (all modules and features, no limits)",
+    "modules": "Modules & features",
+    "limits": "Limits",
+    "limitValue": "limit",
+    "unlimited": "unlimited"
+  },
+  "SchoolTheme": {
+    "title": "School colour",
+    "help": "Replaces the navy in staff portals for this school. It must be readable (WCAG AA, 4.5:1) — dark mode is adjusted automatically.",
+    "primary": "Primary colour",
+    "ratio": "Contrast {ratio}:1 (needs {min}:1)",
+    "passes": "readable",
+    "fails": "too light",
+    "useSuggestion": "Use {colour} instead",
+    "preview": {
+      "light": "Light mode button",
+      "dark": "Dark mode button"
+    },
+    "save": "Save colour",
+    "reset": "Back to the default colour"
   }
 }

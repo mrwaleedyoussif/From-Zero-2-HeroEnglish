@@ -25,18 +25,19 @@ export function ActionForm({
 }) {
   const tErrors = useTranslations("Errors");
   const tDone = useTranslations("Done");
-  const [state, formAction, pending] = useActionState(action, null);
+  // Toast as soon as the action returns — not in an effect: a "Remove" form usually
+  // disappears with the item it removed, and its effect would never run.
+  const [state, formAction, pending] = useActionState(async (prev: Result, form: FormData) => {
+    const result = await action(prev, form);
+    if (result?.ok) toast.success(tDone(result.message ?? successMessage));
+    else if (result) toast.error(tErrors(result.error));
+    return result;
+  }, null);
   const ref = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (!state) return;
-    if (state.ok) {
-      toast.success(tDone(state.message ?? successMessage));
-      if (resetOnSuccess) ref.current?.reset();
-    } else {
-      toast.error(tErrors(state.error));
-    }
-  }, [state, tDone, tErrors, successMessage, resetOnSuccess]);
+    if (state?.ok && resetOnSuccess) ref.current?.reset();
+  }, [state, resetOnSuccess]);
 
   return (
     <form

@@ -19,7 +19,7 @@ export default async function SupervisionPage({
 }: PageProps<"/[locale]/owner/supervision">) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "supervision:view");
+  const actor = await requirePermission(locale, "supervision:view", "page.owner.supervision");
   const t = await getTranslations("Supervision");
   const schools = await listSchools();
   const requested = (await searchParams).school;

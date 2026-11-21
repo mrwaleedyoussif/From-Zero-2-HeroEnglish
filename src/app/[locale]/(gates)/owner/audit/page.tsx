@@ -33,7 +33,7 @@ export default async function AuditPage({
 }: PageProps<"/[locale]/owner/audit">) {
   const { locale } = await params;
   setRequestLocale(locale);
-  await requirePermission(locale, "audit:view");
+  await requirePermission(locale, "audit:view", "page.owner.audit");
   const t = await getTranslations("Audit");
   const requested = (await searchParams).table;
   const table = tables.find((x) => x === requested);

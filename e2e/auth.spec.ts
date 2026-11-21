@@ -16,11 +16,13 @@ test("student signs in with school code, username and PIN", async ({ page }) => 
 
   await page.getByLabel("PIN (6 digits)").fill("246810");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Welcome, Omar Saleh" })).toBeVisible();
+  // Lands on the student gate (highest-priority gate the student may enter).
+  await expect(page).toHaveURL(/\/en\/student$/);
+  await expect(page.getByText("Signed in as Omar Saleh")).toBeVisible();
 
-  // Students hold no console permission: the console sends them home.
+  // Students cannot enter the owner gate: they are sent back to their own gate.
   await page.goto("/en/owner/users");
-  await expect(page).toHaveURL(/\/en\/home$/);
+  await expect(page).toHaveURL(/\/en\/student$/);
 });
 
 test("signed-out visitors are sent to sign in", async ({ page }) => {

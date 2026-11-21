@@ -12,7 +12,7 @@ export default async function ClassCardsPage({
 }: PageProps<"/[locale]/owner/classes/[id]/cards">) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "users:reset_pin");
+  const actor = await requirePermission(locale, "users:reset_pin", "page.owner.users");
   if (!(await can(actor, "users:reset_pin", await classTarget(id)))) notFound();
   const db = await createClient();
   const { data: cls } = await db

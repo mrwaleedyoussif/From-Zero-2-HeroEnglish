@@ -20,7 +20,8 @@
     "db:seed": "bash scripts/db-seed.sh",
     "db:reset": "supabase db reset",
     "test:db": "vitest run --config vitest.db.config.mts",
-    "owner:create": "node scripts/create-owner.ts"
+    "owner:create": "node scripts/create-owner.mts",
+    "gen:gate": "node scripts/gen-gate.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

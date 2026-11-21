@@ -80,6 +80,11 @@ begin
   teacher := pg_temp.demo_user('teacher', 'teacher@demo.linguapath.test', 'Demo Teacher', 'staff', school, null, null);
   insert into public.teaching_assignments (teacher_id, class_id, school_id) values (teacher, c4a, school) on conflict do nothing;
   perform pg_temp.grant_role(teacher, 'teacher', 'class', c4a);
+  -- A second teacher for 4B (visibility and isolation tests compare the two).
+  teacher := pg_temp.demo_user('teacher4b', 'teacher.4b@demo.linguapath.test', 'Demo Teacher 4B', 'staff', school, null, null);
+  insert into public.teaching_assignments (teacher_id, class_id, school_id) values (teacher, c4b, school) on conflict do nothing;
+  perform pg_temp.grant_role(teacher, 'teacher', 'class', c4b);
+  teacher := pg_temp.demo_id('teacher');
 
   for i in 1..20 loop
     cls := case when i <= 10 then c4a else c4b end;

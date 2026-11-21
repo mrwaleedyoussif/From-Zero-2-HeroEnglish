@@ -25,7 +25,7 @@ export default async function UserPage({
 }: PageProps<"/[locale]/owner/users/[id]">) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "users:view");
+  const actor = await requirePermission(locale, "users:view", "page.owner.users");
   const detail = await getUserDetail(id);
   if (!detail) notFound();
   const t = await getTranslations("UserDetail");

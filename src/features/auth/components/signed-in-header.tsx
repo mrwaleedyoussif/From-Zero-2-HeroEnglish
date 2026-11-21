@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import type { Actor } from "@/lib/auth/session";
 import { stopViewAs } from "@/features/users/view-as-actions";
 import { signOut } from "../actions";
 
-export async function SignedInHeader({ actor }: { actor: Actor }) {
+export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: ReactNode }) {
   const t = await getTranslations("Shell");
   const locale = await getLocale();
 
@@ -28,9 +29,12 @@ export async function SignedInHeader({ actor }: { actor: Actor }) {
         </div>
       )}
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 print:hidden">
-        <Link href="/home" className="text-lg font-bold text-primary">
-          {t("appName")}
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/home" className="text-lg font-bold text-primary">
+            {t("appName")}
+          </Link>
+          {extra}
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">{actor.real.full_name}</span>
           <LocaleSwitcher />

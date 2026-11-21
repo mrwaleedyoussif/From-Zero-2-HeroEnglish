@@ -26,7 +26,7 @@ export default async function UsersPage({
 }: PageProps<"/[locale]/owner/users">) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "users:view");
+  const actor = await requirePermission(locale, "users:view", "page.owner.users");
   const t = await getTranslations("Users");
   const sp = await searchParams;
   const str = (v: string | string[] | undefined) => (typeof v === "string" && v ? v : undefined);

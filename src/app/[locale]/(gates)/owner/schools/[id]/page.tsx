@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ColourPicker, ResetColour } from "@/features/schools/components/colour-picker";
 import { GradesCard, NewClassForm, YearsCard } from "@/features/schools/components/structure-cards";
 import { getSchool } from "@/features/schools/queries";
 import { Link } from "@/i18n/navigation";
@@ -22,12 +23,15 @@ import { localName } from "@/lib/i18n-names";
 export default async function SchoolPage({ params }: PageProps<"/[locale]/owner/schools/[id]">) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const actor = await requirePermission(locale, "schools:view");
+  const actor = await requirePermission(locale, "schools:view", "page.owner.schools");
   const detail = await getSchool(id);
   if (!detail) notFound();
   const t = await getTranslations("Schools");
   const canEdit = !actor.viewAs && (await can(actor, "classes:manage", schoolTarget(id)));
   const canCards = await can(actor, "users:reset_pin", schoolTarget(id));
+  const canTheme = !actor.viewAs && (await can(actor, "schools:manage", schoolTarget(id)));
+  const tt = await getTranslations("SchoolTheme");
+  const primary = (detail.school.theme as { primary?: string } | null)?.primary ?? null;
   const gradeName = new Map(detail.grades.map((g) => [g.id, localName(g, locale)]));
 
   return (
@@ -43,6 +47,18 @@ export default async function SchoolPage({ params }: PageProps<"/[locale]/owner/
           </Button>
         }
       />
+      {canTheme && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{tt("title")}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            <p className="text-sm text-muted-foreground">{tt("help")}</p>
+            <ColourPicker schoolId={id} current={primary} />
+            {primary && <ResetColour schoolId={id} />}
+          </CardContent>
+        </Card>
+      )}
       <YearsCard detail={detail} canEdit={canEdit} />
       <GradesCard detail={detail} canEdit={canEdit} />
       <Card>

@@ -6,7 +6,10 @@ export const studentGate = defineGate({
   permission: "gate:student",
   priority: 50,
   theme: "student",
-  nav: [{ key: "nav.student.home", href: "/student" }],
+  nav: [
+    { key: "nav.student.home", href: "/student" },
+    { key: "nav.student.placement", href: "/student/placement", permission: "placement:take" },
+  ],
   homeWidgets: [
     "widget.student.placementCta",
     "widget.student.fromMyTeacher",

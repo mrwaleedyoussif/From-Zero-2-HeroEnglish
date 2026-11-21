@@ -1,7 +1,7 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 3 — done (2026-11-23). Next: Phase 4. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
+Phase 4 — done (2026-11-21). Next: Phase 5. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
@@ -23,8 +23,16 @@ Phase 3 — done (2026-11-23). Next: Phase 4. Code: github.com/mrwaleedyoussif/F
   - `/api/media/[id]`: permission + department visibility, Range, ETag, CDN cache, sandbox CSP. `/teacher/library` with filters.
   - Fixtures `supabase/fixtures/drive` = DATA_TEMPLATES samples. Tests: 114 unit, 28 DB, 10 e2e (acceptance in `e2e/content.spec.ts`).
 
+- Phase 4:
+  - Engine `src/features/placement/engine` (pure, 100% coverage enforced): Rasch, EAP (161-point grid), randomesque top-5 + skill balancing, stopping, scoring per item type, CEFR/scaled score, strengths/gaps, calibration stub (`npm run calibrate`).
+  - `npm run sim:placement` (acceptance, in CI): population MAE 0.32, all learners 0.34, ≤ 25 items → PASS.
+  - Assessment tables + RLS (students read own rows only, never write; staff via `placement:view_results`); blueprints per department; default CEFR rubric.
+  - Runtime (server actions): start/resume, retake + cooldown, progress windows, answer (current item only, no back, server deadline), tab-switch counter, writing + speaking (Drive uploads, private `/api/uploads/[id]`).
+  - Screens: student placement/test/result, `widget.student.placementCta`; teacher `/teacher/placement` (results, scoring queue, retake, progress check) + session detail (θ/SE path, rubric scoring).
+  - Tests: 166 unit, 32 DB, 11 e2e (`e2e/placement.spec.ts`; run e2e with `--workers=1` after `db:reset`).
+
 ## Next
-- Phase 4 (adaptive placement). Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
+- Phase 5. Real placement needs ~150+ items per department (6 sample items only exercise the flow). Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
 
 ## Decisions (with one-line reasons)
 - Gate entry = permission `gate:<key>` (rule 2: no role names); Owner controls it in the Roles matrix. Gate perms are exempt from the anti-escalation check (no data access).
@@ -35,6 +43,9 @@ Phase 3 — done (2026-11-23). Next: Phase 4. Code: github.com/mrwaleedyoussif/F
 - Phase 3 deps: `@googleapis/drive`, `@googleapis/sheets`, `google-auth-library` (official, ~1/20 of `googleapis`); `tsx` (dev) runs scripts that import app code.
 - Media proxy sends `Cache-Control: public, immutable` (SPEC §5): content media only, random ids; student uploads (Phase 4) will be private.
 - Badges sheet is imported in Phase 6 (badges table lives with Rewards).
+- Placement runtime uses the service-role client only after the ownership + `placement:take` check (RLS hides answer keys from students).
+- Sim pass = population and all-learner MAE < 0.4; ±2 logit groups sit at ~0.36–0.40 (prior shrinkage, reported honestly).
+- Phase 4 dep: `@vitest/coverage-v8` (enforces 100% engine coverage).
 - Deps: none new in Phase 2. Scripts are `.mts` (Node runs TypeScript directly).
 
 ## Open questions for the Owner

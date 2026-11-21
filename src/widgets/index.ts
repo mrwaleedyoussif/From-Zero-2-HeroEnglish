@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import type { Actor } from "@/lib/auth/session";
 import { OwnerAuditLogWidget } from "./owner-audit-log";
 import { OwnerSchoolsWidget } from "./owner-schools";
+import { StudentPlacementCtaWidget } from "./student-placement-cta";
 
 export interface WidgetProps {
   actor: Actor;
@@ -14,4 +15,5 @@ export interface WidgetProps {
 export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
   "widget.owner.schools": OwnerSchoolsWidget,
   "widget.owner.auditLog": OwnerAuditLogWidget,
+  "widget.student.placementCta": StudentPlacementCtaWidget,
 };

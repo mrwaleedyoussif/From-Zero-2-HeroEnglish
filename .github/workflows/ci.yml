@@ -23,6 +23,8 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run test
+      - run: npm run test:coverage
+      - run: npm run sim:placement
       - run: npm run build
 
   # RLS / permission tests against a real local Supabase (migrations + demo seed).

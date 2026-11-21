@@ -23,7 +23,51 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "ability_priors": {
+            "ability_estimates": {
+                  Row: {
+                    "cefr": string | null,"created_at": string,"department_id": string,"id": string,"measured_at": string,"school_id": string,"se": number | null,"session_id": string | null,"skill_id": string | null,"source": string,"student_id": string,"theta": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cefr"?: string | null,"created_at"?: string,"department_id": string,"id"?: string,"measured_at"?: string,"school_id": string,"se"?: number | null,"session_id"?: string | null,"skill_id"?: string | null,"source": string,"student_id": string,"theta": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "cefr"?: string | null,"created_at"?: string,"department_id"?: string,"id"?: string,"measured_at"?: string,"school_id"?: string,"se"?: number | null,"session_id"?: string | null,"skill_id"?: string | null,"source"?: string,"student_id"?: string,"theta"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ability_estimates_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ability_estimates_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ability_estimates_session_id_fkey"
+      columns: ["session_id"]
+isOneToOne: false
+      referencedRelation: "test_sessions"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ability_estimates_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ability_estimates_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"ability_priors": {
                   Row: {
                     "created_at": string,"department_id": string,"grade_band": string,"id": string,"theta0": number,"updated_at": string
                   }
@@ -407,6 +451,82 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"placement_retakes": {
+                  Row: {
+                    "created_at": string,"department_id": string,"granted_by": string,"id": string,"reason": string | null,"school_id": string,"student_id": string,"updated_at": string,"used_at": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"department_id": string,"granted_by": string,"id"?: string,"reason"?: string | null,"school_id": string,"student_id": string,"updated_at"?: string,"used_at"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"department_id"?: string,"granted_by"?: string,"id"?: string,"reason"?: string | null,"school_id"?: string,"student_id"?: string,"updated_at"?: string,"used_at"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "placement_retakes_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "placement_retakes_granted_by_fkey"
+      columns: ["granted_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "placement_retakes_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "placement_retakes_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"placement_windows": {
+                  Row: {
+                    "class_id": string,"closes_at": string,"created_at": string,"created_by": string,"department_id": string,"id": string,"opens_at": string,"school_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "class_id": string,"closes_at": string,"created_at"?: string,"created_by": string,"department_id": string,"id"?: string,"opens_at"?: string,"school_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "class_id"?: string,"closes_at"?: string,"created_at"?: string,"created_by"?: string,"department_id"?: string,"id"?: string,"opens_at"?: string,"school_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "placement_windows_class_id_fkey"
+      columns: ["class_id"]
+isOneToOne: false
+      referencedRelation: "classes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "placement_windows_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "placement_windows_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "placement_windows_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"plan_entitlements": {
                   Row: {
                     "created_at": string,"id": string,"key": string,"limit_value": number | null,"plan_id": string,"updated_at": string
@@ -441,6 +561,50 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"productive_submissions": {
+                  Row: {
+                    "body": string | null,"created_at": string,"drive_file_id": string | null,"duration_ms": number | null,"id": string,"item_id": string,"kind": string,"mime_type": string | null,"school_id": string,"session_id": string,"skill_id": string,"status": string,"student_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string | null,"created_at"?: string,"drive_file_id"?: string | null,"duration_ms"?: number | null,"id"?: string,"item_id": string,"kind": string,"mime_type"?: string | null,"school_id": string,"session_id": string,"skill_id": string,"status"?: string,"student_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "body"?: string | null,"created_at"?: string,"drive_file_id"?: string | null,"duration_ms"?: number | null,"id"?: string,"item_id"?: string,"kind"?: string,"mime_type"?: string | null,"school_id"?: string,"session_id"?: string,"skill_id"?: string,"status"?: string,"student_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "productive_submissions_item_id_fkey"
+      columns: ["item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "productive_submissions_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "productive_submissions_session_id_fkey"
+      columns: ["session_id"]
+isOneToOne: false
+      referencedRelation: "test_sessions"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "productive_submissions_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "productive_submissions_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"profiles": {
                   Row: {
                     "consent": boolean,"consent_at": string | null,"created_at": string,"email": string | null,"full_name": string,"id": string,"kind": string,"last_seen_at": string | null,"locale": string,"school_id": string | null,"status": string,"updated_at": string,"username": string | null
@@ -458,6 +622,50 @@ isOneToOne: false
       columns: ["school_id"]
 isOneToOne: false
       referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"responses": {
+                  Row: {
+                    "answer": NonNullable<Json>,"b_used": number,"correct": boolean | null,"created_at": string,"id": string,"item_id": string,"item_version": number,"school_id": string,"se_after": number | null,"seq": number,"session_id": string,"skill_id": string,"student_id": string,"theta_after": number | null,"time_ms": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answer": NonNullable<Json>,"b_used": number,"correct"?: boolean | null,"created_at"?: string,"id"?: string,"item_id": string,"item_version": number,"school_id": string,"se_after"?: number | null,"seq": number,"session_id": string,"skill_id": string,"student_id": string,"theta_after"?: number | null,"time_ms": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "answer"?: NonNullable<Json>,"b_used"?: number,"correct"?: boolean | null,"created_at"?: string,"id"?: string,"item_id"?: string,"item_version"?: number,"school_id"?: string,"se_after"?: number | null,"seq"?: number,"session_id"?: string,"skill_id"?: string,"student_id"?: string,"theta_after"?: number | null,"time_ms"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "responses_item_id_fkey"
+      columns: ["item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "responses_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "responses_session_id_fkey"
+      columns: ["session_id"]
+isOneToOne: false
+      referencedRelation: "test_sessions"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "responses_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "responses_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -558,6 +766,44 @@ isOneToOne: false
       columns: ["department_id"]
 isOneToOne: false
       referencedRelation: "departments"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"submission_scores": {
+                  Row: {
+                    "cefr": string,"comment": string | null,"created_at": string,"id": string,"rubric_id": string | null,"school_id": string,"scorer_id": string,"scores": NonNullable<Json>,"submission_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cefr": string,"comment"?: string | null,"created_at"?: string,"id"?: string,"rubric_id"?: string | null,"school_id": string,"scorer_id": string,"scores": NonNullable<Json>,"submission_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "cefr"?: string,"comment"?: string | null,"created_at"?: string,"id"?: string,"rubric_id"?: string | null,"school_id"?: string,"scorer_id"?: string,"scores"?: NonNullable<Json>,"submission_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "submission_scores_rubric_id_fkey"
+      columns: ["rubric_id"]
+isOneToOne: false
+      referencedRelation: "rubrics"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "submission_scores_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "submission_scores_scorer_id_fkey"
+      columns: ["scorer_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "submission_scores_submission_id_fkey"
+      columns: ["submission_id"]
+isOneToOne: true
+      referencedRelation: "productive_submissions"
       referencedColumns: ["id"]
     }
                   ]
@@ -674,6 +920,70 @@ isOneToOne: false
       columns: ["teacher_id"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"test_blueprints": {
+                  Row: {
+                    "created_at": string,"department_id": string,"id": string,"kind": string,"max_items": number,"min_items": number,"retake_cooldown_days": number,"status": string,"target_se": number,"time_limit_sec": number | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"department_id": string,"id"?: string,"kind": string,"max_items": number,"min_items": number,"retake_cooldown_days"?: number,"status"?: string,"target_se": number,"time_limit_sec"?: number | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"department_id"?: string,"id"?: string,"kind"?: string,"max_items"?: number,"min_items"?: number,"retake_cooldown_days"?: number,"status"?: string,"target_se"?: number,"time_limit_sec"?: number | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "test_blueprints_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"test_sessions": {
+                  Row: {
+                    "cefr": string | null,"completed_at": string | null,"created_at": string,"current_item_id": string | null,"current_served_at": string | null,"deadline_at": string | null,"department_id": string,"id": string,"items_count": number,"kind": string,"rng_seed": number,"scaled_score": number | null,"school_id": string,"se": number | null,"skill_estimates": NonNullable<Json>,"started_at": string,"status": string,"stop_reason": string | null,"student_id": string,"tab_switches": number,"theta": number | null,"theta0": number,"updated_at": string,"window_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cefr"?: string | null,"completed_at"?: string | null,"created_at"?: string,"current_item_id"?: string | null,"current_served_at"?: string | null,"deadline_at"?: string | null,"department_id": string,"id"?: string,"items_count"?: number,"kind": string,"rng_seed": number,"scaled_score"?: number | null,"school_id": string,"se"?: number | null,"skill_estimates"?: NonNullable<Json>,"started_at"?: string,"status"?: string,"stop_reason"?: string | null,"student_id": string,"tab_switches"?: number,"theta"?: number | null,"theta0"?: number,"updated_at"?: string,"window_id"?: string | null
+                  }
+                  Update: {
+                    "cefr"?: string | null,"completed_at"?: string | null,"created_at"?: string,"current_item_id"?: string | null,"current_served_at"?: string | null,"deadline_at"?: string | null,"department_id"?: string,"id"?: string,"items_count"?: number,"kind"?: string,"rng_seed"?: number,"scaled_score"?: number | null,"school_id"?: string,"se"?: number | null,"skill_estimates"?: NonNullable<Json>,"started_at"?: string,"status"?: string,"stop_reason"?: string | null,"student_id"?: string,"tab_switches"?: number,"theta"?: number | null,"theta0"?: number,"updated_at"?: string,"window_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "test_sessions_current_item_id_fkey"
+      columns: ["current_item_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "test_sessions_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "test_sessions_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "test_sessions_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "test_sessions_window_fk"
+      columns: ["window_id"]
+isOneToOne: false
+      referencedRelation: "placement_windows"
       referencedColumns: ["id"]
     }
                   ]

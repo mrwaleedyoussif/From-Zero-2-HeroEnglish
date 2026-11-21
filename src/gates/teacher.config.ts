@@ -9,6 +9,11 @@ export const teacherGate = defineGate({
   nav: [
     { key: "nav.teacher.home", href: "/teacher" },
     { key: "nav.teacher.library", href: "/teacher/library", permission: "content:view" },
+    {
+      key: "nav.teacher.placement",
+      href: "/teacher/placement",
+      permission: "placement:view_results",
+    },
   ],
   homeWidgets: [
     "widget.teacher.classRoster",

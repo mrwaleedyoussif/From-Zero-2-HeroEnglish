@@ -1,20 +1,12 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 4 — done (2026-11-21). Next: Phase 5. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
+Phase 5 — done (2026-11-21). Next: Phase 6. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
 - Phase 1: Core + Access tables with RLS, `auth_can*()`, anti-escalation, audit triggers; staff magic link/Google, student PIN; `src/lib/auth/*` (engine mirrors SQL); Owner console (schools, users, CSV import, login cards, roles matrix, user detail, supervision, audit, view-as); demo seed; `owner:create`.
-- Phase 2:
-  - `src/lib/registry.ts`: 104 keys (gates, modules, pages, nav, widgets, features, limits) for all phases + en/ar labels (`Registry.*`).
-  - Gates: `src/gates/<gate>.config.ts` × 5 (owner, leadership, coach, teacher, student) + generated `index.generated.ts`; shared `GateLayout`/`GateHome`/`WidgetSlot`; `/home` → best gate; switcher; planned widgets render "coming in phase N".
-  - Visibility: SQL `visibility_rules_for(user)` + `feature_flags_for(user)`; pure `src/lib/visibility/engine.ts` (user > class > grade > school > role > plan > default, hide wins at a level, time windows); `isVisible`, `requireVisible`, `<Visible>`, `<Can>`, `<Entitled>`.
-  - Owner: Visibility Studio (rules, who-sees tree, check a person, feature flags), Plans (entitlements, plan per school, free-until), school colour with WCAG check; free-period banner.
-  - Billing: `plans`, `plan_entitlements`, `subscriptions`; `hasEntitlement()`/`limit()`; stub adapter `src/lib/billing/adapter.ts`; `BILLING_ENABLED=false` → free plan (`*`).
-  - `npm run gen:gate <name>`: config + route + labels + permission migration + index (tested with "kiosk", then removed).
-  - Tests: 87 unit, 23 DB, 9 Playwright (incl. acceptance: hide `widget.teacher.atRiskStudents` for 4A → gone for 4A teacher, shown for 4B teacher).
-
+- Phase 2: registry (`src/lib/registry.ts`, all keys + en/ar labels); config-driven gates × 5 + `gen:gate`; visibility engine (user > class > grade > school > role > plan) + Studio; plans/entitlements (`BILLING_ENABLED=false` → free `*`); school colour (WCAG).
 - Phase 3:
   - `src/lib/storage`: adapter interface; Google driver (`@googleapis/drive`+`sheets`, Owner refresh token, backoff); fake driver (local folder, same layout) for dev/tests; AES-GCM secret; `npm run drive:init` + Integrations button.
   - Owner Integrations page + OAuth start/callback (`/api/integrations/google/*`), token encrypted in `integration_secrets` (service role only).
@@ -31,8 +23,16 @@ Phase 4 — done (2026-11-21). Next: Phase 5. Code: github.com/mrwaleedyoussif/F
   - Screens: student placement/test/result, `widget.student.placementCta`; teacher `/teacher/placement` (results, scoring queue, retake, progress check) + session detail (θ/SE path, rubric scoring).
   - Tests: 166 unit, 32 DB, 11 e2e (`e2e/placement.spec.ts`; run e2e with `--workers=1` after `db:reset`).
 
+- Phase 5:
+  - Tables + RLS: learner_profiles/notes, groups/teams (+members, teams 3–5), assignments/targets/progress, lesson_progress, recommendations (daily cache), notifications (user may only set read_at), profile_options (wizard choices as data). `assign_lesson()` expands targets, creates progress + notifications in one tx.
+  - Pure `recommend/` engine (gap + level fit + interests + format + novelty − repetition, format mix) and teacher `suggestGroups` — 100% coverage; `teams.ts` mixed-ability snake draft.
+  - Student: onboarding wizard, profile, `/student/lessons` (From my teacher first, then suggestions), lesson player by format + server-scored practice check; bell in every gate; widgets fromMyTeacher/recommended.
+  - Teacher: `/teacher/assignments` (assign to student/group/team/class, due, note, required; one-click suggestions; tracker), `/teacher/groups` (+ auto teams, learner page with notes); widgets tracker/suggestedGroups/quickActions.
+  - Tests: 182 unit, 36 DB, 12 e2e (acceptance `e2e/learning.spec.ts`).
+
 ## Next
-- Phase 5. Real placement needs ~150+ items per department (6 sample items only exercise the flow). Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
+- Phase 6 (rewards). Real placement needs ~150+ items per department.
+- Owner's Drive (shared folder): ~1,360 mp3, 380 docx, STEP item registers (CSV) — not yet in the DATA_TEMPLATES sheet format; conversion is a separate task. Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
 
 ## Decisions (with one-line reasons)
 - Gate entry = permission `gate:<key>` (rule 2: no role names); Owner controls it in the Roles matrix. Gate perms are exempt from the anti-escalation check (no data access).
@@ -46,8 +46,10 @@ Phase 4 — done (2026-11-21). Next: Phase 5. Code: github.com/mrwaleedyoussif/F
 - Placement runtime uses the service-role client only after the ownership + `placement:take` check (RLS hides answer keys from students).
 - Sim pass = population and all-learner MAE < 0.4; ±2 logit groups sit at ~0.36–0.40 (prior shrinkage, reported honestly).
 - Phase 4 dep: `@vitest/coverage-v8` (enforces 100% engine coverage).
-- Deps: none new in Phase 2. Scripts are `.mts` (Node runs TypeScript directly).
+- Tracker updates on refresh (revalidatePath), not live: Supabase Realtime is off to stay in the free tier.
+- Lesson/assignment progress is written by the server (service role) after `learning:self` + lesson visibility checks; practice answers are scored server-side.
+- Deps: none new in Phases 2 and 5. Scripts are `.mts` (Node runs TypeScript directly).
 
 ## Open questions for the Owner
-- `.env.example` is still blocked by `.claude/settings.json` (deny `./.env.*`); draft ready.
 - Hosted Supabase: create project, set SMTP = Resend, enable Google, set Site URL; run migrations + `owner:create`.
+- Drive content: map the STEP item registers / docx lessons into the Questions/Lessons sheets? (needs Owner's choice of departments, skills, CEFR mapping).

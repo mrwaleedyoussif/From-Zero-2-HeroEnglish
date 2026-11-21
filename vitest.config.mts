@@ -14,7 +14,7 @@ export default defineConfig({
     // `npm run test:coverage`: the placement engine must stay at 100% (SPEC §7).
     coverage: {
       provider: "v8",
-      include: ["src/features/placement/engine/**"],
+      include: ["src/features/placement/engine/**", "src/features/learning/recommend/**"],
       exclude: ["**/*.test.ts", "**/types.ts"],
       thresholds: { 100: true },
     },

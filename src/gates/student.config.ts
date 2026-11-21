@@ -8,11 +8,13 @@ export const studentGate = defineGate({
   theme: "student",
   nav: [
     { key: "nav.student.home", href: "/student" },
+    { key: "nav.student.lessons", href: "/student/lessons", permission: "learning:self" },
     { key: "nav.student.placement", href: "/student/placement", permission: "placement:take" },
+    { key: "nav.student.profile", href: "/student/profile", permission: "learning:self" },
   ],
   homeWidgets: [
-    "widget.student.placementCta",
     "widget.student.fromMyTeacher",
+    "widget.student.placementCta",
     "widget.student.recommended",
     "widget.student.progress",
     "widget.student.streak",

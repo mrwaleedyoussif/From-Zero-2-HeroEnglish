@@ -9,10 +9,13 @@ export function AnswerInput({
   item,
   value,
   onChange,
+  name = "answer",
 }: {
   item: PublicItem;
   value: string | string[];
   onChange: (v: string | string[]) => void;
+  /** Field name/id; distinct per item when several items share a page. */
+  name?: string;
 }) {
   const t = useTranslations("Placement");
   const choice =
@@ -26,7 +29,7 @@ export function AnswerInput({
           <label key={o.label} className={choice}>
             <input
               type="radio"
-              name="answer"
+              name={name}
               value={o.label}
               checked={value === o.label}
               onChange={() => onChange(o.label)}
@@ -63,11 +66,11 @@ export function AnswerInput({
   }
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="answer" className="text-sm text-muted-foreground">
+      <label htmlFor={name} className="text-sm text-muted-foreground">
         {item.type === "matching" || item.type === "ordering" ? t("typeOrder") : t("typeAnswer")}
       </label>
       <Input
-        id="answer"
+        id={name}
         dir="ltr"
         autoComplete="off"
         autoCapitalize="none"

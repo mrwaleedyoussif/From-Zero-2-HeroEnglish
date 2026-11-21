@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { SignedInHeader } from "@/features/auth/components/signed-in-header";
+import { NotificationBell } from "@/features/learning/notifications/bell";
 import { enterableGates, requireGate } from "../access";
 import type { GateConfig } from "../types";
 import { FreePeriodBanner } from "./free-period-banner";
@@ -32,7 +33,15 @@ export async function GateLayout({
       className="flex flex-1 flex-col bg-background"
     >
       {gate.theme === "staff" && schoolId && <SchoolThemeStyle schoolId={schoolId} />}
-      <SignedInHeader actor={actor} extra={<GateSwitcher current={gate.key} gates={others} />} />
+      <SignedInHeader
+        actor={actor}
+        extra={
+          <>
+            <NotificationBell actor={actor} />
+            <GateSwitcher current={gate.key} gates={others} />
+          </>
+        }
+      />
       <FreePeriodBanner actor={actor} />
       <div className="flex flex-1 flex-col md:flex-row">
         <GateNav gate={gate} actor={actor} />

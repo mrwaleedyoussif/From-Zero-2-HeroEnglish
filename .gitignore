@@ -1,0 +1,30 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+/playwright-report
+/test-results
+/blob-report
+
+# next.js
+/.next/
+/out/
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+
+# env files — only the documented example is committed
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# local Claude Code overrides
+.claude/settings.local.json

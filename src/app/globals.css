@@ -1,0 +1,199 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens — SPEC §16.
+ * Staff palette is the default (:root). Student palette applies inside [data-theme="student"].
+ * shadcn names (--primary, --accent …) are kept so generated components work unchanged.
+ * SPEC "accent" (amber, rewards only) is exposed as --reward so it never leaks into hover states.
+ */
+
+@theme inline {
+  --font-sans: var(--app-font);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-reward: var(--reward);
+  --color-reward-foreground: var(--reward-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-cefr-pre-a1: var(--cefr-pre-a1);
+  --color-cefr-a1: var(--cefr-a1);
+  --color-cefr-a2: var(--cefr-a2);
+  --color-cefr-b1: var(--cefr-b1);
+  --color-cefr-b2: var(--cefr-b2);
+  --color-cefr-c1: var(--cefr-c1);
+  --color-cefr-c2: var(--cefr-c2);
+  --color-cefr-light-fg: #0f172a;
+  --color-cefr-dark-fg: #ffffff;
+  --color-sidebar: var(--card);
+  --color-sidebar-foreground: var(--card-foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  --radius: 0.625rem;
+  --app-font: var(--font-inter), var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
+
+  /* Staff palette (calm, professional) */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #1e3a8a;
+  --primary-hover: #1e40af;
+  --primary-foreground: #ffffff;
+  --secondary: #0f766e;
+  --secondary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --reward: #f59e0b;
+  --reward-foreground: #0f172a;
+  --destructive: #b91c1c;
+  --success: #15803d;
+  --warning: #b45309;
+  --info: #0369a1;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #1e3a8a;
+
+  /* Charts: colour-blind-safe, distinct in hue and lightness */
+  --chart-1: #1e3a8a;
+  --chart-2: #0f766e;
+  --chart-3: #f59e0b;
+  --chart-4: #0ea5e9;
+  --chart-5: #b91c1c;
+
+  /* CEFR sequential scale (colour-blind safe) */
+  --cefr-pre-a1: #e0f2fe;
+  --cefr-a1: #bae6fd;
+  --cefr-a2: #7dd3fc;
+  --cefr-b1: #38bdf8;
+  --cefr-b2: #0284c7;
+  --cefr-c1: #075985;
+  --cefr-c2: #0c4a6e;
+}
+
+.dark {
+  --background: #0b1220;
+  --foreground: #f1f5f9;
+  --card: #111a2e;
+  --card-foreground: #f1f5f9;
+  --popover: #111a2e;
+  --popover-foreground: #f1f5f9;
+  --primary: #93c5fd;
+  --primary-hover: #bfdbfe;
+  --primary-foreground: #0f172a;
+  --secondary: #2dd4bf;
+  --secondary-foreground: #0f172a;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #f1f5f9;
+  --reward: #fbbf24;
+  --reward-foreground: #0f172a;
+  --destructive: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --info: #38bdf8;
+  --border: #1e293b;
+  --input: #334155;
+  --ring: #93c5fd;
+  --chart-1: #93c5fd;
+  --chart-2: #2dd4bf;
+  --chart-3: #fbbf24;
+  --chart-4: #38bdf8;
+  --chart-5: #f87171;
+}
+
+/* Student palette (bright, motivating) */
+[data-theme="student"] {
+  --background: #fffbeb;
+  --card: #ffffff;
+  --primary: #6d28d9;
+  --primary-hover: #5b21b6;
+  --primary-foreground: #ffffff;
+  --secondary: #0ea5e9;
+  --secondary-foreground: #0f172a;
+  --reward: #f97316;
+  --reward-foreground: #0f172a;
+  --success: #16a34a;
+  --accent: #fef3c7;
+  --muted: #fef3c7;
+  --border: #fde68a;
+  --ring: #6d28d9;
+}
+
+.dark [data-theme="student"],
+.dark[data-theme="student"] {
+  --background: #17102b;
+  --card: #21173d;
+  --primary: #c4b5fd;
+  --primary-hover: #ddd6fe;
+  --primary-foreground: #1e1033;
+  --secondary: #7dd3fc;
+  --secondary-foreground: #0f172a;
+  --reward: #fb923c;
+  --success: #4ade80;
+  --accent: #2e2152;
+  --muted: #2e2152;
+  --border: #3b2a66;
+  --ring: #c4b5fd;
+}
+
+/* Arabic text: Plex Arabic first so Arabic glyphs use the designed font. */
+:lang(ar) {
+  --app-font: var(--font-plex-arabic), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Dyslexia-friendly option (SPEC §16); toggled per user later. */
+[data-font="dyslexia"] {
+  --app-font: var(--font-atkinson), var(--font-plex-arabic), ui-sans-serif, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background font-sans text-foreground;
+  }
+}

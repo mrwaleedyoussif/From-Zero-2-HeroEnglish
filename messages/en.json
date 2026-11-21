@@ -1,0 +1,26 @@
+{
+  "Meta": {
+    "title": "LinguaPath",
+    "description": "Adaptive English learning for schools"
+  },
+  "Home": {
+    "title": "LinguaPath",
+    "tagline": "Adaptive English learning for schools",
+    "intro": "The platform is being built. This page checks that languages, right-to-left layout, themes and design tokens work.",
+    "status": "Phase 0 — foundations",
+    "staffTheme": "Staff theme",
+    "studentTheme": "Student theme",
+    "primaryAction": "Primary",
+    "secondaryAction": "Secondary",
+    "reward": "+20 XP",
+    "cefrScale": "CEFR scale"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "ThemeToggle": {
+    "label": "Toggle dark mode"
+  }
+}

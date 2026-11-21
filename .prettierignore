@@ -1,0 +1,15 @@
+.next
+node_modules
+coverage
+playwright-report
+test-results
+package-lock.json
+supabase/.temp
+src/types/db.ts
+next-env.d.ts
+
+# Owner-authored docs keep their own formatting
+CLAUDE.md
+AGENTS.md
+START-HERE.md
+docs/

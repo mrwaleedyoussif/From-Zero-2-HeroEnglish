@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
+import { PrintButton } from "@/features/insights/components/print-button";
 import { requireActor } from "@/lib/auth/guard";
 import { requireVisible, visibleOnly } from "@/lib/visibility/server";
 import type { GateConfig } from "../types";
@@ -27,6 +28,11 @@ export async function GateHome({
         title={t(`gate.${gate.key}`)}
         description={tg("welcome", { name: actor.effective.full_name })}
       />
+      {gate.theme === "staff" && widgets.length > 0 && (
+        <div className="-mt-4 flex justify-end print:hidden">
+          <PrintButton label={(await getTranslations("Insights"))("pdf")} />
+        </div>
+      )}
       {widgets.length === 0 && <p className="text-muted-foreground">{tg("noWidgets")}</p>}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {widgets.map((key) => (

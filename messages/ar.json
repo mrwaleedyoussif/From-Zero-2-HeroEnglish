@@ -397,16 +397,19 @@
         "content": "المحتوى",
         "reports": "التقارير",
         "integrations": "التكاملات",
-        "rewards": "المكافآت"
+        "rewards": "المكافآت",
+        "insights": "التحليلات"
       },
       "leadership": {
         "home": "نظرة عامة",
         "supervision": "الإشراف",
-        "reports": "التقارير"
+        "reports": "التقارير",
+        "insights": "التحليلات"
       },
       "coach": {
         "home": "نظرة عامة",
-        "coachingLog": "سجل التدريب"
+        "coachingLog": "سجل التدريب",
+        "insights": "التحليلات"
       },
       "teacher": {
         "home": "فصولي",
@@ -414,7 +417,8 @@
         "assignments": "الواجبات",
         "groups": "المجموعات والفرق",
         "placement": "نتائج تحديد المستوى",
-        "rewards": "المكافآت"
+        "rewards": "المكافآت",
+        "insights": "التحليلات"
       },
       "student": {
         "home": "الرئيسية",
@@ -438,16 +442,19 @@
         "content": "المحتوى",
         "reports": "التقارير",
         "integrations": "التكاملات",
-        "rewards": "المكافآت"
+        "rewards": "المكافآت",
+        "insights": "التحليلات"
       },
       "leadership": {
         "home": "نظرة عامة",
         "supervision": "الإشراف",
-        "reports": "التقارير"
+        "reports": "التقارير",
+        "insights": "التحليلات"
       },
       "coach": {
         "home": "نظرة عامة",
-        "coachingLog": "سجل التدريب"
+        "coachingLog": "سجل التدريب",
+        "insights": "التحليلات"
       },
       "teacher": {
         "home": "فصولي",
@@ -455,7 +462,8 @@
         "assignments": "الواجبات",
         "groups": "المجموعات والفرق",
         "placement": "نتائج تحديد المستوى",
-        "rewards": "المكافآت"
+        "rewards": "المكافآت",
+        "insights": "التحليلات"
       },
       "student": {
         "home": "الرئيسية",
@@ -1106,5 +1114,145 @@
     "kindLabel": "النوع",
     "cost": "التكلفة",
     "add": "إضافة"
+  },
+  "Insights": {
+    "title": "التحليلات",
+    "intro": "من المدرسة كلها حتى متعلم واحد. ترى فقط ما يشمله دورك.",
+    "showData": "عرض البيانات",
+    "open": "فتح",
+    "csv": "تنزيل CSV",
+    "pdf": "طباعة / حفظ PDF",
+    "breadcrumbs": "موقعك",
+    "allClasses": "كل الفصول",
+    "nothingInScope": "لا شيء لعرضه لدورك بعد.",
+    "aggregateOnly": "بيانات المتعلمين الفردية متاحة فقط لطاقم الفصل. يمكنك رؤية هذا الفصل ضمن ملخصات الفصول والصفوف.",
+    "grade": "الصف",
+    "class": "الفصل",
+    "classes": "الفصول",
+    "student": "الطالب",
+    "students": "الطلاب",
+    "teacher": "المعلم",
+    "skill": "المهارة",
+    "department": "القسم",
+    "date": "التاريخ",
+    "level": "المستوى",
+    "group": "المجموعة",
+    "school": "المدرسة كلها",
+    "myClasses": "الفصول المدعومة",
+    "activePct": "النشطون هذا الأسبوع",
+    "lessons7d": "الدروس (7 أيام)",
+    "accuracy": "دقة التدريب",
+    "atRisk": "معرّضون للخطر",
+    "xp7d": "النقاط (7 أيام)",
+    "growth": "النمو (θ)",
+    "lastActive": "آخر نشاط",
+    "flags": "يحتاج متابعة",
+    "never": "أبدًا",
+    "studentsAtRisk": "{n} طالبًا · {risk} معرّضون للخطر",
+    "engagementTitle": "المتعلمون النشطون هذا الأسبوع",
+    "engagementSummary": "نسبة المتعلمين الذين نشطوا على المنصة في آخر 7 أيام لكل مجموعة.",
+    "cefrTitle": "التوزيع حسب مستوى CEFR",
+    "cefrSummary": "عدد المتعلمين في كل مستوى CEFR لكل مجموعة.",
+    "notPlaced": "لم يُحدَّد",
+    "lessonsTitle": "الدروس المنجزة هذا الأسبوع",
+    "lessonsSummary": "الدروس التي أنهاها كل متعلم أو فصل في آخر 7 أيام.",
+    "lessonsByClass": "الدروس لكل فصل (7 أيام)",
+    "activeByGrade": "المتعلمون النشطون حسب الصف",
+    "heatmap": "خريطة المهارات (أحدث مستوى لكل مهارة)",
+    "heatmapSummary": "أحدث مستوى CEFR لكل متعلم في كل مهارة.",
+    "skillsSummary": "متوسط القدرة لكل مهارة في هذا الفصل.",
+    "noSkills": "تظهر مستويات المهارات بعد اختبارات تحديد المستوى.",
+    "historyTitle": "المستوى عبر الزمن",
+    "historySummary": "القدرة العامة للمتعلم بعد كل اختبار.",
+    "noHistory": "لا توجد نتائج اختبارات بعد.",
+    "recentLessons": "أحدث الدروس",
+    "noLessons": "لا توجد دروس بعد.",
+    "lessonStatus": {
+      "in_progress": "بدأه",
+      "done": "أنهاه"
+    },
+    "source": {
+      "placement": "تحديد المستوى",
+      "progress": "اختبار تقدم",
+      "rubric": "تقييم المعلم",
+      "teacher": "المعلم"
+    },
+    "risk": {
+      "inactive": "غير نشط 7+ أيام",
+      "falling": "دقة متراجعة",
+      "overdue": "واجبات متأخرة"
+    },
+    "noRisk": "لا أحد يحتاج متابعة الآن.",
+    "noTeachers": "لا يوجد معلمون مرتبطون بك بعد.",
+    "assignments30": "{n} واجبًا (30 يومًا)",
+    "assignments30h": "الواجبات (30 يومًا)",
+    "kudos30h": "الإشادات (30 يومًا)",
+    "lastAssignment": "آخر واجب",
+    "lastSignIn": "آخر دخول",
+    "lastSeen": "آخر ظهور {date}",
+    "neverSignedIn": "لم يسجل الدخول قط",
+    "noFollowUps": "لا متابعات مستحقة.",
+    "growthTitle": "متوسط النمو (θ)",
+    "growthSummary": "متوسط نمو القدرة في الفصول المدعومة مقارنة بالمدرسة كلها.",
+    "supervisionTitle": "الإشراف",
+    "supervisionIntro": "من يشرف على من، وآخر نشاط لكل شخص، ونشاط التدريب.",
+    "noSupervision": "لا توجد روابط إشراف بعد.",
+    "linkKind": {
+      "line": "إداري",
+      "academic": "أكاديمي",
+      "coaching": "تدريب"
+    },
+    "coachingActivity": "نشاط التدريب",
+    "noCoaching": "لا توجد سجلات تدريب بعد.",
+    "coachingKind": {
+      "observation": "زيارة صفية",
+      "walkthrough": "جولة",
+      "meeting": "اجتماع"
+    },
+    "followUp": "متابعة {date}",
+    "dbSize": "حجم قاعدة البيانات",
+    "emailsToday": "الرسائل المرسلة اليوم",
+    "driveCalls": "{n} طلبًا إلى Google Drive اليوم",
+    "people": "{students} طالبًا · {staff} موظفًا",
+    "activeItems": "الأسئلة الفعّالة",
+    "calibratedItems": "الأسئلة المعايَرة",
+    "lessonsNoPractice": "دروس بلا تدريب",
+    "missingMedia": "ملفات وسائط مفقودة",
+    "calibrationNote": "تُعاير الأسئلة بعد 200 إجابة أو أكثر (npm run calibrate).",
+    "lessonsFourWeeks": "{n, plural, one {درس واحد} two {درسان} few {# دروس} other {# درسًا}} في 4 أسابيع",
+    "myLevelOverTime": "مستواي عبر الزمن"
+  },
+  "Coaching": {
+    "title": "سجل التدريب",
+    "intro": "الزيارات الصفية والجولات والاجتماعات مع المعلمين الذين تدعمهم.",
+    "teacher": "المعلم",
+    "class": "الفصل (اختياري)",
+    "kind": "النوع",
+    "date": "التاريخ",
+    "kinds": {
+      "observation": "زيارة صفية",
+      "walkthrough": "جولة",
+      "meeting": "اجتماع"
+    },
+    "rubric": "المعيار (1–4)",
+    "level": {
+      "1": "مبتدئ",
+      "2": "نامٍ",
+      "3": "متمكن",
+      "4": "نموذجي"
+    },
+    "notes": "ملاحظات",
+    "agreedActions": "الإجراءات المتفق عليها",
+    "followUp": "تاريخ المتابعة",
+    "save": "حفظ",
+    "noTeachers": "لا يوجد معلمون مرتبطون بك بعد. اطلب من المدير إضافتك مدربًا لهم.",
+    "history": "سجلي",
+    "none": "لا توجد إدخالات بعد.",
+    "followUpOn": "متابعة {date}",
+    "markDone": "تم",
+    "status": {
+      "open": "مفتوح",
+      "done": "منجز"
+    }
   }
 }

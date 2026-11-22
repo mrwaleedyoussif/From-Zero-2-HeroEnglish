@@ -8,6 +8,7 @@ export const teacherGate = defineGate({
   theme: "staff",
   nav: [
     { key: "nav.teacher.home", href: "/teacher" },
+    { key: "nav.teacher.insights", href: "/teacher/insights", permission: "students:view" },
     { key: "nav.teacher.library", href: "/teacher/library", permission: "content:view" },
     {
       key: "nav.teacher.assignments",

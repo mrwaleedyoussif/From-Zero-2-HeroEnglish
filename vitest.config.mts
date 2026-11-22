@@ -18,6 +18,7 @@ export default defineConfig({
         "src/features/placement/engine/**",
         "src/features/learning/recommend/**",
         "src/features/rewards/engine/**",
+        "src/features/insights/analytics.ts",
       ],
       exclude: ["**/*.test.ts", "**/types.ts"],
       thresholds: { 100: true },

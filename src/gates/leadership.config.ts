@@ -6,7 +6,15 @@ export const leadershipGate = defineGate({
   permission: "gate:leadership",
   priority: 20,
   theme: "staff",
-  nav: [{ key: "nav.leadership.home", href: "/leadership" }],
+  nav: [
+    { key: "nav.leadership.home", href: "/leadership" },
+    { key: "nav.leadership.insights", href: "/leadership/insights", permission: "students:view" },
+    {
+      key: "nav.leadership.supervision",
+      href: "/leadership/supervision",
+      permission: "supervision:view",
+    },
+  ],
   homeWidgets: [
     "widget.leadership.schoolOverview",
     "widget.leadership.gradeComparison",

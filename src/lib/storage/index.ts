@@ -5,6 +5,7 @@ import { createFakeStorage } from "./fake";
 import { createGoogleStorage } from "./google";
 import { loadGoogleToken } from "./secret";
 import { type StorageAdapter, StorageNotConnectedError } from "./types";
+import { countingDriveCalls } from "./usage";
 
 export * from "./types";
 
@@ -23,9 +24,11 @@ export async function getStorage(): Promise<StorageAdapter> {
   if (!refreshToken || !env.GOOGLE_OAUTH_CLIENT_ID || !env.GOOGLE_OAUTH_CLIENT_SECRET) {
     throw new StorageNotConnectedError();
   }
-  return createGoogleStorage({
-    clientId: env.GOOGLE_OAUTH_CLIENT_ID,
-    clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
-    refreshToken,
-  });
+  return countingDriveCalls(
+    createGoogleStorage({
+      clientId: env.GOOGLE_OAUTH_CLIENT_ID,
+      clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
+      refreshToken,
+    }),
+  );
 }

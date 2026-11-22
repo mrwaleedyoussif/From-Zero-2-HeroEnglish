@@ -1,21 +1,14 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 6 — done (2026-11-22). Next: Phase 7. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
+Phase 7 — done (2026-11-22). Next: Phase 8. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
 - Phase 1: Core + Access tables with RLS, `auth_can*()`, anti-escalation, audit triggers; staff magic link/Google, student PIN; `src/lib/auth/*` (engine mirrors SQL); Owner console (schools, users, CSV import, login cards, roles matrix, user detail, supervision, audit, view-as); demo seed; `owner:create`.
 - Phase 2: registry (`src/lib/registry.ts`, all keys + en/ar labels); config-driven gates × 5 + `gen:gate`; visibility engine (user > class > grade > school > role > plan) + Studio; plans/entitlements (`BILLING_ENABLED=false` → free `*`); school colour (WCAG).
 - Phase 3: `lib/storage` (Google + fake drivers, Owner OAuth, AES-GCM secret, `drive:init`); content tables + RLS (learners never read items); Sheets import (validate → diff preview → apply, media by name, missing-file report); `/api/media/[id]`; `/teacher/library`.
-- Phase 4:
-  - Engine `src/features/placement/engine` (pure, 100% coverage enforced): Rasch, EAP (161-point grid), randomesque top-5 + skill balancing, stopping, scoring per item type, CEFR/scaled score, strengths/gaps, calibration stub (`npm run calibrate`).
-  - `npm run sim:placement` (acceptance, in CI): population MAE 0.32, all learners 0.34, ≤ 25 items → PASS.
-  - Assessment tables + RLS (students read own rows only, never write; staff via `placement:view_results`); blueprints per department; default CEFR rubric.
-  - Runtime (server actions): start/resume, retake + cooldown, progress windows, answer (current item only, no back, server deadline), tab-switch counter, writing + speaking (Drive uploads, private `/api/uploads/[id]`).
-  - Screens: student placement/test/result, `widget.student.placementCta`; teacher `/teacher/placement` (results, scoring queue, retake, progress check) + session detail (θ/SE path, rubric scoring).
-  - Tests: 166 unit, 32 DB, 11 e2e (`e2e/placement.spec.ts`; run e2e with `--workers=1` after `db:reset`).
-
+- Phase 4: pure CAT engine (Rasch/EAP, balancing, stopping, scoring; 100% coverage) + `sim:placement` (MAE 0.32 ≤ 25 items); assessment tables/RLS; server-only test runtime (resume, no back, deadlines, writing/speaking uploads); student test/result pages; teacher results, rubric scoring, retakes, progress windows.
 - Phase 5:
   - Tables + RLS: learner_profiles/notes, groups/teams (+members, teams 3–5), assignments/targets/progress, lesson_progress, recommendations (daily cache), notifications (user may only set read_at), profile_options (wizard choices as data). `assign_lesson()` expands targets, creates progress + notifications in one tx.
   - Pure `recommend/` engine (gap + level fit + interests + format + novelty − repetition, format mix) and teacher `suggestGroups` — 100% coverage; `teams.ts` mixed-ability snake draft.
@@ -30,8 +23,13 @@ Phase 6 — done (2026-11-22). Next: Phase 7. Code: github.com/mrwaleedyoussif/F
   - Screens: `/student/rewards`, celebration after lessons (motion-safe, aria-live), 3 student widgets; `/teacher/rewards` (leaderboard switch, kudos, team points, approvals); `/owner/rewards` (rules, levels, shop). Certificate PDFs `/api/certificates/[id]`.
   - Tests: 203 unit, 39 DB, 13 e2e (`e2e/rewards.spec.ts`).
 
+- Phase 7:
+  - SQL: `mv_student_activity` (materialized, refreshed when > 10 min old via `refresh_insights`, service role only) read only through scoped functions `class_stats`, `student_stats`, `class_cefr`, `class_skill_matrix`, `teacher_usage`, `school_averages`, `staff_last_seen`, `budget_stats`. Coaches see their teachers' classes in aggregate, never individual learners. `coaching_logs` (+ OBSERVATION rubric), `usage_counters` (Drive calls counted in `lib/storage`).
+  - UI: 16 registry widgets across all gates; `/[gate]/insights` drill-down school → grade → class → student; `/coach/coaching-log`; `/leadership/supervision` tree; charts = CSS bars with SPEC tokens + data table; CSV `/api/export/[dataset]`; dashboards print to PDF.
+  - Tests: 207 unit (analytics 100%), 44 DB, 16 e2e (`e2e/insights.spec.ts` scope acceptance).
+
 ## Next
-- Phase 7 (dashboards & supervision). Real placement needs ~150+ items per department.
+- Phase 8 (reports, scheduler, archive, backups): call `refresh_insights` from the daily tick. Real placement needs ~150+ items per department.
 - Owner's Drive (shared folder): ~1,360 mp3, 380 docx, STEP item registers (CSV) — not yet in the DATA_TEMPLATES sheet format; conversion is a separate task. Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
 
 ## Decisions (with one-line reasons)
@@ -50,7 +48,9 @@ Phase 6 — done (2026-11-22). Next: Phase 7. Code: github.com/mrwaleedyoussif/F
 - Lesson/assignment progress is written by the server (service role) after `learning:self` + lesson visibility checks; practice answers are scored server-side.
 - Phase 6 deps: `@react-pdf/renderer` (in the stack; certificates), `arabic-persian-reshaper` (MIT; react-pdf doesn't join Arabic letters). Certificate font Noto Naskh Arabic loaded from fonts.gstatic.com.
 - A blocked reward event is still recorded with 0 XP so badges like "first lesson" count real activity, not XP.
-- Deps: none new in Phases 2 and 5. Scripts are `.mts` (Node runs TypeScript directly).
+- Dashboard PDF = browser print (Arabic shaping/RTL correct, data tables printed open); react-pdf stays for certificates. frontend-design plugin not available here: layouts follow SPEC §16 tokens.
+- Teacher usage is listed for direct supervisees, or all teachers for `supervision:manage` (principal) — no role checks.
+- Deps: none new in Phases 2, 5 and 7. Scripts are `.mts` (Node runs TypeScript directly).
 
 ## Open questions for the Owner
 - Hosted Supabase: create project, set SMTP = Resend, enable Google, set Site URL; run migrations + `owner:create`.

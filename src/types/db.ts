@@ -327,6 +327,50 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"coaching_logs": {
+                  Row: {
+                    "agreed_actions": string | null,"class_id": string | null,"coach_id": string,"created_at": string,"follow_up_on": string | null,"id": string,"kind": string,"notes": string | null,"observed_on": string,"rubric_id": string | null,"school_id": string,"scores": NonNullable<Json>,"status": string,"teacher_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "agreed_actions"?: string | null,"class_id"?: string | null,"coach_id": string,"created_at"?: string,"follow_up_on"?: string | null,"id"?: string,"kind": string,"notes"?: string | null,"observed_on"?: string,"rubric_id"?: string | null,"school_id": string,"scores"?: NonNullable<Json>,"status"?: string,"teacher_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "agreed_actions"?: string | null,"class_id"?: string | null,"coach_id"?: string,"created_at"?: string,"follow_up_on"?: string | null,"id"?: string,"kind"?: string,"notes"?: string | null,"observed_on"?: string,"rubric_id"?: string | null,"school_id"?: string,"scores"?: NonNullable<Json>,"status"?: string,"teacher_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "coaching_logs_class_id_fkey"
+      columns: ["class_id"]
+isOneToOne: false
+      referencedRelation: "classes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "coaching_logs_coach_id_fkey"
+      columns: ["coach_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "coaching_logs_rubric_id_fkey"
+      columns: ["rubric_id"]
+isOneToOne: false
+      referencedRelation: "rubrics"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "coaching_logs_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "coaching_logs_teacher_id_fkey"
+      columns: ["teacher_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"coin_ledger": {
                   Row: {
                     "created_at": string,"delta": number,"id": string,"reason": string,"ref_id": string | null,"school_id": string,"student_id": string
@@ -1603,6 +1647,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"usage_counters": {
+                  Row: {
+                    "count": number,"day": string,"kind": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "count"?: number,"day"?: string,"kind": string
+                  }
+                  Update: {
+                    "count"?: number,"day"?: string,"kind"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"user_badges": {
                   Row: {
                     "awarded_at": string,"badge_id": string,"school_id": string,"student_id": string
@@ -1742,7 +1800,39 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "mv_student_activity": {
+                  Row: {
+                    "accuracy_7d": number | null,"accuracy_prev": number | null,"active_days_7d": number | null,"cefr_now": string | null,"class_id": string,"grade_id": string,"last_active_at": string | null,"lessons_7d": number | null,"overdue": number | null,"refreshed_at": string | null,"school_id": string,"student_id": string,"theta_first": number | null,"theta_now": number | null,"xp_7d": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "classes_grade_id_fkey"
+      columns: ["grade_id"]
+isOneToOne: false
+      referencedRelation: "grades"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "classes_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "enrolments_class_id_fkey"
+      columns: ["class_id"]
+isOneToOne: false
+      referencedRelation: "classes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "enrolments_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                }
           }
           Functions: {
             "apply_supervision_defaults":
@@ -1778,12 +1868,44 @@ isOneToOne: false
 "auth_in_team":
 { Args: { "p_team": string }; Returns: boolean
                            },
+"auth_sees_class":
+{ Args: { "p_class": string }; Returns: boolean
+                           },
+"auth_supervises":
+{ Args: { "p_user": string }; Returns: boolean
+                           },
+"auth_supervises_class":
+{ Args: { "p_class": string }; Returns: boolean
+                           },
+"budget_stats":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "db_bytes": number,"drive_calls_today": number,"emails_today": number,"staff": number,"students": number
+            }[]
+                           },
+"bump_usage":
+{ Args: { "p_kind": string,"p_n"?: number }; Returns: undefined
+                           },
 "can_user_on":
 { Args: { "p_actor": string,"p_class": string,"p_grade": string,"p_perm": string,"p_school": string,"p_user": string }; Returns: boolean
+                           },
+"class_cefr":
+{ Args: { "p_school"?: string }; Returns: {
+              "cefr": string,"class_id": string,"n": number
+            }[]
                            },
 "class_leaderboard":
 { Args: { "p_class": string,"p_since": string }; Returns: {
               "full_name": string,"points": number,"student_id": string
+            }[]
+                           },
+"class_skill_matrix":
+{ Args: { "p_class": string }; Returns: {
+              "cefr": string,"full_name": string,"skill_code": string,"skill_id": string,"student_id": string,"theta": number
+            }[]
+                           },
+"class_stats":
+{ Args: { "p_school"?: string }; Returns: {
+              "accuracy_7d": number,"active_7d": number,"at_risk": number,"avg_growth": number,"avg_theta": number,"class_code": string,"class_id": string,"grade_code": string,"grade_id": string,"grade_name_ar": string,"grade_name_en": string,"lessons_7d": number,"overdue": number,"school_id": string,"students": number,"xp_7d": number
             }[]
                            },
 "decide_redemption":
@@ -1791,6 +1913,9 @@ isOneToOne: false
                            },
 "feature_flags_for":
 { Args: { "p_user": string }; Returns: string[]
+                           },
+"insights_refreshed_at":
+{ Args: Record<PropertyKey, never>; Returns: string
                            },
 "log_audit":
 { Args: { "p_action": string,"p_details"?: Json,"p_school"?: string,"p_target_id"?: string,"p_target_table": string }; Returns: undefined
@@ -1801,6 +1926,14 @@ isOneToOne: false
 "redeem_item":
 { Args: { "p_item": string }; Returns: string
                            },
+"refresh_insights":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
+"school_averages":
+{ Args: { "p_school": string }; Returns: {
+              "accuracy_7d": number,"active_7d": number,"avg_growth": number,"lessons_7d": number,"students": number
+            }[]
+                           },
 "school_plan":
 { Args: { "p_school": string }; Returns: string
                            },
@@ -1810,6 +1943,21 @@ isOneToOne: false
 "scope_target":
 { Args: { "p_scope_id": string,"p_scope_type": string,"p_user": string }; Returns: {
               "class_id": string,"grade_id": string,"school_id": string,"user_id": string
+            }[]
+                           },
+"staff_last_seen":
+{ Args: { "p_school": string }; Returns: {
+              "last_sign_in_at": string,"user_id": string
+            }[]
+                           },
+"student_stats":
+{ Args: { "p_class": string }; Returns: {
+              "accuracy_7d": number,"accuracy_prev": number,"active_days_7d": number,"cefr_now": string,"full_name": string,"last_active_at": string,"lessons_7d": number,"overdue": number,"student_id": string,"theta_first": number,"theta_now": number,"xp_7d": number
+            }[]
+                           },
+"teacher_usage":
+{ Args: { "p_school": string }; Returns: {
+              "assignments_30d": number,"classes": number,"full_name": string,"kudos_30d": number,"last_assignment_at": string,"last_sign_in_at": string,"teacher_id": string
             }[]
                            },
 "team_scores":

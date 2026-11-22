@@ -9,6 +9,7 @@ export const ownerGate = defineGate({
   nav: [
     { key: "nav.owner.home", href: "/owner" },
     { key: "nav.owner.schools", href: "/owner/schools", permission: "schools:view" },
+    { key: "nav.owner.insights", href: "/owner/insights", permission: "students:view" },
     { key: "nav.owner.users", href: "/owner/users", permission: "users:view" },
     { key: "nav.owner.import", href: "/owner/users/import", permission: "users:import" },
     { key: "nav.owner.roles", href: "/owner/roles", permission: "roles:view" },

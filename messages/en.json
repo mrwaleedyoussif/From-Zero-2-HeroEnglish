@@ -397,16 +397,19 @@
         "content": "Content",
         "reports": "Reports",
         "integrations": "Integrations",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "insights": "Insights"
       },
       "leadership": {
         "home": "Overview",
         "supervision": "Supervision",
-        "reports": "Reports"
+        "reports": "Reports",
+        "insights": "Insights"
       },
       "coach": {
         "home": "Overview",
-        "coachingLog": "Coaching log"
+        "coachingLog": "Coaching log",
+        "insights": "Insights"
       },
       "teacher": {
         "home": "My classes",
@@ -414,7 +417,8 @@
         "assignments": "Assignments",
         "groups": "Groups & teams",
         "placement": "Placement results",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "insights": "Insights"
       },
       "student": {
         "home": "Home",
@@ -438,16 +442,19 @@
         "content": "Content",
         "reports": "Reports",
         "integrations": "Integrations",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "insights": "Insights"
       },
       "leadership": {
         "home": "Overview",
         "supervision": "Supervision",
-        "reports": "Reports"
+        "reports": "Reports",
+        "insights": "Insights"
       },
       "coach": {
         "home": "Overview",
-        "coachingLog": "Coaching log"
+        "coachingLog": "Coaching log",
+        "insights": "Insights"
       },
       "teacher": {
         "home": "My classes",
@@ -455,7 +462,8 @@
         "assignments": "Assignments",
         "groups": "Groups & teams",
         "placement": "Placement results",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "insights": "Insights"
       },
       "student": {
         "home": "Home",
@@ -1106,5 +1114,145 @@
     "kindLabel": "Type",
     "cost": "Cost",
     "add": "Add"
+  },
+  "Insights": {
+    "title": "Insights",
+    "intro": "From the whole school down to one learner. You only see what your role covers.",
+    "showData": "Show data",
+    "open": "Open",
+    "csv": "Download CSV",
+    "pdf": "Print / save as PDF",
+    "breadcrumbs": "Where you are",
+    "allClasses": "All classes",
+    "nothingInScope": "Nothing to show for your role yet.",
+    "aggregateOnly": "Individual learners are only visible to their class staff. You can see this class in the class and grade summaries.",
+    "grade": "Grade",
+    "class": "Class",
+    "classes": "Classes",
+    "student": "Student",
+    "students": "Students",
+    "teacher": "Teacher",
+    "skill": "Skill",
+    "department": "Department",
+    "date": "Date",
+    "level": "Level",
+    "group": "Group",
+    "school": "Whole school",
+    "myClasses": "Supported classes",
+    "activePct": "Active this week",
+    "lessons7d": "Lessons (7 days)",
+    "accuracy": "Practice accuracy",
+    "atRisk": "At risk",
+    "xp7d": "XP (7 days)",
+    "growth": "Growth (θ)",
+    "lastActive": "Last active",
+    "flags": "Needs attention",
+    "never": "Never",
+    "studentsAtRisk": "{n} students · {risk} at risk",
+    "engagementTitle": "Active learners this week",
+    "engagementSummary": "Share of learners who did something on the platform in the last 7 days, per group.",
+    "cefrTitle": "Placement by CEFR level",
+    "cefrSummary": "How many learners are placed at each CEFR level, per group.",
+    "notPlaced": "Not placed",
+    "lessonsTitle": "Lessons finished this week",
+    "lessonsSummary": "Lessons each learner or class finished in the last 7 days.",
+    "lessonsByClass": "Lessons per class (7 days)",
+    "activeByGrade": "Active learners by grade",
+    "heatmap": "Skill heat-map (latest level per skill)",
+    "heatmapSummary": "Each learner's latest CEFR level in each skill.",
+    "skillsSummary": "Average ability per skill in this class.",
+    "noSkills": "Skill levels appear after placement tests.",
+    "historyTitle": "Level over time",
+    "historySummary": "The learner's overall ability after each test.",
+    "noHistory": "No test results yet.",
+    "recentLessons": "Recent lessons",
+    "noLessons": "No lessons yet.",
+    "lessonStatus": {
+      "in_progress": "started",
+      "done": "done"
+    },
+    "source": {
+      "placement": "placement",
+      "progress": "progress check",
+      "rubric": "teacher score",
+      "teacher": "teacher"
+    },
+    "risk": {
+      "inactive": "inactive 7+ days",
+      "falling": "accuracy falling",
+      "overdue": "overdue work"
+    },
+    "noRisk": "No one needs attention right now.",
+    "noTeachers": "No teachers linked to you yet.",
+    "assignments30": "{n} assignments (30 days)",
+    "assignments30h": "Assignments (30 d)",
+    "kudos30h": "Kudos (30 d)",
+    "lastAssignment": "Last assignment",
+    "lastSignIn": "Last sign-in",
+    "lastSeen": "last seen {date}",
+    "neverSignedIn": "never signed in",
+    "noFollowUps": "No follow-ups due.",
+    "growthTitle": "Average growth (θ)",
+    "growthSummary": "Average ability growth in supported classes compared with the whole school.",
+    "supervisionTitle": "Supervision",
+    "supervisionIntro": "Who supervises whom, when they were last active, and coaching activity.",
+    "noSupervision": "No supervision links yet.",
+    "linkKind": {
+      "line": "line",
+      "academic": "academic",
+      "coaching": "coaching"
+    },
+    "coachingActivity": "Coaching activity",
+    "noCoaching": "No coaching logs yet.",
+    "coachingKind": {
+      "observation": "observation",
+      "walkthrough": "walkthrough",
+      "meeting": "meeting"
+    },
+    "followUp": "follow-up {date}",
+    "dbSize": "Database size",
+    "emailsToday": "Emails sent today",
+    "driveCalls": "{n} Google Drive calls today",
+    "people": "{students} students · {staff} staff",
+    "activeItems": "Active questions",
+    "calibratedItems": "Calibrated questions",
+    "lessonsNoPractice": "Lessons without practice",
+    "missingMedia": "Missing media files",
+    "calibrationNote": "Questions are calibrated once they have 200+ answers (npm run calibrate).",
+    "lessonsFourWeeks": "{n, plural, one {# lesson} other {# lessons}} finished in 4 weeks",
+    "myLevelOverTime": "My level over time"
+  },
+  "Coaching": {
+    "title": "Coaching log",
+    "intro": "Observations, walkthroughs and meetings with the teachers you support.",
+    "teacher": "Teacher",
+    "class": "Class (optional)",
+    "kind": "Type",
+    "date": "Date",
+    "kinds": {
+      "observation": "Observation",
+      "walkthrough": "Walkthrough",
+      "meeting": "Meeting"
+    },
+    "rubric": "Rubric (1–4)",
+    "level": {
+      "1": "Beginning",
+      "2": "Developing",
+      "3": "Proficient",
+      "4": "Exemplary"
+    },
+    "notes": "Notes",
+    "agreedActions": "Agreed actions",
+    "followUp": "Follow-up date",
+    "save": "Save",
+    "noTeachers": "No teachers are linked to you yet. Ask your principal to add you as their coach.",
+    "history": "My log",
+    "none": "No entries yet.",
+    "followUpOn": "Follow up {date}",
+    "markDone": "Done",
+    "status": {
+      "open": "Open",
+      "done": "Done"
+    }
   }
 }

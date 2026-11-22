@@ -7,10 +7,11 @@ const flag = (fallback: boolean) =>
     .default(fallback ? "true" : "false")
     .transform((v) => v === "true");
 
+// Values pasted into a hosting dashboard often carry a stray space or line break.
 const optionalString = z
   .string()
   .optional()
-  .transform((v) => (v === "" ? undefined : v));
+  .transform((v) => (v?.trim() ? v.trim() : undefined));
 
 /** Variables that may reach the browser (NEXT_PUBLIC_*). */
 export const publicEnvSchema = z.object({

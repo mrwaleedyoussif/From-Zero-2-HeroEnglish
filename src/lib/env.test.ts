@@ -20,6 +20,16 @@ describe("env schema", () => {
     expect(env.DEFAULT_TIMEZONE).toBe("Asia/Riyadh");
   });
 
+  it("trims pasted values and treats blank ones as unset", () => {
+    const env = parseEnv(serverEnvSchema, {
+      ...valid,
+      GOOGLE_OAUTH_CLIENT_ID: "  id.apps.googleusercontent.com\n",
+      GOOGLE_OAUTH_CLIENT_SECRET: " \n",
+    });
+    expect(env.GOOGLE_OAUTH_CLIENT_ID).toBe("id.apps.googleusercontent.com");
+    expect(env.GOOGLE_OAUTH_CLIENT_SECRET).toBeUndefined();
+  });
+
   it("parses boolean flags from strings", () => {
     const env = parseEnv(serverEnvSchema, {
       ...valid,

@@ -1,34 +1,9 @@
 import "server-only";
-import {
-  Document,
-  type DocumentProps,
-  Font,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
-import { ArabicShaper } from "arabic-persian-reshaper";
+import { Document, type DocumentProps, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
+import { fontFor as baseFont, shape } from "@/lib/pdf/arabic";
 
-// Arabic-capable font (OFL) for names and the Arabic line; Latin text uses the built-in Helvetica.
-Font.register({
-  family: "NotoNaskhArabic",
-  fonts: [
-    {
-      src: "https://fonts.gstatic.com/s/notonaskharabic/v44/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwvc5krA.ttf",
-    },
-    {
-      src: "https://fonts.gstatic.com/s/notonaskharabic/v44/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwWslkrA.ttf",
-      fontWeight: 700,
-    },
-  ],
-});
-
-const ARABIC = /[؀-ۿ]/;
-const fontFor = (text: string) => (ARABIC.test(text) ? "NotoNaskhArabic" : "Helvetica-Bold");
-/** react-pdf doesn't join Arabic letters: convert to presentation forms before drawing. */
-const shape = (text: string) => (ARABIC.test(text) ? ArabicShaper.convertArabic(text) : text);
+const fontFor = (text: string) => baseFont(text, "Helvetica-Bold");
 
 // Staff palette (SPEC §16): navy primary, amber accent for rewards.
 const s = StyleSheet.create({

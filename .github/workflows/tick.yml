@@ -1,0 +1,29 @@
+# Free scheduler (SPEC §12): call the app's tick every 15 minutes. Vercel Cron (vercel.json)
+# also calls it once a day. Needs repository settings:
+#   Variables → APP_URL (e.g. https://linguapath.vercel.app) · Secrets → CRON_SECRET
+name: Scheduler tick
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: tick
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    if: vars.APP_URL != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: POST /api/cron/tick
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 90 -X POST "$APP_URL/api/cron/tick" \
+            -H "Authorization: Bearer $CRON_SECRET" -H "x-tick-source: github"

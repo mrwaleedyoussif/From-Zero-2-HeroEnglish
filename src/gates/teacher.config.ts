@@ -17,6 +17,7 @@ export const teacherGate = defineGate({
     },
     { key: "nav.teacher.groups", href: "/teacher/groups", permission: "students:edit" },
     { key: "nav.teacher.rewards", href: "/teacher/rewards", permission: "rewards:grant" },
+    { key: "nav.teacher.reports", href: "/teacher/reports", permission: "reports:view" },
     {
       key: "nav.teacher.placement",
       href: "/teacher/placement",

@@ -409,7 +409,8 @@
       "coach": {
         "home": "نظرة عامة",
         "coachingLog": "سجل التدريب",
-        "insights": "التحليلات"
+        "insights": "التحليلات",
+        "reports": "التقارير"
       },
       "teacher": {
         "home": "فصولي",
@@ -418,7 +419,8 @@
         "groups": "المجموعات والفرق",
         "placement": "نتائج تحديد المستوى",
         "rewards": "المكافآت",
-        "insights": "التحليلات"
+        "insights": "التحليلات",
+        "reports": "التقارير"
       },
       "student": {
         "home": "الرئيسية",
@@ -454,7 +456,8 @@
       "coach": {
         "home": "نظرة عامة",
         "coachingLog": "سجل التدريب",
-        "insights": "التحليلات"
+        "insights": "التحليلات",
+        "reports": "التقارير"
       },
       "teacher": {
         "home": "فصولي",
@@ -463,7 +466,8 @@
         "groups": "المجموعات والفرق",
         "placement": "نتائج تحديد المستوى",
         "rewards": "المكافآت",
-        "insights": "التحليلات"
+        "insights": "التحليلات",
+        "reports": "التقارير"
       },
       "student": {
         "home": "الرئيسية",
@@ -1254,5 +1258,120 @@
       "open": "مفتوح",
       "done": "منجز"
     }
+  },
+  "Reports": {
+    "period": {
+      "weekly": "الأسبوعي",
+      "monthly": "الشهري"
+    },
+    "mail": {
+      "subject": "التقرير {period} — أسبوع {start}",
+      "preview": "التقرير {period} من {start}",
+      "title": "تقريرك {period} من LinguaPath",
+      "hello": "مرحبًا {name}،",
+      "range": "{school} · من {start} إلى {end}",
+      "classes": "فصول",
+      "students": "طلاب",
+      "active": "نشطون هذا الأسبوع",
+      "lessons": "دروس منجزة",
+      "atRisk": "متعلمون يحتاجون متابعة",
+      "followUps": "متابعات تدريب مستحقة",
+      "nextWeek": "مقترح للأسبوع القادم",
+      "open": "افتح التقرير الكامل",
+      "footer": "تصلك هذه الرسالة بسبب دورك. يمكنك إيقاف رسائل التقارير من صفحة التقارير."
+    },
+    "suggestion": {
+      "contactAtRisk": "تواصل مع {n} متعلمين يحتاجون متابعة.",
+      "remindAssignments": "ذكّر فصل {cls} بالواجبات غير المنجزة.",
+      "practiceSkill": "امنح فصل {cls} تدريبًا إضافيًا في {skill}.",
+      "followUps": "{n} متابعات تدريب مستحقة.",
+      "checkInTeachers": "{n} معلمين لم يسندوا عملًا هذه الفترة — قد تفيد متابعة سريعة."
+    },
+    "section": {
+      "classes": "الفصول",
+      "improvers": "الأكثر تحسنًا",
+      "atRisk": "متعلمون يحتاجون متابعة",
+      "assignments": "إنجاز الواجبات",
+      "skillGaps": "فجوات المهارات",
+      "teachers": "المعلمون الذين تدعمهم",
+      "followUps": "متابعات التدريب المستحقة",
+      "cefr": "توزيع مستويات CEFR",
+      "coaching": "نشاط التدريب",
+      "suggestions": "مقترح للأسبوع القادم"
+    },
+    "col": {
+      "class": "الفصل",
+      "students": "الطلاب",
+      "active": "النشطون",
+      "lessons": "الدروس",
+      "accuracy": "الدقة",
+      "atRisk": "معرّضون للخطر",
+      "overdue": "متأخر",
+      "growth": "النمو",
+      "name": "الاسم",
+      "gain": "التحسن (θ)",
+      "flags": "السبب",
+      "assigned": "المسند",
+      "done": "المنجز",
+      "skill": "المهارة",
+      "theta": "المستوى (θ)",
+      "teacher": "المعلم",
+      "assignments": "الواجبات",
+      "kudos": "الإشادات",
+      "lastSignIn": "آخر دخول",
+      "date": "التاريخ",
+      "coach": "المدرب",
+      "level": "المستوى",
+      "change": "التغير"
+    },
+    "flag": {
+      "inactive": "غير نشط 7+ أيام",
+      "falling": "دقة متراجعة",
+      "overdue": "واجبات متأخرة"
+    },
+    "pdfTitle": "التقرير {period}",
+    "range": "{school} · من {start} إلى {end}",
+    "empty": "لا توجد بيانات ضمن نطاقك لهذه الفترة.",
+    "title": "التقارير",
+    "intro": "تقاريرك الأسبوعية والشهرية. البريد ملخص قصير، والتقرير الكامل هنا.",
+    "ownerIntro": "حالة المجدول، وحد الرسائل، وكل التقارير.",
+    "archive": "الأرشيف",
+    "noReports": "لا توجد تقارير بعد. يصل أول تقرير مع بداية الأسبوع الدراسي.",
+    "rowTitle": "التقرير {period} · {start} – {end}",
+    "forYou": "لك",
+    "emailed": "أُرسل بالبريد",
+    "inDrive": "محفوظ في Drive",
+    "preferences": "إعدادات تقاريري",
+    "pref": {
+      "weekly": "التقرير الأسبوعي",
+      "monthly": "التقرير الشهري",
+      "email": "أرسل لي الملخص بالبريد"
+    },
+    "save": "حفظ",
+    "forPerson": "إلى {name} · أُنشئ {date}",
+    "back": "رجوع",
+    "print": "طباعة / حفظ PDF",
+    "pdfLink": "تنزيل ملف PDF (نسخة Drive)",
+    "scheduler": "المجدول",
+    "runNow": "شغّل دورة الآن",
+    "emailsToday": "الرسائل المرسلة اليوم: {n} من {budget}",
+    "deferredCount": "{n} بانتظار الغد (الحد اليومي)",
+    "job": "المهمة",
+    "status": "الحالة",
+    "kind": {
+      "report": "إنشاء تقرير",
+      "email": "رسالة الملخص",
+      "pdf": "PDF إلى Drive",
+      "archive_responses": "أرشفة الإجابات القديمة",
+      "refresh_insights": "تحديث لوحات المعلومات"
+    },
+    "jobStatus": {
+      "queued": "بالانتظار",
+      "running": "قيد التشغيل",
+      "done": "منجز",
+      "failed": "فشل"
+    },
+    "recentTicks": "أحدث الدورات",
+    "tickSummary": "مخطط {planned}، منجز {processed}، فشل {failed}، مؤجل {deferred}"
   }
 }

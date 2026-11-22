@@ -1,5 +1,5 @@
 import { createReadStream } from "node:fs";
-import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, unlink, writeFile } from "node:fs/promises";
 import { extname, join, normalize, relative, sep } from "node:path";
 import { Readable } from "node:stream";
 import Papa from "papaparse";
@@ -142,6 +142,9 @@ export function createFakeStorage(rootDir: string): StorageAdapter {
       const made = await describe(full);
       if (!made) throw new StorageNotFoundError(name);
       return made;
+    },
+    async remove(fileId) {
+      await unlink(toPath(fileId));
     },
   };
   return adapter;

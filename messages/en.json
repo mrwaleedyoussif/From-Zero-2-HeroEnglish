@@ -409,7 +409,8 @@
       "coach": {
         "home": "Overview",
         "coachingLog": "Coaching log",
-        "insights": "Insights"
+        "insights": "Insights",
+        "reports": "Reports"
       },
       "teacher": {
         "home": "My classes",
@@ -418,7 +419,8 @@
         "groups": "Groups & teams",
         "placement": "Placement results",
         "rewards": "Rewards",
-        "insights": "Insights"
+        "insights": "Insights",
+        "reports": "Reports"
       },
       "student": {
         "home": "Home",
@@ -454,7 +456,8 @@
       "coach": {
         "home": "Overview",
         "coachingLog": "Coaching log",
-        "insights": "Insights"
+        "insights": "Insights",
+        "reports": "Reports"
       },
       "teacher": {
         "home": "My classes",
@@ -463,7 +466,8 @@
         "groups": "Groups & teams",
         "placement": "Placement results",
         "rewards": "Rewards",
-        "insights": "Insights"
+        "insights": "Insights",
+        "reports": "Reports"
       },
       "student": {
         "home": "Home",
@@ -1254,5 +1258,120 @@
       "open": "Open",
       "done": "Done"
     }
+  },
+  "Reports": {
+    "period": {
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "mail": {
+      "subject": "{period} report — week of {start}",
+      "preview": "{period} report from {start}",
+      "title": "Your {period} LinguaPath report",
+      "hello": "Hello {name},",
+      "range": "{school} · {start} to {end}",
+      "classes": "classes",
+      "students": "students",
+      "active": "active this week",
+      "lessons": "lessons finished",
+      "atRisk": "learners needing attention",
+      "followUps": "coaching follow-ups due",
+      "nextWeek": "Suggested for next week",
+      "open": "Open the full report",
+      "footer": "You get this because of your role. You can turn report emails off on the Reports page."
+    },
+    "suggestion": {
+      "contactAtRisk": "Check in with {n} learners who need attention.",
+      "remindAssignments": "Remind class {cls} about unfinished assignments.",
+      "practiceSkill": "Give class {cls} extra practice in {skill}.",
+      "followUps": "{n} coaching follow-ups are due.",
+      "checkInTeachers": "{n} teachers set no work this period — a quick check-in may help."
+    },
+    "section": {
+      "classes": "Classes",
+      "improvers": "Top improvers",
+      "atRisk": "Learners needing attention",
+      "assignments": "Assignment completion",
+      "skillGaps": "Skill gaps",
+      "teachers": "Teachers you support",
+      "followUps": "Coaching follow-ups due",
+      "cefr": "CEFR distribution",
+      "coaching": "Coaching activity",
+      "suggestions": "Suggested for next week"
+    },
+    "col": {
+      "class": "Class",
+      "students": "Students",
+      "active": "Active",
+      "lessons": "Lessons",
+      "accuracy": "Accuracy",
+      "atRisk": "At risk",
+      "overdue": "Overdue",
+      "growth": "Growth",
+      "name": "Name",
+      "gain": "Gain (θ)",
+      "flags": "Why",
+      "assigned": "Assigned",
+      "done": "Done",
+      "skill": "Skill",
+      "theta": "Level (θ)",
+      "teacher": "Teacher",
+      "assignments": "Assignments",
+      "kudos": "Kudos",
+      "lastSignIn": "Last sign-in",
+      "date": "Date",
+      "coach": "Coach",
+      "level": "Level",
+      "change": "Change"
+    },
+    "flag": {
+      "inactive": "inactive 7+ days",
+      "falling": "accuracy falling",
+      "overdue": "overdue work"
+    },
+    "pdfTitle": "{period} report",
+    "range": "{school} · {start} to {end}",
+    "empty": "No data in your scope for this period.",
+    "title": "Reports",
+    "intro": "Your weekly and monthly reports. The email is a short summary; the full report is here.",
+    "ownerIntro": "Scheduler health, email budget, and every report.",
+    "archive": "Archive",
+    "noReports": "No reports yet. The first one arrives at the start of the school week.",
+    "rowTitle": "{period} report · {start} – {end}",
+    "forYou": "for you",
+    "emailed": "emailed",
+    "inDrive": "saved to Drive",
+    "preferences": "My report settings",
+    "pref": {
+      "weekly": "Weekly report",
+      "monthly": "Monthly report",
+      "email": "Send me the email summary"
+    },
+    "save": "Save",
+    "forPerson": "For {name} · created {date}",
+    "back": "Back",
+    "print": "Print / save as PDF",
+    "pdfLink": "Download the PDF (Drive copy)",
+    "scheduler": "Scheduler",
+    "runNow": "Run a tick now",
+    "emailsToday": "Emails sent today: {n} of {budget}",
+    "deferredCount": "{n} waiting for tomorrow (budget)",
+    "job": "Job",
+    "status": "Status",
+    "kind": {
+      "report": "Build report",
+      "email": "Digest email",
+      "pdf": "PDF to Drive",
+      "archive_responses": "Archive old answers",
+      "refresh_insights": "Refresh dashboards"
+    },
+    "jobStatus": {
+      "queued": "waiting",
+      "running": "running",
+      "done": "done",
+      "failed": "failed"
+    },
+    "recentTicks": "Recent ticks",
+    "tickSummary": "planned {planned}, done {processed}, failed {failed}, deferred {deferred}"
   }
 }

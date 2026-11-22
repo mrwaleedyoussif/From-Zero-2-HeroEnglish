@@ -77,7 +77,7 @@ export const registry = [
     "teacher.insights",
     "owner.insights",
   ]),
-  ...pages(8, ["owner.reports", "leadership.reports"]),
+  ...pages(8, ["owner.reports", "leadership.reports", "teacher.reports", "coach.reports"]),
 
   ...group("widget", 2, ["owner.schools", "owner.auditLog"]),
   ...group("widget", 4, ["student.placementCta"]),

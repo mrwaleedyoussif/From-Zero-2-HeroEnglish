@@ -40,6 +40,8 @@ export interface StorageAdapter {
   /** File bytes, optionally a byte range ("bytes=0-1023"). */
   stream(fileId: string, range?: string | null): Promise<FileStream>;
   upload(parentId: string, name: string, mimeType: string, body: Uint8Array): Promise<DriveFile>;
+  /** Move a file to the Drive trash (backup retention). */
+  remove(fileId: string): Promise<void>;
 }
 
 export class StorageNotConnectedError extends Error {

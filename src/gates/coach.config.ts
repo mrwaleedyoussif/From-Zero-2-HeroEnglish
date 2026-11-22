@@ -10,6 +10,7 @@ export const coachGate = defineGate({
     { key: "nav.coach.home", href: "/coach" },
     { key: "nav.coach.insights", href: "/coach/insights", permission: "supervision:view" },
     { key: "nav.coach.coachingLog", href: "/coach/coaching-log", permission: "coaching:log" },
+    { key: "nav.coach.reports", href: "/coach/reports", permission: "reports:view" },
   ],
   homeWidgets: [
     "widget.coach.supportedTeachers",

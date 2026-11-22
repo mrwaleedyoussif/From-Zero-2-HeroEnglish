@@ -16,6 +16,7 @@ import {
   LeadershipSupervisionWidget,
   LeadershipTeacherUsageWidget,
 } from "./leadership-people";
+import { LeadershipReportArchiveWidget } from "./leadership-reports";
 import { OwnerAuditLogWidget } from "./owner-audit-log";
 import { OwnerBudgetWidget, OwnerContentHealthWidget } from "./owner-health";
 import { OwnerSchoolsWidget } from "./owner-schools";
@@ -58,6 +59,7 @@ export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
   "widget.leadership.teacherUsage": LeadershipTeacherUsageWidget,
   "widget.leadership.interventionList": LeadershipInterventionWidget,
   "widget.leadership.supervisionTree": LeadershipSupervisionWidget,
+  "widget.leadership.reportArchive": LeadershipReportArchiveWidget,
   "widget.coach.supportedTeachers": CoachSupportedTeachersWidget,
   "widget.coach.coachingFollowUps": CoachFollowUpsWidget,
   "widget.coach.growthVsSchool": CoachGrowthWidget,

@@ -153,6 +153,10 @@ export function createGoogleStorage(creds: GoogleCredentials): StorageAdapter {
       );
       return toFile(res.data);
     },
+    async remove(fileId) {
+      // Trash, not delete: the Owner can still restore it from Drive for 30 days.
+      await withBackoff(() => drive.files.update({ fileId, requestBody: { trashed: true } }));
+    },
   };
   return adapter;
 }

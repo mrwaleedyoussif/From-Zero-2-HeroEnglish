@@ -397,6 +397,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"cron_runs": {
+                  Row: {
+                    "deferred": number,"failed": number,"finished_at": string | null,"id": string,"planned": number,"processed": number,"source": string,"started_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "deferred"?: number,"failed"?: number,"finished_at"?: string | null,"id"?: string,"planned"?: number,"processed"?: number,"source": string,"started_at"?: string
+                  }
+                  Update: {
+                    "deferred"?: number,"failed"?: number,"finished_at"?: string | null,"id"?: string,"planned"?: number,"processed"?: number,"source"?: string,"started_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"cut_scores": {
                   Row: {
                     "cefr": string,"created_at": string,"department_id": string,"id": string,"max_theta": number,"min_theta": number,"updated_at": string
@@ -430,6 +444,32 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"email_log": {
+                  Row: {
+                    "created_at": string,"day": string,"id": string,"provider": string,"recipient_id": string | null,"report_id": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"day"?: string,"id"?: string,"provider": string,"recipient_id"?: string | null,"report_id"?: string | null,"status"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"day"?: string,"id"?: string,"provider"?: string,"recipient_id"?: string | null,"report_id"?: string | null,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "email_log_recipient_id_fkey"
+      columns: ["recipient_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "email_log_report_id_fkey"
+      columns: ["report_id"]
+isOneToOne: true
+      referencedRelation: "reports"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"enrolments": {
                   Row: {
@@ -1129,6 +1169,104 @@ isOneToOne: false
       referencedColumns: ["id"]
     },{
       foreignKeyName: "redemptions_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"report_jobs": {
+                  Row: {
+                    "attempts": number,"created_at": string,"dedupe_key": string,"deferrals": number,"id": string,"kind": string,"last_error": string | null,"locked_at": string | null,"period": string | null,"period_start": string | null,"priority": number,"recipient_id": string | null,"report_id": string | null,"run_after": string,"school_id": string | null,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "attempts"?: number,"created_at"?: string,"dedupe_key": string,"deferrals"?: number,"id"?: string,"kind": string,"last_error"?: string | null,"locked_at"?: string | null,"period"?: string | null,"period_start"?: string | null,"priority"?: number,"recipient_id"?: string | null,"report_id"?: string | null,"run_after"?: string,"school_id"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "attempts"?: number,"created_at"?: string,"dedupe_key"?: string,"deferrals"?: number,"id"?: string,"kind"?: string,"last_error"?: string | null,"locked_at"?: string | null,"period"?: string | null,"period_start"?: string | null,"priority"?: number,"recipient_id"?: string | null,"report_id"?: string | null,"run_after"?: string,"school_id"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "report_jobs_recipient_id_fkey"
+      columns: ["recipient_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "report_jobs_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"report_preferences": {
+                  Row: {
+                    "email": boolean,"monthly": boolean,"updated_at": string,"user_id": string,"weekly": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "email"?: boolean,"monthly"?: boolean,"updated_at"?: string,"user_id": string,"weekly"?: boolean
+                  }
+                  Update: {
+                    "email"?: boolean,"monthly"?: boolean,"updated_at"?: string,"user_id"?: string,"weekly"?: boolean
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "report_preferences_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"reports": {
+                  Row: {
+                    "created_at": string,"data": NonNullable<Json>,"drive_file_id": string | null,"emailed_at": string | null,"id": string,"period": string,"period_end": string,"period_start": string,"recipient_id": string,"school_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"data": NonNullable<Json>,"drive_file_id"?: string | null,"emailed_at"?: string | null,"id"?: string,"period": string,"period_end": string,"period_start": string,"recipient_id": string,"school_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"data"?: NonNullable<Json>,"drive_file_id"?: string | null,"emailed_at"?: string | null,"id"?: string,"period"?: string,"period_end"?: string,"period_start"?: string,"recipient_id"?: string,"school_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "reports_recipient_id_fkey"
+      columns: ["recipient_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reports_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"response_aggregates": {
+                  Row: {
+                    "answered": number,"correct": number,"month": string,"skill_id": string,"student_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answered": number,"correct": number,"month": string,"skill_id": string,"student_id": string
+                  }
+                  Update: {
+                    "answered"?: number,"correct"?: number,"month"?: string,"skill_id"?: string,"student_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "response_aggregates_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "response_aggregates_student_id_fkey"
       columns: ["student_id"]
 isOneToOne: false
       referencedRelation: "profiles"
@@ -1888,6 +2026,32 @@ isOneToOne: false
 "can_user_on":
 { Args: { "p_actor": string,"p_class": string,"p_grade": string,"p_perm": string,"p_school": string,"p_user": string }; Returns: boolean
                            },
+"claim_jobs":
+{ Args: { "p_n": number }; Returns: {
+              "attempts": number,
+"created_at": string,
+"dedupe_key": string,
+"deferrals": number,
+"id": string,
+"kind": string,
+"last_error": string | null,
+"locked_at": string | null,
+"period": string | null,
+"period_start": string | null,
+"priority": number,
+"recipient_id": string | null,
+"report_id": string | null,
+"run_after": string,
+"school_id": string | null,
+"status": string,
+"updated_at": string
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "report_jobs"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
 "class_cefr":
 { Args: { "p_school"?: string }; Returns: {
               "cefr": string,"class_id": string,"n": number
@@ -1905,6 +2069,11 @@ isOneToOne: false
                            },
 "class_stats":
 { Args: { "p_school"?: string }; Returns: {
+              "accuracy_7d": number,"active_7d": number,"at_risk": number,"avg_growth": number,"avg_theta": number,"class_code": string,"class_id": string,"grade_code": string,"grade_id": string,"grade_name_ar": string,"grade_name_en": string,"lessons_7d": number,"overdue": number,"school_id": string,"students": number,"xp_7d": number
+            }[]
+                           },
+"class_stats_for":
+{ Args: { "p_school": string,"p_user": string }; Returns: {
               "accuracy_7d": number,"active_7d": number,"at_risk": number,"avg_growth": number,"avg_theta": number,"class_code": string,"class_id": string,"grade_code": string,"grade_id": string,"grade_name_ar": string,"grade_name_en": string,"lessons_7d": number,"overdue": number,"school_id": string,"students": number,"xp_7d": number
             }[]
                            },
@@ -1929,6 +2098,11 @@ isOneToOne: false
 "refresh_insights":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"report_recipients":
+{ Args: { "p_period": string,"p_school": string }; Returns: {
+              "email": string,"full_name": string,"locale": string,"priority": number,"user_id": string
+            }[]
+                           },
 "school_averages":
 { Args: { "p_school": string }; Returns: {
               "accuracy_7d": number,"active_7d": number,"avg_growth": number,"lessons_7d": number,"students": number
@@ -1945,6 +2119,9 @@ isOneToOne: false
               "class_id": string,"grade_id": string,"school_id": string,"user_id": string
             }[]
                            },
+"sees_class":
+{ Args: { "p_class": string,"p_user": string }; Returns: boolean
+                           },
 "staff_last_seen":
 { Args: { "p_school": string }; Returns: {
               "last_sign_in_at": string,"user_id": string
@@ -1952,6 +2129,11 @@ isOneToOne: false
                            },
 "student_stats":
 { Args: { "p_class": string }; Returns: {
+              "accuracy_7d": number,"accuracy_prev": number,"active_days_7d": number,"cefr_now": string,"full_name": string,"last_active_at": string,"lessons_7d": number,"overdue": number,"student_id": string,"theta_first": number,"theta_now": number,"xp_7d": number
+            }[]
+                           },
+"student_stats_for":
+{ Args: { "p_class": string,"p_user": string }; Returns: {
               "accuracy_7d": number,"accuracy_prev": number,"active_days_7d": number,"cefr_now": string,"full_name": string,"last_active_at": string,"lessons_7d": number,"overdue": number,"student_id": string,"theta_first": number,"theta_now": number,"xp_7d": number
             }[]
                            },

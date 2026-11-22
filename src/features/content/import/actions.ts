@@ -77,6 +77,7 @@ export async function previewContentSync(): Promise<ActionResult<PreviewResult>>
         Questions: pick("Questions"),
         Lessons: pick("Lessons"),
         CutScores: pick("CutScores"),
+        Badges: pick("Badges"),
       },
       changedQuestions:
         preview.sheets.find((s) => s.name === "Questions")?.changed.map((c) => c.key) ?? [],

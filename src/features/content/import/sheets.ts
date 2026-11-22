@@ -17,6 +17,7 @@ import {
   req,
   STATUSES,
 } from "./fields";
+import { type BadgeRow, badgeRow } from "./badges-sheet";
 
 /** Content sheets in Drive /LinguaPath/01_Content, in import order (docs/DATA_TEMPLATES.md). */
 const ITEM_TYPES = [
@@ -175,6 +176,7 @@ export const SHEETS = [
     schema: cutScoreRow,
     key: (r: z.infer<typeof cutScoreRow>) => `${r.department_id}/${r.cefr}`,
   },
+  { name: "Badges", schema: badgeRow, key: (r: BadgeRow) => r.badge_id },
 ] as const;
 
 export type SheetName = (typeof SHEETS)[number]["name"];
@@ -192,4 +194,5 @@ export interface SheetRows {
   Questions: QuestionRow[];
   Lessons: LessonRow[];
   CutScores: CutScoreRow[];
+  Badges: BadgeRow[];
 }

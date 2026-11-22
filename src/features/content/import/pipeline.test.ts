@@ -45,7 +45,16 @@ describe("content import preview on the DATA_TEMPLATES samples", () => {
       Questions: 6,
       Lessons: 4,
       CutScores: 7,
+      Badges: 4,
     });
+  });
+
+  it("rejects a badge whose rule is not valid JSON rule data", () => {
+    const raw = sampleSheets();
+    setCell(raw, "Badges", 2, "rule_json", '{"event":"flying"}');
+    expect(buildPreview(raw, emptyExisting(), MEDIA).issues).toMatchObject([
+      { sheet: "Badges", column: "rule_json", code: "badRule" },
+    ]);
   });
 
   it("reports unchanged rows on a second sync and exactly which columns changed", () => {

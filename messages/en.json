@@ -92,7 +92,9 @@
     "testClosed": "This test has ended.",
     "notCurrentItem": "That question is no longer current. The page will refresh.",
     "alreadyAnswered": "This question was already answered.",
-    "teamsExist": "This class already has teams. Delete them first to make new ones."
+    "teamsExist": "This class already has teams. Delete them first to make new ones.",
+    "notEnoughCoins": "You don't have enough coins for that yet.",
+    "kudosCap": "That's the most kudos this student can get today."
   },
   "Done": {
     "saved": "Saved",
@@ -100,7 +102,10 @@
     "removed": "Removed",
     "retakeGranted": "Retake allowed",
     "windowOpened": "Progress check opened",
-    "assigned": "Assigned"
+    "assigned": "Assigned",
+    "requested": "Request sent to your teacher",
+    "redeemed": "It's yours!",
+    "kudosSent": "Kudos sent"
   },
   "Scopes": {
     "platform": "Whole platform",
@@ -391,7 +396,8 @@
         "plans": "Plans",
         "content": "Content",
         "reports": "Reports",
-        "integrations": "Integrations"
+        "integrations": "Integrations",
+        "rewards": "Rewards"
       },
       "leadership": {
         "home": "Overview",
@@ -407,7 +413,8 @@
         "library": "Lesson library",
         "assignments": "Assignments",
         "groups": "Groups & teams",
-        "placement": "Placement results"
+        "placement": "Placement results",
+        "rewards": "Rewards"
       },
       "student": {
         "home": "Home",
@@ -430,7 +437,8 @@
         "plans": "Plans",
         "content": "Content",
         "reports": "Reports",
-        "integrations": "Integrations"
+        "integrations": "Integrations",
+        "rewards": "Rewards"
       },
       "leadership": {
         "home": "Overview",
@@ -446,7 +454,8 @@
         "library": "Lesson library",
         "assignments": "Assignments",
         "groups": "Groups & teams",
-        "placement": "Placement results"
+        "placement": "Placement results",
+        "rewards": "Rewards"
       },
       "student": {
         "home": "Home",
@@ -721,7 +730,8 @@
     "unknownPassage": "Passage {value} does not exist (check the Passages sheet).",
     "unknownItem": "Question {value} does not exist or has an error.",
     "unknownLesson": "Lesson {value} does not exist.",
-    "applyFailed": "Saving failed."
+    "applyFailed": "Saving failed.",
+    "badRule": "Not a valid badge rule. See the Badges example in the data templates."
   },
   "Library": {
     "title": "Lesson library",
@@ -976,7 +986,125 @@
     "due_soon": "Due soon: {title}",
     "badge": "You earned a badge!",
     "report": "A report is ready",
-    "kudos": "Your teacher sent you kudos!",
-    "due": "due {date}"
+    "kudos": "Kudos from {from}! 👏",
+    "due": "due {date}",
+    "level_up": "Level up! You are now a {name} 🚀",
+    "redemption": "{approved, select, yes {Your reward request was approved} other {Your reward request was declined; coins returned}}"
+  },
+  "Rewards": {
+    "title": "My rewards",
+    "intro": "Earn XP and coins by learning. Every lesson counts!",
+    "toNext": "Progress to the next level",
+    "xpToNext": "{xp} XP · {next} XP for {name}",
+    "xpTop": "{xp} XP · top level!",
+    "coins": "{n} coins",
+    "coinsHelp": "Spend them in the shop below.",
+    "streak": "{n, plural, =0 {No streak yet} one {# day streak} other {# day streak}}",
+    "longest": "Longest: {n}",
+    "freezeUsed": "Freeze used this week",
+    "freezeReady": "1 freeze ready this week",
+    "badges": "Badges",
+    "noBadges": "No badges yet.",
+    "earned": "Earned",
+    "notYet": "Not earned yet",
+    "classBoard": "This week in {cls}",
+    "teamBoard": "Team points this week",
+    "boardOff": "The leaderboard is switched off for your class.",
+    "boardEmpty": "No points yet this week. Be the first!",
+    "xpShort": "{n} XP",
+    "myRank": "You are #{rank} with {n} XP",
+    "keepGoing": "You have {n} XP this week. Keep going!",
+    "shop": "Shop",
+    "cost": "{n} coins",
+    "needsTeacher": "your teacher approves",
+    "instant": "instant",
+    "redeem": "Get it",
+    "myRequests": "My rewards",
+    "redemption": {
+      "requested": "waiting for teacher",
+      "approved": "approved",
+      "rejected": "declined"
+    },
+    "certificates": "Certificates",
+    "noCertificates": "Reach a new level to get your first certificate.",
+    "certLevel": "Level {level} certificate",
+    "certCefr": "CEFR {cefr} — {dept}",
+    "firstBadge": "Finish a lesson to earn your first badge!",
+    "seeAll": "See all",
+    "earnedNow": "+{xp} XP · +{coins} coins",
+    "newBadges": "{count, plural, one {New badge!} other {# new badges!}}",
+    "levelUp": "Level up! You are now a {name}"
+  },
+  "TeacherRewards": {
+    "title": "Rewards",
+    "intro": "Leaderboards, kudos, team challenges and reward requests.",
+    "noClasses": "You don't have a class to manage yet.",
+    "leaderboard": "Leaderboard — {cls}",
+    "boardIsOn": "Students can see the class and team leaderboards.",
+    "boardIsOff": "The leaderboards are hidden from students.",
+    "turnOff": "Switch off",
+    "turnOn": "Switch on",
+    "thisWeek": "This week",
+    "teams": "Teams (improvement points)",
+    "requests": "Reward requests",
+    "noRequests": "No requests waiting.",
+    "cost": "{n} coins",
+    "approve": "Approve",
+    "reject": "Decline",
+    "teamPoints": "Team challenge points",
+    "teamPointsHelp": "For RallyCoach, Numbered Heads and other team tasks. Every member also gets XP.",
+    "points": "Points",
+    "reason": "What for",
+    "reasonExample": "Numbered Heads quiz",
+    "give": "Give",
+    "kudosTitle": "Kudos",
+    "kudos": "Kudos",
+    "kudosFor": "Give kudos to {name}"
+  },
+  "OwnerRewards": {
+    "title": "Rewards",
+    "intro": "XP rules, levels and shop items for every school. Changes apply to new activity.",
+    "rules": "XP rules",
+    "rulesHelp": "Minimum time and accuracy stop quick guessing; the daily cap limits XP per activity type.",
+    "event": {
+      "lesson_completed": "Lesson completed",
+      "practice_accuracy": "Practice accuracy bonus",
+      "assignment_on_time": "Assignment on time",
+      "placement_completed": "Placement test completed",
+      "progress_completed": "Progress check completed",
+      "streak_day": "Streak day",
+      "kudos": "Teacher kudos",
+      "team_challenge": "Team challenge"
+    },
+    "xp": "XP",
+    "coins": "Coins",
+    "minSeconds": "Min. seconds",
+    "minAccuracy": "Min. accuracy %",
+    "dailyCap": "Daily XP cap",
+    "scaleLabel": "Scale by",
+    "scale": {
+      "none": "Nothing",
+      "level": "Lesson level",
+      "accuracy": "Accuracy"
+    },
+    "active": "On",
+    "save": "Save",
+    "levels": "Levels",
+    "level": "Level",
+    "nameEn": "Name (English)",
+    "nameAr": "Name (Arabic)",
+    "xpRequired": "XP needed",
+    "shop": "Shop items (all schools)",
+    "shopHelp": "Cosmetic items are instant; real rewards need a teacher's approval.",
+    "kind": {
+      "cosmetic": "Cosmetic",
+      "real": "Real reward"
+    },
+    "retire": "Remove",
+    "code": "Code",
+    "emoji": "Emoji",
+    "kindLabel": "Type",
+    "cost": "Cost",
+    "add": "Add"
   }
 }

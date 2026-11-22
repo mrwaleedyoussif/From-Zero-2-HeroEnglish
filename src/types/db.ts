@@ -211,6 +211,90 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"badges": {
+                  Row: {
+                    "code": string,"created_at": string,"description": string | null,"icon_file": string | null,"id": string,"media_asset_id": string | null,"name_ar": string,"name_en": string,"rule": NonNullable<Json>,"status": string,"updated_at": string,"xp_bonus": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"created_at"?: string,"description"?: string | null,"icon_file"?: string | null,"id"?: string,"media_asset_id"?: string | null,"name_ar": string,"name_en": string,"rule": NonNullable<Json>,"status"?: string,"updated_at"?: string,"xp_bonus"?: number
+                  }
+                  Update: {
+                    "code"?: string,"created_at"?: string,"description"?: string | null,"icon_file"?: string | null,"id"?: string,"media_asset_id"?: string | null,"name_ar"?: string,"name_en"?: string,"rule"?: NonNullable<Json>,"status"?: string,"updated_at"?: string,"xp_bonus"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "badges_media_asset_id_fkey"
+      columns: ["media_asset_id"]
+isOneToOne: false
+      referencedRelation: "media_assets"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"certificates": {
+                  Row: {
+                    "department_id": string | null,"id": string,"issued_at": string,"kind": string,"school_id": string,"student_id": string,"value": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "department_id"?: string | null,"id"?: string,"issued_at"?: string,"kind": string,"school_id": string,"student_id": string,"value": string
+                  }
+                  Update: {
+                    "department_id"?: string | null,"id"?: string,"issued_at"?: string,"kind"?: string,"school_id"?: string,"student_id"?: string,"value"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "certificates_department_id_fkey"
+      columns: ["department_id"]
+isOneToOne: false
+      referencedRelation: "departments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "certificates_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "certificates_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"class_reward_settings": {
+                  Row: {
+                    "class_id": string,"created_at": string,"leaderboard_enabled": boolean,"school_id": string,"updated_at": string,"updated_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "class_id": string,"created_at"?: string,"leaderboard_enabled"?: boolean,"school_id": string,"updated_at"?: string,"updated_by"?: string | null
+                  }
+                  Update: {
+                    "class_id"?: string,"created_at"?: string,"leaderboard_enabled"?: boolean,"school_id"?: string,"updated_at"?: string,"updated_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "class_reward_settings_class_id_fkey"
+      columns: ["class_id"]
+isOneToOne: true
+      referencedRelation: "classes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "class_reward_settings_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "class_reward_settings_updated_by_fkey"
+      columns: ["updated_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"classes": {
                   Row: {
                     "code": string,"created_at": string,"grade_id": string,"id": string,"name": string | null,"school_id": string,"status": string,"updated_at": string,"year_id": string
@@ -240,6 +324,32 @@ isOneToOne: false
       columns: ["year_id"]
 isOneToOne: false
       referencedRelation: "academic_years"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"coin_ledger": {
+                  Row: {
+                    "created_at": string,"delta": number,"id": string,"reason": string,"ref_id": string | null,"school_id": string,"student_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"delta": number,"id"?: string,"reason": string,"ref_id"?: string | null,"school_id": string,"student_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"delta"?: number,"id"?: string,"reason"?: string,"ref_id"?: string | null,"school_id"?: string,"student_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "coin_ledger_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "coin_ledger_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -641,6 +751,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"levels": {
+                  Row: {
+                    "created_at": string,"level": number,"name_ar": string,"name_en": string,"updated_at": string,"xp_required": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"level": number,"name_ar": string,"name_en": string,"updated_at"?: string,"xp_required": number
+                  }
+                  Update: {
+                    "created_at"?: string,"level"?: number,"name_ar"?: string,"name_en"?: string,"updated_at"?: string,"xp_required"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"media_assets": {
                   Row: {
                     "created_at": string,"drive_file_id": string,"drive_modified_at": string | null,"file_name": string,"folder": string | null,"id": string,"last_seen_at": string,"mime_type": string,"size_bytes": number | null,"status": string,"updated_at": string
@@ -929,6 +1053,44 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"redemptions": {
+                  Row: {
+                    "cost": number,"created_at": string,"decided_at": string | null,"decided_by": string | null,"id": string,"item_id": string,"school_id": string,"status": string,"student_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cost": number,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"id"?: string,"item_id": string,"school_id": string,"status"?: string,"student_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "cost"?: number,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"id"?: string,"item_id"?: string,"school_id"?: string,"status"?: string,"student_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "redemptions_decided_by_fkey"
+      columns: ["decided_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "redemptions_item_id_fkey"
+      columns: ["item_id"]
+isOneToOne: false
+      referencedRelation: "reward_catalog"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "redemptions_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "redemptions_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"responses": {
                   Row: {
                     "answer": NonNullable<Json>,"b_used": number,"correct": boolean | null,"created_at": string,"id": string,"item_id": string,"item_version": number,"school_id": string,"se_after": number | null,"seq": number,"session_id": string,"skill_id": string,"student_id": string,"theta_after": number | null,"time_ms": number,"updated_at": string
@@ -972,6 +1134,40 @@ isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
+                  ]
+                },"reward_catalog": {
+                  Row: {
+                    "code": string,"cost": number,"created_at": string,"emoji": string | null,"id": string,"kind": string,"name_ar": string,"name_en": string,"needs_approval": boolean,"school_id": string | null,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"cost": number,"created_at"?: string,"emoji"?: string | null,"id"?: string,"kind": string,"name_ar": string,"name_en": string,"needs_approval"?: boolean,"school_id"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "code"?: string,"cost"?: number,"created_at"?: string,"emoji"?: string | null,"id"?: string,"kind"?: string,"name_ar"?: string,"name_en"?: string,"needs_approval"?: boolean,"school_id"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "reward_catalog_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"reward_rules": {
+                  Row: {
+                    "active": boolean,"coins": number,"created_at": string,"daily_cap": number | null,"event_type": string,"min_accuracy": number | null,"min_seconds": number | null,"scale": string,"updated_at": string,"xp": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"coins"?: number,"created_at"?: string,"daily_cap"?: number | null,"event_type": string,"min_accuracy"?: number | null,"min_seconds"?: number | null,"scale"?: string,"updated_at"?: string,"xp"?: number
+                  }
+                  Update: {
+                    "active"?: boolean,"coins"?: number,"created_at"?: string,"daily_cap"?: number | null,"event_type"?: string,"min_accuracy"?: number | null,"min_seconds"?: number | null,"scale"?: string,"updated_at"?: string,"xp"?: number
+                  }
+                  Relationships: [
+                    
                   ]
                 },"role_permissions": {
                   Row: {
@@ -1070,6 +1266,32 @@ isOneToOne: false
       columns: ["department_id"]
 isOneToOne: false
       referencedRelation: "departments"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"streaks": {
+                  Row: {
+                    "current": number,"freeze_week": string | null,"last_active_on": string | null,"longest": number,"school_id": string,"student_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "current"?: number,"freeze_week"?: string | null,"last_active_on"?: string | null,"longest"?: number,"school_id": string,"student_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "current"?: number,"freeze_week"?: string | null,"last_active_on"?: string | null,"longest"?: number,"school_id"?: string,"student_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "streaks_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "streaks_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -1253,6 +1475,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"team_xp": {
+                  Row: {
+                    "awarded_by": string | null,"created_at": string,"id": string,"points": number,"reason": string | null,"school_id": string,"team_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "awarded_by"?: string | null,"created_at"?: string,"id"?: string,"points": number,"reason"?: string | null,"school_id": string,"team_id": string
+                  }
+                  Update: {
+                    "awarded_by"?: string | null,"created_at"?: string,"id"?: string,"points"?: number,"reason"?: string | null,"school_id"?: string,"team_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "team_xp_awarded_by_fkey"
+      columns: ["awarded_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "team_xp_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "team_xp_team_id_fkey"
+      columns: ["team_id"]
+isOneToOne: false
+      referencedRelation: "teams"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"teams": {
                   Row: {
                     "class_id": string,"created_at": string,"created_by": string | null,"id": string,"name": string,"school_id": string,"updated_at": string
@@ -1349,6 +1603,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"user_badges": {
+                  Row: {
+                    "awarded_at": string,"badge_id": string,"school_id": string,"student_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "awarded_at"?: string,"badge_id": string,"school_id": string,"student_id": string
+                  }
+                  Update: {
+                    "awarded_at"?: string,"badge_id"?: string,"school_id"?: string,"student_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_badges_badge_id_fkey"
+      columns: ["badge_id"]
+isOneToOne: false
+      referencedRelation: "badges"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "user_badges_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "user_badges_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"user_permission_overrides": {
                   Row: {
                     "created_at": string,"created_by": string | null,"effect": string,"expires_at": string | null,"id": string,"permission_key": string,"reason": string | null,"school_id": string | null,"scope_id": string | null,"scope_type": string,"updated_at": string,"user_id": string
@@ -1427,6 +1713,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"xp_events": {
+                  Row: {
+                    "coins": number,"created_at": string,"event_type": string,"id": string,"meta": NonNullable<Json>,"school_id": string,"source_key": string,"student_id": string,"xp": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "coins"?: number,"created_at"?: string,"event_type": string,"id"?: string,"meta"?: NonNullable<Json>,"school_id": string,"source_key": string,"student_id": string,"xp": number
+                  }
+                  Update: {
+                    "coins"?: number,"created_at"?: string,"event_type"?: string,"id"?: string,"meta"?: NonNullable<Json>,"school_id"?: string,"source_key"?: string,"student_id"?: string,"xp"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "xp_events_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "xp_events_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
@@ -1457,6 +1769,9 @@ isOneToOne: false
 "auth_holds":
 { Args: { "p_perm": string }; Returns: boolean
                            },
+"auth_in_class":
+{ Args: { "p_class": string }; Returns: boolean
+                           },
 "auth_in_group":
 { Args: { "p_group": string }; Returns: boolean
                            },
@@ -1465,6 +1780,14 @@ isOneToOne: false
                            },
 "can_user_on":
 { Args: { "p_actor": string,"p_class": string,"p_grade": string,"p_perm": string,"p_school": string,"p_user": string }; Returns: boolean
+                           },
+"class_leaderboard":
+{ Args: { "p_class": string,"p_since": string }; Returns: {
+              "full_name": string,"points": number,"student_id": string
+            }[]
+                           },
+"decide_redemption":
+{ Args: { "p_approve": boolean,"p_id": string }; Returns: undefined
                            },
 "feature_flags_for":
 { Args: { "p_user": string }; Returns: string[]
@@ -1475,6 +1798,9 @@ isOneToOne: false
 "my_school_id":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"redeem_item":
+{ Args: { "p_item": string }; Returns: string
+                           },
 "school_plan":
 { Args: { "p_school": string }; Returns: string
                            },
@@ -1484,6 +1810,11 @@ isOneToOne: false
 "scope_target":
 { Args: { "p_scope_id": string,"p_scope_type": string,"p_user": string }; Returns: {
               "class_id": string,"grade_id": string,"school_id": string,"user_id": string
+            }[]
+                           },
+"team_scores":
+{ Args: { "p_class": string,"p_since": string }; Returns: {
+              "baseline": number,"challenge": number,"current": number,"student_id": string,"team_id": string,"team_name": string
             }[]
                            },
 "user_contexts":

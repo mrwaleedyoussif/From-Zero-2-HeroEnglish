@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { AnswerInput } from "@/features/placement/components/answer-input";
 import type { PublicItem } from "@/features/placement/runtime/public-item";
 import { completeLesson, openLesson } from "../lessons/actions";
+import type { AwardOutcome } from "@/features/rewards/award";
+import { Celebration } from "@/features/rewards/components/celebration";
 
 /** Short practice check at the end of a lesson; marks the lesson (and its assignments) done. */
 export function PracticeCheck({
@@ -21,7 +23,11 @@ export function PracticeCheck({
   const t = useTranslations("Learning");
   const tErrors = useTranslations("Errors");
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
-  const [result, setResult] = useState<{ score: number | null; correct: Set<string> } | null>(null);
+  const [result, setResult] = useState<{
+    score: number | null;
+    correct: Set<string>;
+    reward: AwardOutcome | null;
+  } | null>(null);
   const [pending, start] = useTransition();
   const opened = useRef(0);
 
@@ -37,10 +43,11 @@ export function PracticeCheck({
         seconds: Math.round((Date.now() - opened.current) / 1000),
       });
       if (!r.ok) return void toast.error(tErrors(r.error));
-      const data = r.data ?? { score: null, results: [] };
+      const data = r.data ?? { score: null, results: [], reward: null };
       setResult({
         score: data.score,
         correct: new Set(data.results.filter((x) => x.correct).map((x) => x.itemId)),
+        reward: data.reward,
       });
       toast.success(t("lessonDone"));
     });
@@ -52,6 +59,7 @@ export function PracticeCheck({
         {result.score !== null && (
           <p className="text-lg">{t("yourScore", { score: result.score })}</p>
         )}
+        {result.reward && <Celebration reward={result.reward} />}
       </div>
     );
   }

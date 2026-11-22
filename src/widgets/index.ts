@@ -5,6 +5,11 @@ import { OwnerSchoolsWidget } from "./owner-schools";
 import { StudentFromMyTeacherWidget, StudentRecommendedWidget } from "./student-learning";
 import { StudentPlacementCtaWidget } from "./student-placement-cta";
 import {
+  StudentBadgesWidget,
+  StudentLeaderboardWidget,
+  StudentStreakWidget,
+} from "./student-rewards";
+import {
   TeacherAssignmentTrackerWidget,
   TeacherQuickActionsWidget,
   TeacherSuggestedGroupsWidget,
@@ -24,6 +29,9 @@ export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
   "widget.student.placementCta": StudentPlacementCtaWidget,
   "widget.student.fromMyTeacher": StudentFromMyTeacherWidget,
   "widget.student.recommended": StudentRecommendedWidget,
+  "widget.student.streak": StudentStreakWidget,
+  "widget.student.badges": StudentBadgesWidget,
+  "widget.student.leaderboard": StudentLeaderboardWidget,
   "widget.teacher.assignmentTracker": TeacherAssignmentTrackerWidget,
   "widget.teacher.suggestedGroups": TeacherSuggestedGroupsWidget,
   "widget.teacher.quickActions": TeacherQuickActionsWidget,

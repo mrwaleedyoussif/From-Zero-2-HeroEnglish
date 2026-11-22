@@ -1,3 +1,4 @@
+import { badgeRecord, badgeRow } from "./badges-sheet";
 import {
   type CrossCheckResult,
   crossCheck,
@@ -84,6 +85,7 @@ export function buildPreview(
     CutScores: run("CutScores", (c) =>
       parseSheet("CutScores", cutScoreRow, (r) => `${r.department_id}/${r.cefr}`, c),
     ),
+    Badges: run("Badges", (c) => parseSheet("Badges", badgeRow, (r) => r.badge_id, c)),
   };
 
   const checked = crossCheck(parsed, existingCodes(existing), mediaNames);
@@ -96,6 +98,7 @@ export function buildPreview(
     Questions: v.Questions.map((r) => ({ key: r.key, record: questionRecord(r.data) })),
     Lessons: v.Lessons.map((r) => ({ key: r.key, record: lessonRecord(r.data) })),
     CutScores: v.CutScores.map((r) => ({ key: r.key, record: cutScoreRecord(r.data) })),
+    Badges: v.Badges.map((r) => ({ key: r.key, record: badgeRecord(r.data) })),
   };
 
   const sheets = SHEETS.map(({ name }): SheetSummary => ({
@@ -120,5 +123,6 @@ export function emptyExisting(): ExistingRecords {
     Questions: new Map(),
     Lessons: new Map(),
     CutScores: new Map(),
+    Badges: new Map(),
   };
 }

@@ -4,6 +4,17 @@ import { formatDate } from "@/lib/i18n-names";
 import { readNotification } from "./actions";
 import { myNotifications } from "./queries";
 
+/** Plain-text values a notification's message may use (level name, who sent kudos, approved). */
+function textParams(params: unknown, locale: string) {
+  const p = (params ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" ? v : "");
+  return {
+    name: str(locale === "ar" ? p.name_ar : p.name_en),
+    from: str(p.from),
+    approved: p.approved === true ? "yes" : "no",
+  };
+}
+
 /** Header bell (SPEC §12 in-app): unread count and the latest notifications. No JS needed. */
 export async function NotificationBell({ actor }: { actor: Actor }) {
   const t = await getTranslations("Notifications");
@@ -51,6 +62,7 @@ export async function NotificationBell({ actor }: { actor: Actor }) {
               <span>
                 {t(n.kind, {
                   title: n.lesson ? (locale === "ar" ? n.lesson.title_ar : n.lesson.title_en) : "",
+                  ...textParams(n.params, locale),
                 })}
               </span>
               <span className="text-xs text-muted-foreground">

@@ -16,6 +16,7 @@ export const ownerGate = defineGate({
     { key: "nav.owner.visibility", href: "/owner/visibility", permission: "visibility:manage" },
     { key: "nav.owner.plans", href: "/owner/plans", permission: "billing:manage" },
     { key: "nav.owner.content", href: "/owner/content", permission: "content:import" },
+    { key: "nav.owner.rewards", href: "/owner/rewards", permission: "content:import" },
     {
       key: "nav.owner.integrations",
       href: "/owner/integrations",

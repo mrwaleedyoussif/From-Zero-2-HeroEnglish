@@ -1,0 +1,5 @@
+badge_id,name_en,name_ar,description,icon_file,rule_json,xp_bonus,status
+B-FIRST-LESSON,First Step,الخطوة الأولى,Finish your first lesson,,"{""event"":""lesson_completed""}",10,active
+B-STREAK-7,Week Warrior,محارب الأسبوع,7-day streak,,"{""event"":""streak_day"",""count"":7}",50,active
+B-LISTEN-5,Good Listener,مستمع جيد,5 listening lessons in a week,,"{""event"":""lesson_completed"",""count"":5,""window_days"":7,""where"":{""skill"":""LIST""}}",40,active
+B-FIRST-B1,B1 Reached,وصلت إلى B1,Placement result B1,,"{""event"":""placement_completed"",""where"":{""cefr"":""B1""}}",60,active

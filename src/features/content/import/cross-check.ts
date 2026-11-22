@@ -135,6 +135,11 @@ export function crossCheck(
     return false;
   });
 
+  const badges = bundle.Badges.filter((r) => {
+    media("Badges", r, r.data.icon_file);
+    return true;
+  });
+
   return {
     valid: {
       Departments: departments,
@@ -143,6 +148,7 @@ export function crossCheck(
       Questions: questions,
       Lessons: lessons,
       CutScores: cutScores,
+      Badges: badges,
     },
     issues,
     missingMedia,

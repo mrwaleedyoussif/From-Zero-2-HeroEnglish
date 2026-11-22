@@ -9,6 +9,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { scorePractice } from "./practice";
 import { openableLesson } from "./queries";
 import { clearRecommendations } from "./recommended";
+import type { AwardOutcome } from "@/features/rewards/award";
+import { rewardLesson } from "@/features/rewards/hooks";
 
 /** The learner, allowed to learn, on a lesson they may open. Writes use the service role after. */
 async function learnerOn(lessonId: string) {
@@ -35,7 +37,7 @@ async function openAssignments(
 ) {
   const { data } = await admin
     .from("assignment_progress")
-    .select("assignment_id, status, time_spent_sec, assignments!inner(lesson_id)")
+    .select("assignment_id, status, time_spent_sec, assignments!inner(lesson_id, due_at)")
     .eq("student_id", a.real.id)
     .eq("assignments.lesson_id", lessonId)
     .neq("status", "done");
@@ -91,7 +93,11 @@ export async function completeLesson(
   lessonId: string,
   input: unknown,
 ): Promise<
-  ActionResult<{ score: number | null; results: { itemId: string; correct: boolean }[] }>
+  ActionResult<{
+    score: number | null;
+    results: { itemId: string; correct: boolean }[];
+    reward: AwardOutcome | null;
+  }>
 > {
   return runAction(async () => {
     const { actor, lesson, admin, schoolId } = await learnerOn(lessonId);
@@ -116,7 +122,8 @@ export async function completeLesson(
       last_opened_at: now,
       completed_at: now,
     });
-    for (const p of await openAssignments(admin, actor, lesson.id))
+    const open = await openAssignments(admin, actor, lesson.id);
+    for (const p of open)
       await admin
         .from("assignment_progress")
         .update({
@@ -127,9 +134,13 @@ export async function completeLesson(
         })
         .eq("assignment_id", p.assignment_id)
         .eq("student_id", actor.real.id);
+    const onTime = open
+      .filter((p) => !p.assignments.due_at || new Date(p.assignments.due_at) >= new Date(now))
+      .map((p) => p.assignment_id);
+    const reward = await rewardLesson(admin, actor.real.id, lesson, seconds, score, onTime);
     await clearRecommendations(actor.real.id);
     revalidatePath("/[locale]/student", "layout");
     revalidatePath("/[locale]/teacher", "layout");
-    return { score, results };
+    return { score, results, reward };
   });
 }

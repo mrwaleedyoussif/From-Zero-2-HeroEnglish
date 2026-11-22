@@ -1,5 +1,6 @@
 import "server-only";
 import type { createAdminClient } from "@/lib/supabase/admin";
+import { rewardTest } from "@/features/rewards/hooks";
 import type { Tables } from "@/types/db";
 import { cefrFor, scaledScore, skillEstimates } from "../engine/score";
 import type { EngineAnswer, Estimate, StopReason } from "../engine/types";
@@ -84,4 +85,18 @@ export async function finishReceptive(
       cefr: cefrFor(k.theta, cuts),
     })),
   ]);
+  const { data: dept } = await admin
+    .from("departments")
+    .select("code")
+    .eq("id", s.department_id)
+    .single();
+  await rewardTest(admin, {
+    studentId: s.student_id,
+    schoolId: s.school_id,
+    sessionId: s.id,
+    kind: source,
+    departmentId: s.department_id,
+    departmentCode: dept?.code ?? "",
+    cefr,
+  });
 }

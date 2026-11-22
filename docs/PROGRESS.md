@@ -1,20 +1,13 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 5 — done (2026-11-21). Next: Phase 6. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
+Phase 6 — done (2026-11-22). Next: Phase 7. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
 - Phase 1: Core + Access tables with RLS, `auth_can*()`, anti-escalation, audit triggers; staff magic link/Google, student PIN; `src/lib/auth/*` (engine mirrors SQL); Owner console (schools, users, CSV import, login cards, roles matrix, user detail, supervision, audit, view-as); demo seed; `owner:create`.
 - Phase 2: registry (`src/lib/registry.ts`, all keys + en/ar labels); config-driven gates × 5 + `gen:gate`; visibility engine (user > class > grade > school > role > plan) + Studio; plans/entitlements (`BILLING_ENABLED=false` → free `*`); school colour (WCAG).
-- Phase 3:
-  - `src/lib/storage`: adapter interface; Google driver (`@googleapis/drive`+`sheets`, Owner refresh token, backoff); fake driver (local folder, same layout) for dev/tests; AES-GCM secret; `npm run drive:init` + Integrations button.
-  - Owner Integrations page + OAuth start/callback (`/api/integrations/google/*`), token encrypted in `integration_secrets` (service role only).
-  - Content tables + RLS (`auth_holds()`: students read lessons, never items/answers) + `import_jobs`.
-  - Sheets import `src/features/content/import`: Zod per row → cross-sheet checks → diff → preview (row/column/reason) → apply (upsert by code, item versions, never delete) → media name→id via `media_assets`, missing-file report.
-  - `/api/media/[id]`: permission + department visibility, Range, ETag, CDN cache, sandbox CSP. `/teacher/library` with filters.
-  - Fixtures `supabase/fixtures/drive` = DATA_TEMPLATES samples. Tests: 114 unit, 28 DB, 10 e2e (acceptance in `e2e/content.spec.ts`).
-
+- Phase 3: `lib/storage` (Google + fake drivers, Owner OAuth, AES-GCM secret, `drive:init`); content tables + RLS (learners never read items); Sheets import (validate → diff preview → apply, media by name, missing-file report); `/api/media/[id]`; `/teacher/library`.
 - Phase 4:
   - Engine `src/features/placement/engine` (pure, 100% coverage enforced): Rasch, EAP (161-point grid), randomesque top-5 + skill balancing, stopping, scoring per item type, CEFR/scaled score, strengths/gaps, calibration stub (`npm run calibrate`).
   - `npm run sim:placement` (acceptance, in CI): population MAE 0.32, all learners 0.34, ≤ 25 items → PASS.
@@ -30,8 +23,15 @@ Phase 5 — done (2026-11-21). Next: Phase 6. Code: github.com/mrwaleedyoussif/F
   - Teacher: `/teacher/assignments` (assign to student/group/team/class, due, note, required; one-click suggestions; tracker), `/teacher/groups` (+ auto teams, learner page with notes); widgets tracker/suggestedGroups/quickActions.
   - Tests: 182 unit, 36 DB, 12 e2e (acceptance `e2e/learning.spec.ts`).
 
+- Phase 6:
+  - Tables + RLS: reward_rules, levels, badges/user_badges, xp_events (idempotent source_key), streaks, coin_ledger, reward_catalog, redemptions, certificates, class_reward_settings (audited), team_xp. Functions: `class_leaderboard`, `team_scores` (hidden from students when the class board is off), `redeem_item` (atomic balance check), `decide_redemption` (refund on reject).
+  - Pure `rewards/engine` (100% coverage): rules (min time/accuracy, daily caps, level/accuracy scaling), levels, badge JSON rules, streaks with weekly freeze, top-10 + own rank (top half only), Kagan improvement points.
+  - `award()` service hooked into lesson completion, placement/progress finish, kudos, team challenges; badges + level-ups notify; Badges sheet in the content import.
+  - Screens: `/student/rewards`, celebration after lessons (motion-safe, aria-live), 3 student widgets; `/teacher/rewards` (leaderboard switch, kudos, team points, approvals); `/owner/rewards` (rules, levels, shop). Certificate PDFs `/api/certificates/[id]`.
+  - Tests: 203 unit, 39 DB, 13 e2e (`e2e/rewards.spec.ts`).
+
 ## Next
-- Phase 6 (rewards). Real placement needs ~150+ items per department.
+- Phase 7 (dashboards & supervision). Real placement needs ~150+ items per department.
 - Owner's Drive (shared folder): ~1,360 mp3, 380 docx, STEP item registers (CSV) — not yet in the DATA_TEMPLATES sheet format; conversion is a separate task. Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
 
 ## Decisions (with one-line reasons)
@@ -48,6 +48,8 @@ Phase 5 — done (2026-11-21). Next: Phase 6. Code: github.com/mrwaleedyoussif/F
 - Phase 4 dep: `@vitest/coverage-v8` (enforces 100% engine coverage).
 - Tracker updates on refresh (revalidatePath), not live: Supabase Realtime is off to stay in the free tier.
 - Lesson/assignment progress is written by the server (service role) after `learning:self` + lesson visibility checks; practice answers are scored server-side.
+- Phase 6 deps: `@react-pdf/renderer` (in the stack; certificates), `arabic-persian-reshaper` (MIT; react-pdf doesn't join Arabic letters). Certificate font Noto Naskh Arabic loaded from fonts.gstatic.com.
+- A blocked reward event is still recorded with 0 XP so badges like "first lesson" count real activity, not XP.
 - Deps: none new in Phases 2 and 5. Scripts are `.mts` (Node runs TypeScript directly).
 
 ## Open questions for the Owner

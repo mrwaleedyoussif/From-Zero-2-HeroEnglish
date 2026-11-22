@@ -1,5 +1,6 @@
 import "server-only";
 import type { createClient } from "@/lib/supabase/server";
+import { badgeUpsert } from "./badges-sheet";
 import { must } from "./must";
 import type { ParsedBundle } from "./cross-check";
 import { isUrl } from "./fields";
@@ -12,7 +13,7 @@ interface Lookups {
   mediaId: (name: string | undefined) => string | null;
 }
 
-/** Lessons (+ their practice items) and CEFR cut scores — the last import steps. */
+/** Lessons (+ their practice items), CEFR cut scores and badges — the last import steps. */
 export async function applyLessonsAndCutScores(
   db: Db,
   rows: ParsedBundle,
@@ -90,4 +91,16 @@ export async function applyLessonsAndCutScores(
       "cut_scores",
     );
   }
+
+  if (rows.Badges?.length)
+    must(
+      await db
+        .from("badges")
+        .upsert(
+          rows.Badges.map(({ data: b }) => badgeUpsert(b, mediaId)),
+          { onConflict: "code" },
+        )
+        .select("id"),
+      "badges",
+    );
 }

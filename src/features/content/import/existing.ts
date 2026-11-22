@@ -2,6 +2,7 @@ import "server-only";
 import type { createClient } from "@/lib/supabase/server";
 import type { Comparable } from "./diff";
 import { emptyExisting, type ExistingRecords } from "./pipeline";
+import { dbBadgeRecord } from "./badges-sheet";
 import { dbRecord } from "./records";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
@@ -12,7 +13,7 @@ type Code = { code: string } | null;
 
 /** The database's content in the same comparable shape as the sheets (for the diff). */
 export async function loadExisting(db: Db): Promise<ExistingRecords> {
-  const [deps, skills, passages, items, lessons, cuts] = await Promise.all([
+  const [deps, skills, passages, items, lessons, cuts, badges] = await Promise.all([
     db.from("departments").select("*"),
     db.from("skills").select("*, departments(code)"),
     db.from("passages").select("*"),
@@ -23,6 +24,7 @@ export async function loadExisting(db: Db): Promise<ExistingRecords> {
       .from("lessons")
       .select("*, departments(code), skills(code), lesson_items(sort_order, items(code))"),
     db.from("cut_scores").select("*, departments(code)"),
+    db.from("badges").select("*"),
   ]);
   const out = emptyExisting();
   for (const d of deps.data ?? []) out.Departments.set(d.code, dbRecord.department(d));
@@ -82,5 +84,6 @@ export async function loadExisting(db: Db): Promise<ExistingRecords> {
       status: l.status,
     });
   }
+  for (const b of badges.data ?? []) out.Badges.set(b.code, dbBadgeRecord(b));
   return out;
 }

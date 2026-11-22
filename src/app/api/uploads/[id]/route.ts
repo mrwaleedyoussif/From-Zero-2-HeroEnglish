@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { canSomewhere } from "@/lib/auth/can";
 import { getActor } from "@/lib/auth/session";
 import { getStorage } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
@@ -15,7 +16,14 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/api/u
   const { id } = await params;
   if (!z.guid().safeParse(id).success)
     return new NextResponse(null, { status: 404, headers: PRIVATE });
-  if (!(await getActor())) return new NextResponse(null, { status: 401, headers: PRIVATE });
+  const actor = await getActor();
+  if (!actor) return new NextResponse(null, { status: 401, headers: PRIVATE });
+  // Authorize twice (rule 1): the permission here, then RLS on the row below.
+  if (
+    !(await canSomewhere(actor, "placement:take")) &&
+    !(await canSomewhere(actor, "placement:view_results"))
+  )
+    return new NextResponse(null, { status: 403, headers: PRIVATE });
 
   const db = await createClient();
   const { data: sub } = await db

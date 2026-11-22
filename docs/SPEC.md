@@ -231,7 +231,7 @@ Every table: `id uuid pk`, `created_at`, `updated_at`, `school_id` where relevan
 - Fonts: Inter (Latin) + IBM Plex Sans Arabic (Arabic). Dyslexia-friendly option (Atkinson Hyperlegible).
 - **Staff palette (calm, professional):** primary `#1E3A8A` (navy), primary-hover `#1E40AF`, secondary `#0F766E` (teal), accent `#F59E0B` (amber, rewards only, dark text on it), surface `#F8FAFC`, border `#E2E8F0`, text `#0F172A`, muted `#475569`, success `#15803D`, warning `#B45309`, danger `#B91C1C`, info `#0369A1`.
 - **Student palette (bright, motivating):** primary `#6D28D9` (violet), secondary `#0EA5E9` (sky), accent `#F97316` (orange), success `#16A34A`, surface `#FFFBEB`.
-- CEFR colour scale (sequential, colour-blind safe): Pre-A1 `#E0F2FE` · A1 `#BAE6FD` · A2 `#7DD3FC` · B1 `#38BDF8` · B2 `#0284C7` · C1 `#075985` · C2 `#0C4A6E`.
+- CEFR colour scale (sequential, colour-blind safe): Pre-A1 `#E0F2FE` · A1 `#BAE6FD` · A2 `#7DD3FC` · B1 `#38BDF8` · B2 `#0369A1` · C1 `#0C4A6E` · C2 `#082F49` (darkened in Phase 9 for 4.5:1 contrast with white text).
 - Dark mode via the same tokens. Per-school override of `--primary` with automatic contrast check.
 
 ## §17 Out of scope for v1

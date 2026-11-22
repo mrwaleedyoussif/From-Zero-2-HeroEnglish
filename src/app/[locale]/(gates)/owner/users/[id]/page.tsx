@@ -1,3 +1,5 @@
+import { PrivacyCard } from "@/features/privacy/components/privacy-card";
+import { canEraseStudents } from "@/features/privacy/can";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
@@ -110,6 +112,9 @@ export default async function UserPage({
         targetOptions={targetOptions}
         labels={labels}
       />
+      {detail.profile.kind === "student" && writable && (await canEraseStudents(actor)) && (
+        <PrivacyCard studentId={id} username={detail.profile.username ?? ""} />
+      )}
     </>
   );
 }

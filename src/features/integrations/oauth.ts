@@ -2,6 +2,9 @@
  * Google OAuth for the Owner's Drive (SPEC §5). Pure helpers, unit-tested.
  * `drive` (full) is needed to read files the Owner made by hand; Sheets read-only for content.
  */
+/** Only requested when MAIL_PROVIDER=gmail (report emails from the Owner's Gmail). */
+export const GMAIL_SEND_SCOPE = "https://www.googleapis.com/auth/gmail.send";
+
 export const GOOGLE_SCOPES = [
   "https://www.googleapis.com/auth/drive",
   "https://www.googleapis.com/auth/spreadsheets.readonly",

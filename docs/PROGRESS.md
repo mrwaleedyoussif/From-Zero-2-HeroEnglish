@@ -1,7 +1,7 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 8 — done (2026-11-22). Next: Phase 9. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
+Phase 9 — built (2026-11-22); production deploy waits on the Owner's accounts (docs/RUNBOOK.md). Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
@@ -16,15 +16,16 @@ Phase 8 — done (2026-11-22). Next: Phase 9. Code: github.com/mrwaleedyoussif/F
   - UI: 16 registry widgets across all gates; `/[gate]/insights` drill-down school → grade → class → student; `/coach/coaching-log`; `/leadership/supervision` tree; charts = CSS bars with SPEC tokens + data table; CSV `/api/export/[dataset]`; dashboards print to PDF.
   - Tests: 207 unit (analytics 100%), 44 DB, 16 e2e (`e2e/insights.spec.ts` scope acceptance).
 
-- Phase 8:
-  - SQL: `report_jobs` (unique dedupe keys, `claim_jobs` SKIP LOCKED), `reports` (unique per recipient/period), `email_log` (unique report_id = one send), `report_preferences`, `cron_runs`, `response_aggregates`; `report_recipients` (reports:receive perms, priority from permissions), `*_for(user)` scope functions shared with dashboards.
-  - `lib/scheduler`: per-school tz/week-start periods, tick ≤ 20 jobs/50 s, report → email (90/day guard, priority, defer to tomorrow) → PDF to Drive; daily dashboard refresh; monthly responses archive (CSV.gz + aggregates). `lib/mail`: console | resend | gmail. react-email digest (en/ar).
-  - `/api/cron/tick` (Bearer CRON_SECRET; GET Vercel, POST GitHub), `vercel.json`, `tick.yml` (15 min), `backup.yml` (nightly pg_dump → Drive, keep 30). `npm run reports:dry-run | tick | backup:upload`.
-  - UI: `/[locale]/reports/[id]`, archives + preferences on teacher/coach/leadership/owner, Owner scheduler monitor (+ run now), `widget.leadership.reportArchive`.
-  - Tests: 218 unit, 47 DB, 18 e2e (`e2e/reports.spec.ts`: repeated ticks never send twice).
+- Phase 8: report queue (dedupe keys, SKIP LOCKED), reports/email_log (one send per report), tick ≤ 20 jobs/50 s, 90/day email guard with priority + deferral, PDFs to Drive, responses archive, mail adapters, react-email digest, cron route + vercel.json + GitHub tick/backup workflows, `reports:dry-run`, report archive UI.
+- Phase 9:
+  - Security: nonce CSP + strict headers in `src/proxy.ts` (`lib/security/headers.ts`), DB rate limits on PIN sign-in and magic links (`hit_rate_limit`), permission checks added to certificate/upload routes, student data export/erase for the Owner (PDPL, audited), Gmail send scope only when `MAIL_PROVIDER=gmail`.
+  - Sweep DB test: RLS on every table, no cross-school rows in any `school_id` table, erase cascades, seed-free migrations.
+  - UX: translated 404 (catch-all) + error/global-error pages, gate loading skeleton, axe WCAG A/AA e2e (0 violations en/ar), CEFR B2–C2 darkened for contrast, Lighthouse student pages ≥ 90 (median of 3, en + ar) after font + client-message trimming.
+  - `docs/RUNBOOK.md`; `npm run test:smoke` (production-safe), `npm run lighthouse`. Tests: 222 unit, 51 DB, 25 e2e.
 
 ## Next
-- Phase 9 (hardening & launch). Deploy needs: Vercel env, GitHub `APP_URL` variable + secrets for tick/backup, Resend key (or Gmail scope). Real placement needs ~150+ items per department.
+- Launch: Owner follows docs/RUNBOOK.md (Supabase project + `db push`, Google OAuth client, Vercel env + domain, GitHub `APP_URL`/secrets, Resend), then `E2E_BASE_URL=https://<domain> npm run test:smoke` = Phase 9 acceptance.
+- Real placement needs ~150+ items per department (STEP item registers in the Owner's Drive could be converted).
 - Owner's Drive (shared folder): ~1,360 mp3, 380 docx, STEP item registers (CSV) — not yet in the DATA_TEMPLATES sheet format; conversion is a separate task. Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
 
 ## Decisions (with one-line reasons)
@@ -47,8 +48,9 @@ Phase 8 — done (2026-11-22). Next: Phase 9. Code: github.com/mrwaleedyoussif/F
 - Teacher usage is listed for direct supervisees, or all teachers for `supervision:manage` (principal) — no role checks.
 - Phase 8 deps: `@react-email/components` (digest templates, SPEC), `use-intl` (pinned to next-intl's; React-free translator for the scheduler). Resend/Gmail via plain HTTP (no SDKs).
 - Dashboard PDFs print from the browser; report PDFs (react-pdf) go to Drive. `npm run tick` calls the running app's endpoint (react-pdf can't load outside Next).
+- Phase 9: every page renders dynamically (layout reads the CSP nonce); only client-used message namespaces go to the browser (`src/i18n/client-namespaces.ts`, test-guarded); Plex Arabic trimmed to 400/700, Inter not preloaded. Dep: `@axe-core/playwright` (dev, a11y). Lighthouse runs via `npx lighthouse@12.8.2` (not installed).
 - Deps: none new in Phases 2, 5 and 7. Scripts are `.mts` (Node runs TypeScript directly).
 
 ## Open questions for the Owner
-- Hosted Supabase: create project, set SMTP = Resend, enable Google, set Site URL; run migrations + `owner:create`.
+- Go-live accounts and settings: see docs/RUNBOOK.md §1–6 (Supabase, Google OAuth, Vercel + domain, GitHub automation, Resend).
 - Drive content: map the STEP item registers / docx lessons into the Questions/Lessons sheets? (needs Owner's choice of departments, skills, CEFR mapping).

@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { OAuth2Client } from "google-auth-library";
 import { type NextRequest, NextResponse } from "next/server";
 import {
+  GMAIL_SEND_SCOPE,
   GOOGLE_SCOPES,
   googleRedirectUri,
   OAUTH_STATE_COOKIE,
@@ -36,7 +37,8 @@ export async function GET(request: NextRequest) {
   const url = client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent", // always return a refresh token, even on reconnect
-    scope: [...GOOGLE_SCOPES],
+    // Gmail as the mail provider also needs permission to send (SPEC §12 alternative to Resend).
+    scope: [...GOOGLE_SCOPES, ...(env.MAIL_PROVIDER === "gmail" ? [GMAIL_SEND_SCOPE] : [])],
     state,
     include_granted_scopes: true,
   });

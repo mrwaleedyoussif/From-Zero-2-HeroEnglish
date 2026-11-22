@@ -1111,6 +1111,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"rate_limits": {
+                  Row: {
+                    "count": number,"key": string,"window_start": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "count"?: number,"key": string,"window_start"?: string
+                  }
+                  Update: {
+                    "count"?: number,"key"?: string,"window_start"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"recommendations": {
                   Row: {
                     "computed_on": string,"items": NonNullable<Json>,"school_id": string,"student_id": string,"updated_at": string
@@ -2082,6 +2096,9 @@ isOneToOne: false
                            },
 "feature_flags_for":
 { Args: { "p_user": string }; Returns: string[]
+                           },
+"hit_rate_limit":
+{ Args: { "p_key": string,"p_max": number,"p_window_sec": number }; Returns: boolean
                            },
 "insights_refreshed_at":
 { Args: Record<PropertyKey, never>; Returns: string

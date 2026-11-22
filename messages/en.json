@@ -94,7 +94,8 @@
     "alreadyAnswered": "This question was already answered.",
     "teamsExist": "This class already has teams. Delete them first to make new ones.",
     "notEnoughCoins": "You don't have enough coins for that yet.",
-    "kudosCap": "That's the most kudos this student can get today."
+    "kudosCap": "That's the most kudos this student can get today.",
+    "confirmMismatch": "The username you typed does not match."
   },
   "Done": {
     "saved": "Saved",
@@ -1373,5 +1374,22 @@
     },
     "recentTicks": "Recent ticks",
     "tickSummary": "planned {planned}, done {processed}, failed {failed}, deferred {deferred}"
+  },
+  "Privacy": {
+    "title": "Student data (privacy)",
+    "intro": "Download everything stored about this student, or erase it permanently (Saudi PDPL).",
+    "export": "Download all data (JSON)",
+    "eraseWarning": "Erasing deletes the account, results, uploads and rewards. This cannot be undone. Only a record that you erased it is kept.",
+    "confirm": "Type the username ({username}) to confirm",
+    "erase": "Erase this student"
+  },
+  "ErrorPages": {
+    "notFoundTitle": "We could not find that page",
+    "notFoundBody": "It may have moved, or you may not have access to it.",
+    "home": "Go to my home page",
+    "errorTitle": "Something went wrong",
+    "errorBody": "Please try again. If it keeps happening, tell your school administrator.",
+    "retry": "Try again",
+    "reference": "Reference: {id}"
   }
 }

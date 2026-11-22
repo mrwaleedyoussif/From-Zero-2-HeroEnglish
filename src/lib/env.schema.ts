@@ -46,6 +46,8 @@ export const serverEnvSchema = publicEnvSchema
     BILLING_ENABLED: flag(false),
     AI_ENABLED: flag(false),
     DEFAULT_TIMEZONE: z.string().min(1).default("Asia/Riyadh"),
+    /** Multiplies sign-in rate limits; raise only for automated test runs (default 1). */
+    RATE_LIMIT_MULTIPLIER: z.coerce.number().int().min(1).max(1000).default(1),
   })
   .superRefine((env, ctx) => {
     if (env.MAIL_PROVIDER === "resend" && !env.RESEND_API_KEY) {

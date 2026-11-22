@@ -8,6 +8,7 @@ import { type Locale, locales } from "@/i18n/routing";
 import { VIEW_AS_COOKIE, getActor } from "@/lib/auth/session";
 import { studentEmail, studentLoginSchema } from "@/lib/auth/student-identity";
 import { publicEnv } from "@/lib/env.public";
+import { allow, clientIp, LIMITS } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
 export type FormState = {
@@ -30,6 +31,14 @@ export async function sendMagicLink(_prev: FormState, form: FormData): Promise<F
     .safeParse({ email: form.get("email"), locale: form.get("locale") });
   const values = { email: String(form.get("email") ?? "") };
   if (!parsed.success) return { status: "error", message: "invalidEmail", values };
+  const ip = await clientIp();
+  if (
+    !(await allow([
+      { key: `link:ip:${ip}`, ...LIMITS.linkIp },
+      { key: `link:email:${parsed.data.email}`, ...LIMITS.linkEmail },
+    ]))
+  )
+    return { status: "error", message: "tooManyAttempts", values };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
@@ -68,6 +77,15 @@ export async function studentSignIn(_prev: FormState, form: FormData): Promise<F
     username: String(form.get("username") ?? ""),
   };
   if (!parsed.success) return { status: "error", message: "wrongCredentials", values };
+  const ip = await clientIp();
+  const who = `${parsed.data.schoolCode}/${parsed.data.username}`.toLowerCase();
+  if (
+    !(await allow([
+      { key: `pin:ip:${ip}`, ...LIMITS.pinIp },
+      { key: `pin:user:${who}`, ...LIMITS.pinUser },
+    ]))
+  )
+    return { status: "error", message: "tooManyAttempts", values };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({

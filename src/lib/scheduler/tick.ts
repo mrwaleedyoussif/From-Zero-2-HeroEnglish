@@ -30,6 +30,11 @@ export async function runTick(source: string, now = new Date()): Promise<TickRes
   const { data: run } = await admin.from("cron_runs").insert({ source }).select("id").single();
   const result: TickResult = { planned: 0, processed: 0, failed: 0, deferred: 0 };
   result.planned = (await planDue(admin, now)).planned;
+  // Housekeeping: expired rate-limit windows (DB budget).
+  await admin
+    .from("rate_limits")
+    .delete()
+    .lt("window_start", new Date(now.getTime() - 86_400_000).toISOString());
 
   while (
     Date.now() - started < MAX_MS &&

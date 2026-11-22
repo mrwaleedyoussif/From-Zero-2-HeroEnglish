@@ -1,7 +1,7 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 9 — built (2026-11-22); production deploy waits on the Owner's accounts (docs/RUNBOOK.md). Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
+Phase 9 — built; LIVE at https://zero-2-heroenglish.com (2026-11-22: Supabase `linguapath` eu-central-1, all migrations; Vercel project `linguapath`, CLI deploys; old GitHub Pages DNS removed; smoke checks pass). Waiting on: Owner email for `owner:create`, Resend SMTP, Google OAuth client, Vercel↔GitHub login connection. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.

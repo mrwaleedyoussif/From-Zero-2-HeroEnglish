@@ -24,11 +24,13 @@ Phase 9 — built; LIVE at https://zero-2-heroenglish.com (2026-11-22: Supabase 
   - `docs/RUNBOOK.md`; `npm run test:smoke` (production-safe), `npm run lighthouse`. Tests: 222 unit, 51 DB, 25 e2e.
 
 ## Next
+- STEP pack: 5,110 MCQs (Booklets 1–4 + vocabulary banks, 161 passages, 316 audio tracks) converted from the Owner's Drive and validated with the importer (local trial: import 25 s, 30-item placement OK). B2+ is stored as CEFR C1. Loads once the Owner connects Drive.
 - Launch: Owner follows docs/RUNBOOK.md (Supabase project + `db push`, Google OAuth client, Vercel env + domain, GitHub `APP_URL`/secrets, Resend), then `E2E_BASE_URL=https://<domain> npm run test:smoke` = Phase 9 acceptance.
 - Real placement needs ~150+ items per department (STEP item registers in the Owner's Drive could be converted).
 - Owner's Drive (shared folder): ~1,360 mp3, 380 docx, STEP item registers (CSV) — not yet in the DATA_TEMPLATES sheet format; conversion is a separate task. Owner, for real Drive: Google Cloud OAuth client → `GOOGLE_OAUTH_CLIENT_ID/SECRET` → Owner → Integrations → Connect → Create Drive folders.
 
 ## Decisions (with one-line reasons)
+- `src/lib/supabase/batch.ts`: large banks — reads page by key (API caps 1000 rows; offsets hit the 8 s timeout under RLS), `.in()` filters in batches of 100 (URI length). Used by content import and the placement pool.
 - Gate entry = permission `gate:<key>` (rule 2: no role names); Owner controls it in the Roles matrix. Gate perms are exempt from the anti-escalation check (no data access).
 - Gate list is a generated file: Next.js can't discover files at runtime; `gen:gate` rewrites it.
 - Visibility precedence is computed in TS from rules SQL returns per user (users never read others' rules).

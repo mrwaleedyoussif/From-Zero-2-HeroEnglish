@@ -3,6 +3,7 @@ import type { createAdminClient } from "@/lib/supabase/admin";
 import { itemB } from "../engine/rasch";
 import type { Blueprint, CutScore, EngineAnswer, EngineItem } from "../engine/types";
 import { allowedBands, type GradeBand, gradeBand } from "./rules";
+import { PAGE, selectAll } from "@/lib/supabase/batch";
 
 /**
  * Loaders for the test runtime. They use the service-role client because questions carry
@@ -92,12 +93,19 @@ export async function loadPool(
 ): Promise<PoolItem[]> {
   const since = new Date(Date.now() - SEEN_WINDOW_DAYS * 86_400_000).toISOString();
   const [{ data: items }, { data: seen }] = await Promise.all([
-    admin
-      .from("items")
-      .select("id, skill_id, difficulty, b_calibrated, version, grade_band, item_type")
-      .eq("department_id", departmentId)
-      .eq("status", "active")
-      .not("item_type", "in", "(writing_prompt,speaking_prompt)"),
+    // Banks hold thousands of items; the API returns 1000 rows per request, so read by pages.
+    selectAll(
+      (after) => {
+        const q = admin
+          .from("items")
+          .select("id, skill_id, difficulty, b_calibrated, version, grade_band, item_type")
+          .eq("department_id", departmentId)
+          .eq("status", "active")
+          .not("item_type", "in", "(writing_prompt,speaking_prompt)");
+        return (after ? q.gt("id", after) : q).order("id").limit(PAGE);
+      },
+      (i) => i.id,
+    ),
     admin.from("responses").select("item_id").eq("student_id", student.id).gte("created_at", since),
   ]);
   const seenIds = new Set((seen ?? []).map((r) => r.item_id));

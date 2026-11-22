@@ -9,6 +9,7 @@ import type { StorageAdapter } from "@/lib/storage/types";
 import type { createClient } from "@/lib/supabase/server";
 import type { RawSheets } from "./pipeline";
 import { SHEETS } from "./sheets";
+import { chunks, PAGE, selectAll } from "@/lib/supabase/batch";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
 
@@ -65,9 +66,9 @@ export async function listMedia(storage: StorageAdapter): Promise<MediaFile[]> {
 /** Cache Drive file ids in media_assets (SPEC §5) and mark files that disappeared. Name → asset id. */
 export async function syncMediaAssets(db: Db, media: MediaFile[]): Promise<Map<string, string>> {
   const now = new Date().toISOString();
-  if (media.length) {
+  for (const batch of chunks(media)) {
     const { error } = await db.from("media_assets").upsert(
-      media.map((m) => ({
+      batch.map((m) => ({
         file_name: m.name,
         drive_file_id: m.driveId,
         mime_type: m.mimeType,
@@ -82,6 +83,12 @@ export async function syncMediaAssets(db: Db, media: MediaFile[]): Promise<Map<s
     if (error) throw new Error("Could not save media list", { cause: error });
   }
   await db.from("media_assets").update({ status: "missing" }).lt("last_seen_at", now);
-  const { data } = await db.from("media_assets").select("id, file_name").eq("status", "active");
+  const { data } = await selectAll(
+    (after) => {
+      const q = db.from("media_assets").select("id, file_name").eq("status", "active");
+      return (after ? q.gt("file_name", after) : q).order("file_name").limit(PAGE);
+    },
+    (a) => a.file_name,
+  );
   return new Map((data ?? []).map((a) => [a.file_name, a.id]));
 }

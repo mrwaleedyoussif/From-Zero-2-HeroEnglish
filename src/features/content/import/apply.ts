@@ -2,6 +2,7 @@ import "server-only";
 import type { createClient } from "@/lib/supabase/server";
 import type { ParsedBundle } from "./cross-check";
 import { applyLessonsAndCutScores } from "./apply-lessons";
+import { IN_BATCH, byCode, inBatches, selectAll } from "@/lib/supabase/batch";
 import { must } from "./must";
 import { isUrl } from "./fields";
 
@@ -98,53 +99,72 @@ export async function applyPayload(db: Db, payload: ImportPayload, media: Map<st
     );
   }
   const passageId = new Map(
-    must(await db.from("passages").select("id, code"), "passages").map((p) => [p.code, p.id]),
+    must(
+      await selectAll(
+        (after) => byCode(db.from("passages").select("id, code"), after),
+        (p) => p.code,
+      ),
+      "passages",
+    ).map((p) => [p.code, p.id]),
   );
 
   if (rows.Questions.length) {
     const codes = rows.Questions.map((q) => q.key);
     const current = new Map(
-      must(await db.from("items").select("code, version").in("code", codes), "items").map((i) => [
-        i.code,
-        i.version,
-      ]),
+      must(
+        await inBatches(
+          codes,
+          (batch) => db.from("items").select("code, version").in("code", batch),
+          IN_BATCH,
+        ),
+        "items",
+      ).map((i) => [i.code, i.version]),
     );
     const changed = new Set(payload.changedQuestions);
     const saved = must(
-      await db
-        .from("items")
-        .upsert(
-          rows.Questions.map(({ data: q }) => ({
-            code: q.item_id,
-            department_id: deptId.get(q.department_id) ?? "",
-            skill_id: skillId.get(`${q.department_id}/${q.skill_id}`) ?? "",
-            sub_skill: q.sub_skill ?? null,
-            item_type: q.item_type,
-            stem: q.stem,
-            passage_id: q.passage_id ? (passageId.get(q.passage_id) ?? null) : null,
-            media_file: q.media_file ?? null,
-            media_asset_id: mediaId(q.media_file),
-            correct: q.correct ?? null,
-            difficulty: q.difficulty,
-            cefr: q.cefr ?? null,
-            grade_band: q.grade_band ?? null,
-            tags: q.tags,
-            explanation: q.explanation ?? null,
-            time_limit_sec: q.time_limit_sec ?? null,
-            status: q.status,
-            author: q.author ?? null,
-            // Responses store the version answered (SPEC §6), so a changed question gets a new one.
-            version:
-              (current.get(q.item_id) ?? 0) +
-              (changed.has(q.item_id) || !current.has(q.item_id) ? 1 : 0),
-          })),
-          { onConflict: "code" },
-        )
-        .select("id, code"),
+      await inBatches(rows.Questions, (batch) =>
+        db
+          .from("items")
+          .upsert(
+            batch.map(({ data: q }) => ({
+              code: q.item_id,
+              department_id: deptId.get(q.department_id) ?? "",
+              skill_id: skillId.get(`${q.department_id}/${q.skill_id}`) ?? "",
+              sub_skill: q.sub_skill ?? null,
+              item_type: q.item_type,
+              stem: q.stem,
+              passage_id: q.passage_id ? (passageId.get(q.passage_id) ?? null) : null,
+              media_file: q.media_file ?? null,
+              media_asset_id: mediaId(q.media_file),
+              correct: q.correct ?? null,
+              difficulty: q.difficulty,
+              cefr: q.cefr ?? null,
+              grade_band: q.grade_band ?? null,
+              tags: q.tags,
+              explanation: q.explanation ?? null,
+              time_limit_sec: q.time_limit_sec ?? null,
+              status: q.status,
+              author: q.author ?? null,
+              // Responses store the version answered (SPEC §6), so a changed question gets a new one.
+              version:
+                (current.get(q.item_id) ?? 0) +
+                (changed.has(q.item_id) || !current.has(q.item_id) ? 1 : 0),
+            })),
+            { onConflict: "code" },
+          )
+          .select("id, code"),
+      ),
       "items",
     );
     const ids = saved.map((i) => i.id);
-    must(await db.from("item_options").delete().in("item_id", ids).select("id"), "item_options");
+    must(
+      await inBatches(
+        ids,
+        (batch) => db.from("item_options").delete().in("item_id", batch).select("id"),
+        IN_BATCH,
+      ),
+      "item_options",
+    );
     const byCode = new Map(saved.map((i) => [i.code, i.id]));
     const options = rows.Questions.flatMap(({ data: q }) =>
       [q.option_a, q.option_b, q.option_c, q.option_d, q.option_e].flatMap((body, i) =>
@@ -152,7 +172,14 @@ export async function applyPayload(db: Db, payload: ImportPayload, media: Map<st
       ),
     );
     if (options.length)
-      must(await db.from("item_options").insert(options).select("id"), "item_options");
+      must(
+        await inBatches(
+          options,
+          (batch) => db.from("item_options").insert(batch).select("id"),
+          2000,
+        ),
+        "item_options",
+      );
   }
 
   await applyLessonsAndCutScores(db, rows, { deptId, skillId, mediaId });

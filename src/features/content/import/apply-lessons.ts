@@ -1,6 +1,7 @@
 import "server-only";
 import type { createClient } from "@/lib/supabase/server";
 import { badgeUpsert } from "./badges-sheet";
+import { IN_BATCH, inBatches } from "@/lib/supabase/batch";
 import { must } from "./must";
 import type { ParsedBundle } from "./cross-check";
 import { isUrl } from "./fields";
@@ -56,9 +57,14 @@ export async function applyLessonsAndCutScores(
     const practiceCodes = [...new Set(rows.Lessons.flatMap((l) => l.data.practice_item_ids))];
     const itemId = new Map(
       practiceCodes.length
-        ? must(await db.from("items").select("id, code").in("code", practiceCodes), "items").map(
-            (i) => [i.code, i.id],
-          )
+        ? must(
+            await inBatches(
+              practiceCodes,
+              (batch) => db.from("items").select("id, code").in("code", batch),
+              IN_BATCH,
+            ),
+            "items",
+          ).map((i) => [i.code, i.id])
         : [],
     );
     const byCode = new Map(saved.map((l) => [l.code, l.id]));

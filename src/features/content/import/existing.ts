@@ -4,6 +4,7 @@ import type { Comparable } from "./diff";
 import { emptyExisting, type ExistingRecords } from "./pipeline";
 import { dbBadgeRecord } from "./badges-sheet";
 import { dbRecord } from "./records";
+import { byCode, selectAll } from "@/lib/supabase/batch";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
 const s = (v: unknown): string | null =>
@@ -16,10 +17,22 @@ export async function loadExisting(db: Db): Promise<ExistingRecords> {
   const [deps, skills, passages, items, lessons, cuts, badges] = await Promise.all([
     db.from("departments").select("*"),
     db.from("skills").select("*, departments(code)"),
-    db.from("passages").select("*"),
-    db
-      .from("items")
-      .select("*, departments(code), skills(code), passages(code), item_options(label, body)"),
+    selectAll(
+      (after) => byCode(db.from("passages").select("*"), after),
+      (p) => p.code,
+    ),
+    selectAll(
+      (after) =>
+        byCode(
+          db
+            .from("items")
+            .select(
+              "*, departments(code), skills(code), passages(code), item_options(label, body)",
+            ),
+          after,
+        ),
+      (i) => i.code,
+    ),
     db
       .from("lessons")
       .select("*, departments(code), skills(code), lesson_items(sort_order, items(code))"),

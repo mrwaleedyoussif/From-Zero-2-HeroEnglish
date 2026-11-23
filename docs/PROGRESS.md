@@ -3,6 +3,13 @@
 ## Current phase
 Phase 9 — built; LIVE at https://zero-2-heroenglish.com (2026-11-22: Supabase `linguapath` eu-central-1, all migrations; Vercel project `linguapath`, auto-deploys from GitHub main; old GitHub Pages DNS removed; smoke checks pass). Waiting on: Owner email for `owner:create`, Resend SMTP, Google OAuth client. Code: github.com/mrwaleedyoussif/From-Zero-2-HeroEnglish (CI green).
 
+## Handoff (2026-11-23) — continue from a new Claude account
+- Live on the Owner's domain (Vercel project `linguapath`, Supabase project `linguapath`). Owner account exists and has signed in; practice school PRAC1 exists (PINs given to the Owner privately).
+- New session needs: this repo attached; a Vercel token (api.vercel.com) and a Supabase access token `sbp_…` (api.supabase.com) via the secure credential form; allowed hosts for Drive (www.googleapis.com, oauth2.googleapis.com, drive.usercontent.google.com).
+- BLOCKED: Owner → Integrations → Connect Google fails with `invalid_client` (the Vercel `GOOGLE_OAUTH_CLIENT_SECRET` is wrong). Owner makes a new secret in Google Cloud → Clients → LinguaPath website, saves it in Vercel (Production + Preview), then redeploy production.
+- Then: Create Drive folders → load the STEP pack (scripts/step-import/README.md; the Owner has the converted sheets as STEP-question-sheets.zip) → Owner clicks Content → Check sheets → Apply.
+- Later: Resend SMTP for sign-in emails; GitHub Actions `APP_URL` + secrets; STEP mock tests (3,000 items) as practice exams.
+
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
 - Phase 1: Core + Access tables with RLS, `auth_can*()`, anti-escalation, audit triggers; staff magic link/Google, student PIN; `src/lib/auth/*` (engine mirrors SQL); Owner console (schools, users, CSV import, login cards, roles matrix, user detail, supervision, audit, view-as); demo seed; `owner:create`.

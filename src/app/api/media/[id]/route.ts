@@ -58,18 +58,21 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/api/m
 
   const storage = await getStorage();
   const file = await storage.stream(asset.drive_file_id, request.headers.get("range"));
+  const contentType = asset.mime_type || file.contentType;
   const headers: Record<string, string> = {
-    "Content-Type": asset.mime_type || file.contentType,
+    "Content-Type": contentType,
     "Accept-Ranges": "bytes",
     ETag: etag,
     // Content-library media is not personal data and ids are random: let the CDN cache it (SPEC §5).
     "Cache-Control": "public, max-age=31536000, immutable",
     "Content-Disposition": "inline",
     "X-Content-Type-Options": "nosniff",
-    // Neutralise scripts inside SVG/HTML files served from our origin.
-    "Content-Security-Policy":
-      "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'unsafe-inline'; sandbox",
   };
+  // Neutralise scripts inside SVG/HTML files served from our origin. PDFs are exempt: browsers
+  // refuse to open their PDF viewer in a sandboxed document, and nosniff keeps them PDFs.
+  if (contentType !== "application/pdf")
+    headers["Content-Security-Policy"] =
+      "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'unsafe-inline'; sandbox";
   if (file.contentLength !== null) headers["Content-Length"] = String(file.contentLength);
   if (file.contentRange) headers["Content-Range"] = file.contentRange;
   return new NextResponse(file.body, { status: file.status, headers });

@@ -7,11 +7,13 @@ const flag = (fallback: boolean) =>
     .default(fallback ? "true" : "false")
     .transform((v) => v === "true");
 
-// Values pasted into a hosting dashboard often carry a stray space or line break.
-const optionalString = z
-  .string()
-  .optional()
-  .transform((v) => (v?.trim() ? v.trim() : undefined));
+/** Values pasted into a hosting dashboard often carry a stray space, line break or quotes. */
+export const tidy = (v: string | undefined): string | undefined =>
+  v
+    ?.trim()
+    .replace(/^(["'])(.*)\1$/s, "$2")
+    .trim() || undefined;
+const optionalString = z.string().optional().transform(tidy);
 
 /** Variables that may reach the browser (NEXT_PUBLIC_*). */
 export const publicEnvSchema = z.object({
@@ -32,7 +34,7 @@ export const serverEnvSchema = publicEnvSchema
     SUPABASE_DB_URL: optionalString,
     GOOGLE_OAUTH_CLIENT_ID: optionalString,
     GOOGLE_OAUTH_CLIENT_SECRET: optionalString,
-    GOOGLE_OAUTH_REDIRECT_URI: z.url().optional(),
+    GOOGLE_OAUTH_REDIRECT_URI: optionalString.pipe(z.url().optional()),
     /** Fallback when the Owner has not connected Drive in the app yet (scripts, first deploy). */
     GOOGLE_REFRESH_TOKEN: optionalString,
     /** google = the Owner's Drive; fake = a local folder with the same layout (dev/tests). */

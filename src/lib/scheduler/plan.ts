@@ -13,6 +13,16 @@ export interface LocalParts {
   hour: number;
 }
 
+/** True for an IANA zone the runtime knows ("Asia/Riyadh"); "Riyadh" or "GMT+3" are not. */
+export function isTimeZone(timeZone: string): boolean {
+  try {
+    new Intl.DateTimeFormat("en", { timeZone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function localParts(now: Date, timeZone: string): LocalParts {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat("en-CA", {

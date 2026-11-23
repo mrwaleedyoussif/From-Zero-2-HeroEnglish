@@ -2,6 +2,7 @@ import "server-only";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import type { Actor } from "@/lib/auth/session";
+import { isFeatureOnFor } from "@/lib/flags/server";
 import { defaultVisibility } from "@/lib/registry";
 import { createClient } from "@/lib/supabase/server";
 import { decide, type VisibilityDecision, type VisibilityRule } from "./engine";
@@ -23,7 +24,14 @@ export async function explainVisibility(userId: string, key: string): Promise<Vi
  * Visibility is UX; security stays with can() + RLS.
  */
 export async function isVisible(actor: Actor, key: string): Promise<boolean> {
-  return (await explainVisibility(actor.effective.id, key)).visible;
+  return isVisibleTo(actor.effective.id, key);
+}
+
+/** The same decision for a user id (the signed-in user, or someone they may manage). */
+export async function isVisibleTo(userId: string, key: string): Promise<boolean> {
+  // Features also have an on/off switch (Visibility Studio → feature flags).
+  if (key.startsWith("feature.") && !(await isFeatureOnFor(userId, key))) return false;
+  return (await explainVisibility(userId, key)).visible;
 }
 
 /** Page/action guard: a hidden page behaves as if it did not exist. */

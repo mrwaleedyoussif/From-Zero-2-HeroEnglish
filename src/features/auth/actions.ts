@@ -5,10 +5,12 @@ import { redirect as externalRedirect } from "next/navigation";
 import { z } from "zod";
 import { redirect } from "@/i18n/navigation";
 import { type Locale, locales } from "@/i18n/routing";
+import { pinPassword } from "@/lib/auth/pin-password";
 import { VIEW_AS_COOKIE, getActor } from "@/lib/auth/session";
 import { studentEmail, studentLoginSchema } from "@/lib/auth/student-identity";
 import { publicEnv } from "@/lib/env.public";
 import { allow, clientIp, LIMITS } from "@/lib/security/rate-limit";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export type FormState = {
@@ -88,10 +90,18 @@ export async function studentSignIn(_prev: FormState, form: FormData): Promise<F
     return { status: "error", message: "tooManyAttempts", values };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: studentEmail(parsed.data.schoolCode, parsed.data.username),
-    password: parsed.data.pin,
-  });
+  const email = studentEmail(parsed.data.schoolCode, parsed.data.username);
+  const password = pinPassword(email, parsed.data.pin);
+  let { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error && error.status !== 429) {
+    // Accounts made before PINs were keyed still hold the PIN itself: accept it this once,
+    // re-key the account, and sign in again so the session belongs to the new password.
+    const old = await supabase.auth.signInWithPassword({ email, password: parsed.data.pin });
+    if (!old.error && old.data.user) {
+      await createAdminClient().auth.admin.updateUserById(old.data.user.id, { password });
+      ({ error } = await supabase.auth.signInWithPassword({ email, password }));
+    }
+  }
   if (error) {
     return {
       status: "error",

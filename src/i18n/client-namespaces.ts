@@ -19,6 +19,7 @@ export const CLIENT_NAMESPACES = [
   "Rewards",
   "Roles",
   "SchoolTheme",
+  "Shell",
   "ThemeToggle",
   "Users",
 ] as const;

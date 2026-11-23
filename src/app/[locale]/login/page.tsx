@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
+import { LinkSession } from "@/features/auth/components/link-session";
 import { StaffLoginForm } from "@/features/auth/components/staff-login-form";
 import { Link } from "@/i18n/navigation";
 
@@ -9,7 +10,7 @@ export default async function LoginPage({ params, searchParams }: PageProps<"/[l
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Auth");
-  const { error } = await searchParams;
+  const { error, link } = await searchParams;
   const known = knownErrors.find((e) => e === error);
 
   return (
@@ -27,6 +28,7 @@ export default async function LoginPage({ params, searchParams }: PageProps<"/[l
           {t(`errors.${known}`)}
         </p>
       )}
+      <LinkSession fromLink={link === "1"} />
       <StaffLoginForm />
     </AuthShell>
   );

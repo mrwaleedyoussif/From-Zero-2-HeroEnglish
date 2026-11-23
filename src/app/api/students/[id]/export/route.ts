@@ -5,6 +5,7 @@ import { can } from "@/lib/auth/can";
 import { platformTarget } from "@/lib/auth/scope";
 import { getActor } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 const PRIVATE = { "Cache-Control": "private, no-store" };
 
@@ -18,17 +19,21 @@ export async function GET(
     return new NextResponse(null, { status: 404, headers: PRIVATE });
   const actor = await getActor();
   if (!actor) return new NextResponse(null, { status: 401, headers: PRIVATE });
-  if (!(await can(actor, "users:edit", platformTarget)))
+  if (actor.viewAs || !(await can(actor, "users:edit", platformTarget)))
     return new NextResponse(null, { status: 403, headers: PRIVATE });
   const admin = createAdminClient();
   const data = await exportStudent(admin, id);
   if (!data) return new NextResponse(null, { status: 404, headers: PRIVATE });
-  await admin.from("audit_log").insert({
-    actor_id: actor.real.id,
-    action: "student.export",
-    target_table: "profiles",
-    target_id: id,
+  // Audited as the signed-in Owner (the audit log accepts no service-role writes); no record,
+  // no export.
+  const { error } = await (
+    await createClient()
+  ).rpc("log_audit", {
+    p_action: "student.export",
+    p_target_table: "profiles",
+    p_target_id: id,
   });
+  if (error) return new NextResponse(null, { status: 500, headers: PRIVATE });
   return new NextResponse(JSON.stringify(data, null, 2), {
     headers: {
       ...PRIVATE,

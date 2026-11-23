@@ -17,7 +17,11 @@ export async function getStorage(): Promise<StorageAdapter> {
   const env = serverEnv();
   if (env.STORAGE_DRIVER === "fake") {
     return createFakeStorage(
-      resolve(process.cwd(), env.FAKE_DRIVE_DIR ?? "supabase/fixtures/drive"),
+      // Local sample folder (dev/tests only): keep the bundler from tracing the whole project.
+      resolve(
+        /* turbopackIgnore: true */ process.cwd(),
+        env.FAKE_DRIVE_DIR ?? "supabase/fixtures/drive",
+      ),
     );
   }
   const refreshToken = await loadGoogleToken();

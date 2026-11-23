@@ -2097,6 +2097,9 @@ isOneToOne: false
 "feature_flags_for":
 { Args: { "p_user": string }; Returns: string[]
                            },
+"feature_flags_off_for":
+{ Args: { "p_user": string }; Returns: string[]
+                           },
 "hit_rate_limit":
 { Args: { "p_key": string,"p_max": number,"p_window_sec": number }; Returns: boolean
                            },

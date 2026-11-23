@@ -101,18 +101,21 @@ export async function applyPlan(
           classCode: d.class,
         });
       } else {
-        const id = await provisionStaff(db, {
-          email: d.email ?? "",
-          fullName: d.full_name,
-          schoolId: school.id,
-          locale: d.language ?? "en",
-          sendInvite: false, // no email burst; staff sign in from the login page
-        });
         let scope: Scope = { type: "school", id: school.id };
         if (role.default_scope_type === "class" && classId) scope = { type: "class", id: classId };
         if (role.default_scope_type === "grade" && d.grade)
           scope = { type: "grade", id: await structure.grade(school.id, d.grade) };
-        await grantRole(db, id, role.id, scope, true);
+        await provisionStaff(
+          db,
+          {
+            email: d.email ?? "",
+            fullName: d.full_name,
+            schoolId: school.id,
+            locale: d.language ?? "en",
+            sendInvite: false, // no email burst; staff sign in from the login page
+          },
+          (id) => grantRole(db, id, role.id, scope, true),
+        );
         outcomes.push({ line: row.line, fullName: d.full_name, ok: true });
       }
     } catch (e) {

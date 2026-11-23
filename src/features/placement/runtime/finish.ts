@@ -1,6 +1,7 @@
 import "server-only";
 import type { createAdminClient } from "@/lib/supabase/admin";
 import { rewardTest } from "@/features/rewards/hooks";
+import { isVisibleTo } from "@/lib/visibility/server";
 import type { Tables } from "@/types/db";
 import { cefrFor, scaledScore, skillEstimates } from "../engine/score";
 import type { EngineAnswer, Estimate, StopReason } from "../engine/types";
@@ -13,13 +14,26 @@ type SessionRow = Tables<"test_sessions">;
  * Productive prompts for this level (SPEC §7): one writing and one speaking prompt nearest to
  * θ̂ (by difficulty), if the department has any. Deterministic, so it can be recomputed.
  */
-export async function choosePrompts(admin: Admin, departmentId: string, theta: number) {
+export async function choosePrompts(
+  admin: Admin,
+  departmentId: string,
+  theta: number,
+  studentId: string,
+) {
+  // The Owner can switch the writing or speaking part off (e.g. speaking until Drive is
+  // connected, where recordings are stored). Always called in the student's own request.
+  const [writing, speaking] = await Promise.all([
+    isVisibleTo(studentId, "feature.placementWriting"),
+    isVisibleTo(studentId, "feature.placementSpeaking"),
+  ]);
+  const types = [...(writing ? ["writing_prompt"] : []), ...(speaking ? ["speaking_prompt"] : [])];
+  if (!types.length) return [];
   const { data } = await admin
     .from("items")
     .select("id, item_type, skill_id, difficulty, b_initial, b_calibrated")
     .eq("department_id", departmentId)
     .eq("status", "active")
-    .in("item_type", ["writing_prompt", "speaking_prompt"]);
+    .in("item_type", types);
   const best = new Map<
     string,
     { id: string; skill_id: string; kind: "writing" | "speaking"; dist: number }
@@ -47,7 +61,7 @@ export async function finishReceptive(
   const cuts = await loadCuts(admin, s.department_id);
   const cefr = cefrFor(estimate.theta, cuts);
   const skills = skillEstimates(answers, estimate.theta);
-  const prompts = await choosePrompts(admin, s.department_id, estimate.theta);
+  const prompts = await choosePrompts(admin, s.department_id, estimate.theta, s.student_id);
   const now = new Date().toISOString();
   const status = prompts.length ? "productive" : "completed";
 

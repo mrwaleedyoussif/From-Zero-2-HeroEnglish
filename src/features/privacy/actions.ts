@@ -8,6 +8,7 @@ import { platformTarget } from "@/lib/auth/scope";
 import { getActor } from "@/lib/auth/session";
 import { getStorage } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * Erase a student (SPEC §15, PDPL right to deletion): Owner only, confirmed by typing the
@@ -44,14 +45,17 @@ export async function eraseStudent(_p: unknown, form: FormData): Promise<ActionR
         if (storage && u.drive_file_id)
           await storage.remove(u.drive_file_id).catch(() => undefined);
     }
-    await admin.from("audit_log").insert({
-      actor_id: actor.real.id,
-      action: "student.erase",
-      target_table: "profiles",
-      target_id: p.id,
-      school_id: p.school_id,
-      after: { uploads_removed: uploads?.length ?? 0 },
+    // Audited as the signed-in Owner, before anything is deleted: no record, no erase.
+    const audit = await (
+      await createClient()
+    ).rpc("log_audit", {
+      p_action: "student.erase",
+      p_target_table: "profiles",
+      p_target_id: p.id,
+      p_school: p.school_id ?? undefined,
+      p_details: { uploads_removed: uploads?.length ?? 0 },
     });
+    if (audit.error) throw new ActionError("failed");
     const { error } = await admin.auth.admin.deleteUser(p.id);
     if (error) throw new ActionError("failed");
   });

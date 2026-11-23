@@ -30,6 +30,16 @@ describe("env schema", () => {
     expect(env.GOOGLE_OAUTH_CLIENT_SECRET).toBeUndefined();
   });
 
+  it("drops quotes pasted around a value and accepts a blank redirect address", () => {
+    const env = parseEnv(serverEnvSchema, {
+      ...valid,
+      GOOGLE_OAUTH_CLIENT_SECRET: ' "GOCSPX-secret" ',
+      GOOGLE_OAUTH_REDIRECT_URI: " ",
+    });
+    expect(env.GOOGLE_OAUTH_CLIENT_SECRET).toBe("GOCSPX-secret");
+    expect(env.GOOGLE_OAUTH_REDIRECT_URI).toBeUndefined();
+  });
+
   it("parses boolean flags from strings", () => {
     const env = parseEnv(serverEnvSchema, {
       ...valid,

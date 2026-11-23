@@ -38,7 +38,7 @@ describe("digest email", () => {
       data,
       url: "https://app.test/en/reports/1",
     });
-    expect(m.subject).toBe("Weekly report — week of 2026-11-15");
+    expect(m.subject).toBe("Weekly report — from 2026-11-15");
     expect(m.html).toContain("https://app.test/en/reports/1");
     expect(m.html).toContain("Give class 4A extra practice in GRAM.");
     expect(m.text).toContain("40%");

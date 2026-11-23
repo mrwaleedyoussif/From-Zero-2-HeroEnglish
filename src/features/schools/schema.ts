@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { schoolCodeSchema } from "@/lib/auth/student-identity";
+import { isTimeZone } from "@/lib/scheduler/plan";
 
 const name = z.string().trim().min(1).max(120);
 
@@ -7,7 +8,7 @@ export const schoolSchema = z.object({
   code: schoolCodeSchema,
   name_en: name,
   name_ar: name,
-  timezone: z.string().trim().min(1).default("Asia/Riyadh"),
+  timezone: z.string().trim().min(1).default("Asia/Riyadh").refine(isTimeZone),
   week_start: z.coerce.number().int().min(0).max(6).default(0),
 });
 

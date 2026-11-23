@@ -1,7 +1,8 @@
 import "server-only";
 import { ActionError, check } from "@/lib/action-result";
 import type { Scope } from "@/lib/auth/engine";
-import { generatePin, studentEmail } from "@/lib/auth/student-identity";
+import { pinPassword } from "@/lib/auth/pin-password";
+import { generatePin, isStudentEmail, studentEmail } from "@/lib/auth/student-identity";
 import { publicEnv } from "@/lib/env.public";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { createClient } from "@/lib/supabase/server";
@@ -80,9 +81,10 @@ export async function provisionStudent(
   const admin = createAdminClient();
   const id = await withAuthUser(
     async () => {
+      const email = studentEmail(s.schoolCode, s.username);
       const { data, error } = await admin.auth.admin.createUser({
-        email: studentEmail(s.schoolCode, s.username),
-        password: pin,
+        email,
+        password: pinPassword(email, pin),
         email_confirm: true,
         user_metadata: { full_name: s.fullName },
       });
@@ -134,7 +136,15 @@ export interface NewStaff {
   sendInvite: boolean;
 }
 
-export async function provisionStaff(db: Db, s: NewStaff): Promise<string> {
+/**
+ * `grant` (the person's first role) runs inside the rollback: if RLS refuses the role, no
+ * half-made account is left behind to block a second try.
+ */
+export async function provisionStaff(
+  db: Db,
+  s: NewStaff,
+  grant?: (id: string) => Promise<void>,
+): Promise<string> {
   const admin = createAdminClient();
   return withAuthUser(
     async () => {
@@ -162,14 +172,25 @@ export async function provisionStaff(db: Db, s: NewStaff): Promise<string> {
           locale: s.locale,
         }),
       );
+      await grant?.(uid);
       return uid;
     },
   );
 }
 
+/**
+ * New PIN, for student sign-in identities only. The check is on the auth account itself (not
+ * the editable profile row), so a PIN can never become the password of a staff email.
+ */
 export async function setPin(userId: string): Promise<string> {
   const pin = generatePin();
-  const { error } = await createAdminClient().auth.admin.updateUserById(userId, { password: pin });
+  const admin = createAdminClient();
+  const { data: existing } = await admin.auth.admin.getUserById(userId);
+  const email = existing.user?.email ?? "";
+  if (!isStudentEmail(email)) throw new ActionError("studentsOnly");
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    password: pinPassword(email, pin),
+  });
   if (error) throw new ActionError("failed");
   return pin;
 }

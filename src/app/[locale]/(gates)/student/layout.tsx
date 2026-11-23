@@ -1,10 +1,11 @@
+import { Accommodations } from "@/features/learning/components/accommodations";
 import { GateLayout } from "@/gates/components/gate-layout";
 import { studentGate } from "@/gates/student.config";
 
 export default function Layout({ children, params }: LayoutProps<"/[locale]/student">) {
   return (
     <GateLayout gate={studentGate} params={params}>
-      {children}
+      <Accommodations>{children}</Accommodations>
     </GateLayout>
   );
 }

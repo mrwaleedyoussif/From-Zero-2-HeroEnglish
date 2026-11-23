@@ -51,7 +51,7 @@ test("acceptance: assign to a group → students see it → completion updates t
   await student(omar, "omar.s");
   await omar.goto("/en/student/profile");
   await omar.getByText("Sports").click();
-  for (let i = 0; i < 4; i++) await omar.getByRole("button", { name: "Next" }).click();
+  for (let i = 0; i < 4; i++) await omar.getByRole("button", { name: "Next", exact: true }).click();
   await omar.getByRole("button", { name: "Finish" }).click();
   await expect(omar).toHaveURL(/\/en\/student\/lessons$/);
   await expect(omar.locator("[data-notifications]")).toHaveAttribute("data-notifications", "1");

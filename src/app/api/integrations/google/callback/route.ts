@@ -2,6 +2,7 @@ import { OAuth2Client } from "google-auth-library";
 import { type NextRequest, NextResponse } from "next/server";
 import {
   checkState,
+  googleErrorCode,
   googleRedirectUri,
   missingScopes,
   OAUTH_STATE_COOKIE,
@@ -52,11 +53,11 @@ export async function GET(request: NextRequest) {
     if (missingScopes(tokens.scope).length) return done("error=scopes");
     let email: string | null = null;
     if (tokens.id_token) {
-      const ticket = await client.verifyIdToken({
-        idToken: tokens.id_token,
-        audience: env.GOOGLE_OAUTH_CLIENT_ID,
-      });
-      email = ticket.getPayload()?.email ?? null;
+      // Only used to show which account is connected: never a reason to lose the connection.
+      const ticket = await client
+        .verifyIdToken({ idToken: tokens.id_token, audience: env.GOOGLE_OAUTH_CLIENT_ID })
+        .catch(() => null);
+      email = ticket?.getPayload()?.email ?? null;
     }
     await saveGoogleToken({
       refreshToken: tokens.refresh_token,
@@ -72,7 +73,11 @@ export async function GET(request: NextRequest) {
     });
     return done("connected=1");
   } catch (e) {
-    console.error("Google OAuth callback failed", e);
+    // Name the setting that is wrong, so the Owner knows what to fix (never the values).
+    const reason = googleErrorCode(e);
+    console.error("Google OAuth callback failed", reason ?? e);
+    if (reason === "invalid_client") return done("error=client_secret");
+    if (reason === "redirect_uri_mismatch") return done("error=redirect_uri");
     return done("error=exchange");
   }
 }

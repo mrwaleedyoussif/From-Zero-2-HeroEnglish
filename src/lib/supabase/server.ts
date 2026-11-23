@@ -4,6 +4,15 @@ import { cookies } from "next/headers";
 import { publicEnv } from "@/lib/env.public";
 import type { Database } from "@/types/db";
 
+/**
+ * Session cookies are only ever read by the server (there is no browser Supabase client), so
+ * page scripts get no access to them.
+ */
+export const SESSION_COOKIE = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+} as const;
+
 /** Supabase client acting as the signed-in user (RLS applies). Use in Server Components and actions. */
 export async function createClient() {
   const cookieStore = await cookies();
@@ -16,7 +25,8 @@ export async function createClient() {
         getAll: () => cookieStore.getAll(),
         setAll: (toSet) => {
           try {
-            for (const { name, value, options } of toSet) cookieStore.set(name, value, options);
+            for (const { name, value, options } of toSet)
+              cookieStore.set(name, value, { ...options, ...SESSION_COOKIE });
           } catch {
             // Called from a Server Component: cookies are read-only there; the proxy refreshes them.
           }

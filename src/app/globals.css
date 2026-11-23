@@ -184,9 +184,10 @@
   --app-font: var(--font-plex-arabic), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Dyslexia-friendly option (SPEC §16); toggled per user later. */
+/* Dyslexia-friendly option (SPEC §16): the learner's "easy-to-read font" accommodation. */
 [data-font="dyslexia"] {
   --app-font: var(--font-atkinson), var(--font-plex-arabic), ui-sans-serif, sans-serif;
+  font-family: var(--app-font);
 }
 
 @layer base {

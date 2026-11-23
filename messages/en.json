@@ -6,14 +6,13 @@
   "Home": {
     "title": "LinguaPath",
     "tagline": "Adaptive English learning for schools",
-    "intro": "The platform is being built. This page checks that languages, right-to-left layout, themes and design tokens work.",
-    "status": "Phase 0 — foundations",
-    "staffTheme": "Staff theme",
-    "studentTheme": "Student theme",
-    "primaryAction": "Primary",
-    "secondaryAction": "Secondary",
-    "reward": "+20 XP",
-    "cefrScale": "CEFR scale"
+    "intro": "Placement tests, lessons matched to each learner's level, and progress reports for teachers and school leaders.",
+    "studentTitle": "Students",
+    "studentIntro": "Sign in with the school code, username and PIN on your login card.",
+    "studentAction": "Student sign in",
+    "staffTitle": "Teachers and staff",
+    "staffIntro": "Sign in with your work email. We send you a link, so there is no password to remember.",
+    "staffAction": "Staff sign in"
   },
   "LocaleSwitcher": {
     "label": "Language",
@@ -27,7 +26,8 @@
     "appName": "LinguaPath",
     "viewingAs": "Viewing as {name} — read-only",
     "exitViewAs": "Exit",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "loading": "Loading…"
   },
   "Auth": {
     "staffTitle": "Staff sign in",
@@ -45,6 +45,7 @@
     "username": "Username",
     "pin": "PIN (6 digits)",
     "signIn": "Sign in",
+    "signingIn": "Signing you in…",
     "errors": {
       "invalidEmail": "Please enter a valid email address.",
       "tooManyAttempts": "Too many attempts. Please wait a few minutes and try again.",
@@ -95,7 +96,8 @@
     "teamsExist": "This class already has teams. Delete them first to make new ones.",
     "notEnoughCoins": "You don't have enough coins for that yet.",
     "kudosCap": "That's the most kudos this student can get today.",
-    "confirmMismatch": "The username you typed does not match."
+    "confirmMismatch": "The username you typed does not match.",
+    "protectedKey": "The Owner console and its Visibility page can't be hidden: they are where a wrong rule is undone."
   },
   "Done": {
     "saved": "Saved",
@@ -318,7 +320,8 @@
       "placement": "Placement",
       "rewards": "Rewards",
       "reports": "Reports",
-      "billing": "Billing"
+      "billing": "Billing",
+      "gates": "Portals"
     },
     "newRole": "New role",
     "key": "Key",
@@ -597,7 +600,7 @@
     "doesNotSee": "does not see it",
     "because": "{level} rule: {effect}",
     "flags": "Feature flags",
-    "flagsHelp": "Turn unfinished features on for everyone, for chosen schools/classes/roles, or off.",
+    "flagsHelp": "Every feature is on unless you change it here: turn one off, or keep it on only for chosen schools, classes or roles.",
     "flagStates": {
       "off": "Off",
       "all": "On for everyone",
@@ -675,7 +678,9 @@
       "denied": "Google access was not granted.",
       "no_refresh_token": "Google didn't return a long-lived key. Remove the app at myaccount.google.com/permissions and connect again.",
       "scopes": "Please allow both Drive and Sheets access on Google's screen.",
-      "exchange": "Google refused the connection. Check the client ID, secret and redirect address."
+      "exchange": "Google refused the connection. Check the client ID, secret and redirect address.",
+      "client_secret": "Google rejected the client secret. In Google Cloud → Clients, open the web client, add a new secret, copy it into GOOGLE_OAUTH_CLIENT_SECRET in the app settings (no quotes or spaces), redeploy and connect again.",
+      "redirect_uri": "The redirect address in Google Cloud does not match this site. Under “Authorised redirect URIs” add exactly the address shown in the steps below."
     }
   },
   "ContentSync": {
@@ -984,6 +989,9 @@
     "add": "Add a student",
     "addButton": "Add",
     "profileSince": "Profile filled in on {date}",
+    "signIn": "Sign-in",
+    "signInHelp": "Username: {username}. If the student forgot their PIN, make a new one and give it to them. The old PIN stops working.",
+    "resetPin": "Make a new PIN",
     "noProfile": "This student hasn't filled in their profile yet.",
     "mindset": "Growth mindset: {score}/100",
     "notes": "Teacher notes (students don't see these)",
@@ -1266,18 +1274,18 @@
       "monthly": "Monthly"
     },
     "mail": {
-      "subject": "{period} report — week of {start}",
+      "subject": "{period} report — from {start}",
       "preview": "{period} report from {start}",
       "title": "Your {period} LinguaPath report",
       "hello": "Hello {name},",
       "range": "{school} · {start} to {end}",
       "classes": "classes",
       "students": "students",
-      "active": "active this week",
-      "lessons": "lessons finished",
+      "active": "active in the last 7 days",
+      "lessons": "lessons finished in the last 7 days",
       "atRisk": "learners needing attention",
       "followUps": "coaching follow-ups due",
-      "nextWeek": "Suggested for next week",
+      "nextWeek": "Suggested next steps",
       "open": "Open the full report",
       "footer": "You get this because of your role. You can turn report emails off on the Reports page."
     },
@@ -1298,13 +1306,13 @@
       "followUps": "Coaching follow-ups due",
       "cefr": "CEFR distribution",
       "coaching": "Coaching activity",
-      "suggestions": "Suggested for next week"
+      "suggestions": "Suggested next steps"
     },
     "col": {
       "class": "Class",
       "students": "Students",
-      "active": "Active",
-      "lessons": "Lessons",
+      "active": "Active (7 days)",
+      "lessons": "Lessons (7 days)",
       "accuracy": "Accuracy",
       "atRisk": "At risk",
       "overdue": "Overdue",

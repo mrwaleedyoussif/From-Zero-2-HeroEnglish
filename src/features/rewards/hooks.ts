@@ -1,6 +1,7 @@
 import "server-only";
 import { cefrIndex } from "@/features/learning/recommend/engine";
 import type { createAdminClient } from "@/lib/supabase/admin";
+import { localDay } from "@/lib/time";
 import { type AwardOutcome, award } from "./award";
 import { cefrMilestone } from "./award-extras";
 
@@ -38,7 +39,7 @@ export async function rewardLesson(
   score: number | null,
   onTimeAssignments: readonly string[],
 ): Promise<AwardOutcome> {
-  const day = new Date().toISOString().slice(0, 10);
+  const day = localDay();
   const meta = {
     lesson: lesson.id,
     skill: lesson.skills?.code ?? null,

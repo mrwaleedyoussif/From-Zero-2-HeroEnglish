@@ -4,6 +4,7 @@ import { allowedBands, gradeBand } from "@/features/placement/runtime/rules";
 import type { Actor } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { localDay } from "@/lib/time";
 import { learnerLevels, learnerProfile } from "../profile/queries";
 import {
   cefrIndex,
@@ -19,7 +20,7 @@ export interface CachedPick {
   reasons: Reason[];
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => localDay();
 
 /** Learner's grade band (from their class) → lesson bands within ±1. */
 async function bandsFor(studentId: string) {

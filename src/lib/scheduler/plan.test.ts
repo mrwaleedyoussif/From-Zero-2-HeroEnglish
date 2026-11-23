@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   addDays,
+  isTimeZone,
   localParts,
   monthlyPeriod,
   nextDay,
@@ -12,6 +13,11 @@ import {
 const RIYADH = "Asia/Riyadh"; // UTC+3, no DST
 
 describe("report schedule", () => {
+  it("tells real time zones from free text", () => {
+    expect(isTimeZone(RIYADH)).toBe(true);
+    expect(isTimeZone("Riyadh")).toBe(false);
+    expect(isTimeZone("GMT+3")).toBe(false);
+  });
   it("reads the local date, weekday and hour in the school's zone", () => {
     expect(localParts(new Date("2026-11-21T22:30:00Z"), RIYADH)).toEqual({
       date: "2026-11-22",

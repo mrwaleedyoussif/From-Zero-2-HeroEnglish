@@ -4,10 +4,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { visibleOnly } from "@/lib/visibility/server";
 import { loadBlueprint, studentContext } from "./runtime/data";
+import { scaleTime, timeFactor } from "./runtime/extra-time";
 import { publicItem } from "./runtime/public-item";
 import { decideStart, type StartDecision } from "./runtime/rules";
-import { expireIfLate, ownSession } from "./runtime/session";
-import { pendingPrompts } from "./runtime/productive";
+import { expireIfLate, ownSession, unstick } from "./runtime/session";
+import { completeIfDone, pendingPrompts } from "./runtime/productive";
 import { startFacts } from "./runtime/start";
 
 export interface DepartmentStatus {
@@ -69,9 +70,10 @@ export async function studentOverview(actor: Actor): Promise<DepartmentStatus[]>
 /** What the test screen needs right now: the current item, or the pending prompts. */
 export async function testView(actor: Actor, sessionId: string) {
   const { admin, s: first } = await ownSession(actor, sessionId);
-  const s = (await expireIfLate(admin, first))
-    ? ((await admin.from("test_sessions").select("*").eq("id", sessionId).single()).data ?? first)
-    : first;
+  const s =
+    (await expireIfLate(admin, first)) || (await unstick(admin, first))
+      ? ((await admin.from("test_sessions").select("*").eq("id", sessionId).single()).data ?? first)
+      : first;
   const bp = await loadBlueprint(
     admin,
     s.department_id,
@@ -85,10 +87,19 @@ export async function testView(actor: Actor, sessionId: string) {
     deadline: s.deadline_at,
   };
   if (s.status === "in_progress" && s.current_item_id) {
-    return { ...base, item: await publicItem(admin, s.current_item_id), prompts: [] };
+    const item = await publicItem(admin, s.current_item_id);
+    const factor = await timeFactor(admin, s.student_id);
+    return {
+      ...base,
+      item: item && { ...item, timeLimitSec: scaleTime(item.timeLimitSec, factor) },
+      prompts: [],
+    };
   }
   if (s.status === "productive") {
     const pending = await pendingPrompts(admin, s);
+    // Nothing left to answer (e.g. the speaking part was switched off since): finish the test
+    // so the result page opens instead of a dead end.
+    if (!pending.length) await completeIfDone(admin, s);
     const prompts = [];
     for (const p of pending) {
       const item = await publicItem(admin, p.id);

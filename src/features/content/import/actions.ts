@@ -17,6 +17,7 @@ import {
   syncMediaAssets,
 } from "./drive-source";
 import { loadExisting } from "./existing";
+import { countUnlinkedMedia, linkMedia } from "./link-media";
 import type { ImportIssue } from "./parse";
 import { buildPreview, type SheetSummary } from "./pipeline";
 
@@ -61,7 +62,8 @@ export async function previewContentSync(): Promise<ActionResult<PreviewResult>>
       throw e;
     }
     const [media, existing] = await Promise.all([listMedia(drive), loadExisting(db)]);
-    const preview = buildPreview(raw, existing, new Set(media.map((m) => m.name)));
+    const mediaNames = new Set(media.map((m) => m.name));
+    const preview = buildPreview(raw, existing, mediaNames);
 
     // Keep only rows that will change something; unchanged rows are not rewritten.
     const changing = new Map(
@@ -82,7 +84,16 @@ export async function previewContentSync(): Promise<ActionResult<PreviewResult>>
       changedQuestions:
         preview.sheets.find((s) => s.name === "Questions")?.changed.map((c) => c.key) ?? [],
     };
-    const toApply = Object.values(payload.rows).reduce((n, rows) => n + rows.length, 0);
+    // Unchanged rows whose media file has arrived since they were imported count as work too,
+    // so Apply stays available to link them.
+    const toApply =
+      Object.values(payload.rows).reduce((n, rows) => n + rows.length, 0) +
+      (await countUnlinkedMedia(db, mediaNames));
+    // A new check replaces earlier unapplied ones: drop their stored rows (DB budget).
+    await db
+      .from("import_jobs")
+      .update({ status: "expired", payload: null })
+      .eq("status", "previewed");
     const issues = preview.issues.slice(0, MAX_ISSUES);
     const { data: job, error } = await db
       .from("import_jobs")
@@ -124,9 +135,11 @@ export async function applyContentSync(jobId: string): Promise<ActionResult<{ ap
       throw new ActionError("previewExpired");
     }
     const payload = job.payload as unknown as ImportPayload;
+    let linked = 0;
     try {
       const mediaIds = await syncMediaAssets(db, await listMedia(await storage()));
       await applyPayload(db, payload, mediaIds);
+      linked = await linkMedia(db, mediaIds);
     } catch (e) {
       await db
         .from("import_jobs")
@@ -142,7 +155,18 @@ export async function applyContentSync(jobId: string): Promise<ActionResult<{ ap
       .from("import_jobs")
       .update({ status: "applied", payload: null, applied_at: new Date().toISOString() })
       .eq("id", jobId);
+    const applied = Object.values(payload.rows).reduce((n, rows) => n + rows.length, 0) + linked;
+    // Who imported what, as counts (the rows themselves are far too large for the audit log).
+    await db.rpc("log_audit", {
+      p_action: "content.import",
+      p_target_table: "import_jobs",
+      p_target_id: jobId,
+      p_details: {
+        ...Object.fromEntries(Object.entries(payload.rows).map(([k, rows]) => [k, rows.length])),
+        media_linked: linked,
+      },
+    });
     revalidatePath("/[locale]", "layout");
-    return { applied: Object.values(payload.rows).reduce((n, rows) => n + rows.length, 0) };
+    return { applied };
   });
 }

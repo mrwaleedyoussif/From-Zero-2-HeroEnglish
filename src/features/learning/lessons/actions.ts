@@ -101,15 +101,21 @@ export async function completeLesson(
 > {
   return runAction(async () => {
     const { actor, lesson, admin, schoolId } = await learnerOn(lessonId);
-    const { answers, seconds } = completeInput.parse(input);
+    const { answers, seconds: claimed } = completeInput.parse(input);
     const { score, results } = await scorePractice(admin, lesson, answers);
     const now = new Date().toISOString();
     const { data: prev } = await admin
       .from("lesson_progress")
-      .select("best_score, attempts, time_spent_sec")
+      .select("best_score, attempts, time_spent_sec, last_opened_at")
       .eq("student_id", actor.real.id)
       .eq("lesson_id", lesson.id)
       .maybeSingle();
+    // Time on the lesson can't be longer than the time since the server saw it opened (the
+    // browser's own figure would let a script skip the minimum time that earns XP).
+    const since = prev?.last_opened_at
+      ? Math.max(0, Math.round((Date.parse(now) - Date.parse(prev.last_opened_at)) / 1000))
+      : 0;
+    const seconds = Math.min(claimed, since + 5); // a few seconds for the opening request to arrive
     await admin.from("lesson_progress").upsert({
       student_id: actor.real.id,
       lesson_id: lesson.id,

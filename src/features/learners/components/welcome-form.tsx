@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { completeProfile } from "../actions";
+import { completeProfile } from "../join";
 
 /** Asked once: name, that the learner is an adult, and agreement to how their data is used. */
 export function WelcomeForm() {
@@ -26,6 +26,21 @@ export function WelcomeForm() {
           <span>{t(k)}</span>
         </label>
       ))}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="learner-invite">{t("invite")}</Label>
+        <Input
+          id="learner-invite"
+          name="invite"
+          dir="ltr"
+          autoCapitalize="characters"
+          maxLength={12}
+          className="uppercase"
+          aria-describedby="learner-invite-help"
+        />
+        <p id="learner-invite-help" className="text-sm text-muted-foreground">
+          {t("inviteHelp")}
+        </p>
+      </div>
       {state.error && (
         <p role="alert" className="text-sm text-destructive">
           {t(`errors.${state.error}`)}

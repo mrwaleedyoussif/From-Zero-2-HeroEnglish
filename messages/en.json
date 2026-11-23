@@ -424,7 +424,8 @@
         "reports": "Reports",
         "integrations": "Integrations",
         "rewards": "Rewards",
-        "insights": "Insights"
+        "insights": "Insights",
+        "learners": "General learners"
       },
       "leadership": {
         "home": "Overview",
@@ -471,7 +472,8 @@
         "reports": "Reports",
         "integrations": "Integrations",
         "rewards": "Rewards",
-        "insights": "Insights"
+        "insights": "Insights",
+        "learners": "General learners"
       },
       "leadership": {
         "home": "Overview",
@@ -1446,7 +1448,46 @@
       "disabled": "This account is switched off.",
       "welcome": "Please enter your name and tick both boxes.",
       "signedOut": "Your sign-in has ended. Please start again.",
-      "failed": "Something went wrong. Please try again."
-    }
+      "failed": "Something went wrong. Please try again.",
+      "invite": "That invitation code is not valid, has expired or is used up. Check it, or leave the box empty to ask for approval.",
+      "pending": "Your request is still waiting for approval. We will email you when it is approved."
+    },
+    "invite": "Invitation code (optional)",
+    "inviteHelp": "Have a code? You can start right away. Without one, your request is sent for approval.",
+    "pendingTitle": "Request sent",
+    "pendingIntro": "Thank you! Your request to join is waiting for approval.",
+    "pendingNext": "We will email you when it is approved. Then sign in again with your email and a new code.",
+    "backHome": "Back to the home page"
+  },
+  "OwnerLearners": {
+    "title": "General learners",
+    "intro": "People outside a school. You decide who gets in: approve each request, or give out invitation codes that let people in at once.",
+    "pending": "Waiting for your approval",
+    "noPending": "No requests are waiting.",
+    "name": "Name",
+    "email": "Email",
+    "asked": "Asked on",
+    "approve": "Approve",
+    "reject": "Reject",
+    "confirmReject": "Reject and delete this request?",
+    "invites": "Invitation codes",
+    "invitesHelp": "Anyone who types a valid code when they join gets in without waiting. Give each group its own code so you can see who came from where.",
+    "label": "What it is for",
+    "maxUses": "How many people",
+    "expires": "Last day (optional)",
+    "create": "Create a code",
+    "code": "Code",
+    "used": "Used",
+    "lastDay": "Last day",
+    "status": "Status",
+    "cancel": "Cancel",
+    "noInvites": "No codes yet.",
+    "state": {
+      "active": "Active",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "full": "Used up"
+    },
+    "noEnd": "No end date"
   }
 }

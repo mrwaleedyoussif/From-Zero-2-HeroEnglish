@@ -102,16 +102,25 @@ Until `APP_URL` is set, both workflows stay switched off.
 
 ## 6b. General learners (people outside a school) — optional
 
-They join and sign in with a one-time code sent to their email: no password. Off until you turn it on.
+They join and sign in with a one-time code sent to their email: no password. **You decide who gets
+in:** a person with one of your invitation codes starts at once; anyone else waits for your approval.
+Off until you turn it on.
 
-1. Email must really be sent: in Vercel set `MAIL_PROVIDER` to `resend` (with `RESEND_API_KEY` and a
+1. Database: apply `supabase/migrations/20261201000001_general_learners.sql` (`npx supabase db push`,
+   or paste the file into Supabase → SQL Editor and add the line that records it:
+   `insert into supabase_migrations.schema_migrations (version, name) values ('20261201000001', 'general_learners');`).
+2. Email must really be sent: in Vercel set `MAIL_PROVIDER` to `resend` (with `RESEND_API_KEY` and a
    `MAIL_FROM` on a domain verified in Resend) or to `gmail`. With `console` the feature stays closed.
-2. In Vercel add `GENERAL_LEARNERS_ENABLED` = `true`, and optionally `GENERAL_DAILY_SIGNUPS`
+3. In Vercel add `GENERAL_LEARNERS_ENABLED` = `true`, and optionally `GENERAL_DAILY_SIGNUPS`
    (new learners allowed per day; 50 if not set). Redeploy.
-3. The home page's **General learner** card now opens the sign-in. To pause sign-ups, set
-   `GENERAL_LEARNERS_ENABLED` back to `false` and redeploy; existing learners keep their data.
-4. They appear under Owner → Users in the school **General learners**, where you can switch any
-   account off. Adults only (they confirm they are 18 or older).
+4. Owner → **General learners**:
+   - *Waiting for your approval*: **Approve** (they get an email and can sign in) or **Reject**
+     (the request and the account are deleted).
+   - *Invitation codes*: create a code for a group (what it is for, how many people, last day).
+     Cancel a code at any time; people who already joined with it stay.
+5. To pause sign-ups, set `GENERAL_LEARNERS_ENABLED` back to `false` and redeploy; existing learners
+   keep their data. Adults only (they confirm they are 18 or older). Each learner is also listed under
+   Owner → Users in the school **General learners**, where any account can be switched off.
 
 ## 7. Check that it works (smoke test)
 

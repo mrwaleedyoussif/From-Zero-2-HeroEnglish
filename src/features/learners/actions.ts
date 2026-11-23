@@ -8,8 +8,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { getMailer } from "@/lib/mail";
 import { codeEmail } from "./code-email";
-import { generalSchoolId, learnersOpen, randomUsername, signupsToday } from "./general";
-import { codeSchema, emailSchema, localeSchema, welcomeSchema } from "./schema";
+import { learnersOpen, signupsToday } from "./general";
+import { codeSchema, emailSchema, localeSchema } from "./schema";
 
 export interface LearnerState {
   step: "email" | "code";
@@ -88,72 +88,23 @@ export async function verifyCode(_p: LearnerState, form: FormData): Promise<Lear
     type: "email",
   });
   if (error || !data.user) return { ...back, error: "wrongCode" };
-  const { data: profile } = await supabase
+  // Read with the service role: a learner who is not approved yet can't see their own row.
+  const admin = createAdminClient();
+  const { data: profile } = await admin
     .from("profiles")
     .select("status")
     .eq("id", data.user.id)
     .maybeSingle();
   if (profile && profile.status !== "active") {
+    // Not approved yet, or switched off by the Owner: either way, no session.
+    const { data: request } = await admin
+      .from("learner_requests")
+      .select("status")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
     await supabase.auth.signOut();
-    return { step: "email", error: "disabled" };
+    return { step: "email", error: request?.status === "pending" ? "pending" : "disabled" };
   }
   redirect({ href: profile ? "/home" : "/learner/welcome", locale });
   return back;
-}
-
-/** First visit after the code: create the learner (their own group, student role, consent). */
-export async function completeProfile(
-  _p: { error?: string },
-  form: FormData,
-): Promise<{ error?: string }> {
-  const input = welcomeSchema.safeParse(Object.fromEntries(form.entries()));
-  if (!input.success) return { error: "welcome" };
-  const supabase = await createClient();
-  const { data: auth } = await supabase.auth.getUser();
-  const user = auth.user;
-  if (!user?.email || isStudentEmail(user.email)) return { error: "signedOut" };
-  const env = serverEnv();
-  if (!learnersOpen()) return { error: "closed" };
-
-  const admin = createAdminClient();
-  const { data: existing } = await admin
-    .from("profiles")
-    .select("id")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (!existing) {
-    if ((await signupsToday(admin)) >= env.GENERAL_DAILY_SIGNUPS) return { error: "full" };
-    const [schoolId, { data: role }] = await Promise.all([
-      generalSchoolId(admin),
-      admin.from("roles").select("id").eq("key", "student").eq("status", "active").maybeSingle(),
-    ]);
-    if (!role) return { error: "failed" };
-    const { error } = await admin.from("profiles").insert({
-      id: user.id,
-      school_id: schoolId,
-      kind: "student",
-      username: randomUsername(),
-      full_name: input.data.full_name,
-      email: user.email,
-      locale: input.data.locale,
-      consent: true,
-      consent_at: new Date().toISOString(),
-    });
-    if (error) return { error: "failed" };
-    const granted = await admin
-      .from("user_roles")
-      .insert({ user_id: user.id, role_id: role.id, scope_type: "self", scope_id: null });
-    if (granted.error) {
-      await admin.from("profiles").delete().eq("id", user.id); // no half-made learner
-      return { error: "failed" };
-    }
-    await supabase.rpc("log_audit", {
-      p_action: "learner.signup",
-      p_target_table: "profiles",
-      p_target_id: user.id,
-      p_school: schoolId,
-    });
-  }
-  redirect({ href: "/home", locale: input.data.locale });
-  return {};
 }

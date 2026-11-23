@@ -12,6 +12,7 @@ export const ownerGate = defineGate({
     { key: "nav.owner.insights", href: "/owner/insights", permission: "students:view" },
     { key: "nav.owner.users", href: "/owner/users", permission: "users:view" },
     { key: "nav.owner.import", href: "/owner/users/import", permission: "users:import" },
+    { key: "nav.owner.learners", href: "/owner/learners", permission: "users:invite" },
     { key: "nav.owner.roles", href: "/owner/roles", permission: "roles:view" },
     { key: "nav.owner.supervision", href: "/owner/supervision", permission: "supervision:view" },
     { key: "nav.owner.visibility", href: "/owner/visibility", permission: "visibility:manage" },

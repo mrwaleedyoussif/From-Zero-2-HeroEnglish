@@ -14,6 +14,7 @@ import { type RefObject, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { type HomeTexts, type Step, STEP_HEADING as HEADING } from "../copy";
 import type { SchoolChoice } from "../school-choices";
+import { schoolLogo } from "../school-logos";
 import { remember, useStored } from "../storage";
 import { OptionCard, TONES } from "./option-card";
 
@@ -131,6 +132,7 @@ export function Journey({
               tone={TONES[i % TONES.length] ?? "violet"}
               index={i}
               icon={<Building2 className={big} />}
+              logo={schoolLogo(s.name.en)}
               title={s.name[main]}
               other={s.name[other] === s.name[main] ? undefined : s.name[other]}
               otherLang={other}
@@ -144,6 +146,7 @@ export function Journey({
               tone={TONES[(i + 1) % TONES.length] ?? "sky"}
               index={i}
               icon={<MapPin className={big} />}
+              logo={schoolLogo(school.name.en)}
               title={b.name?.[main] ?? school.name[main]}
               other={b.name && b.name[other] !== b.name[main] ? b.name[other] : undefined}
               otherLang={other}

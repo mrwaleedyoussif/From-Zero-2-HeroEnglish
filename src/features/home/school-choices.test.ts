@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { groupSchools } from "./school-choices";
+import { schoolLogo } from "./school-logos";
 
 describe("schools and branches on the home page", () => {
   it("groups branches under their school and keeps single schools whole", () => {
@@ -33,5 +34,12 @@ describe("schools and branches on the home page", () => {
       name: { en: "Al-Nur School", ar: "مدرسة النور" },
       branches: [{ code: "ALNUR", name: { en: "Main", ar: "Main" } }],
     });
+  });
+
+  it("finds a school group's logo from its name, however it is punctuated", () => {
+    expect(schoolLogo("Andalus International Schools")).toMatch(/andalus-international/);
+    expect(schoolLogo("Al-Andalus Private School")).toMatch(/alandalus-private/);
+    expect(schoolLogo("Alandalus Private Schools")).toMatch(/alandalus-private/);
+    expect(schoolLogo("Riyadh Demo School")).toBeNull();
   });
 });

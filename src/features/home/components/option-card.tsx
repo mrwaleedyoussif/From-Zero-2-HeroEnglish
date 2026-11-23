@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
@@ -12,6 +13,7 @@ export function OptionCard({
   tone,
   index,
   icon,
+  logo,
   title,
   other,
   otherLang,
@@ -23,6 +25,8 @@ export function OptionCard({
   tone: Tone;
   index: number;
   icon: ReactNode;
+  /** A school logo shown in place of the icon, on a white tile (logos are drawn for white). */
+  logo?: string | null;
   title: string;
   other?: string;
   otherLang: "en" | "ar";
@@ -37,12 +41,22 @@ export function OptionCard({
   const style = { "--i": index } as CSSProperties;
   const body = (
     <>
-      <span
-        aria-hidden
-        className="z2h-icon flex size-16 shrink-0 items-center justify-center rounded-2xl"
-      >
-        {icon}
-      </span>
+      {logo ? (
+        <Image
+          src={logo}
+          alt=""
+          width={80}
+          height={80}
+          className="z2h-icon size-20 shrink-0 rounded-2xl !bg-white object-contain p-1"
+        />
+      ) : (
+        <span
+          aria-hidden
+          className="z2h-icon flex size-16 shrink-0 items-center justify-center rounded-2xl"
+        >
+          {icon}
+        </span>
+      )}
       <span className="flex flex-1 flex-col gap-1">
         <span className="text-xl font-bold">{title}</span>
         {other && (

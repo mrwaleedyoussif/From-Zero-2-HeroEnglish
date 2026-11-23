@@ -23,6 +23,7 @@ export const HOME_KEYS = [
   "soundOff",
   "replay",
   "schoolLine",
+  "schoolLine2",
   "designedBy",
   "designer",
 ] as const;

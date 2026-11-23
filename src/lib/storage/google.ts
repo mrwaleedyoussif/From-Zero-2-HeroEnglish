@@ -56,6 +56,26 @@ function toFile(f: RawFile): DriveFile {
   };
 }
 
+/**
+ * One response header. Google's HTTP client returns a Fetch `Headers` object (older versions a
+ * plain record): reading it like a record gives nothing, and a ranged audio reply without its
+ * Content-Range is one browsers refuse to play.
+ */
+export function header(headers: unknown, name: string): string | null {
+  if (!headers || typeof headers !== "object") return null;
+  const get = (headers as { get?: unknown }).get;
+  if (typeof get === "function") return (get.call(headers, name) as string | null) ?? null;
+  const value = (headers as Record<string, unknown>)[name];
+  return typeof value === "string" ? value : null;
+}
+
+/** The file bytes as a web stream, whichever kind of stream the HTTP client hands back. */
+export function toWebStream(data: unknown): ReadableStream<Uint8Array> {
+  if (data && typeof (data as { getReader?: unknown }).getReader === "function")
+    return data as ReadableStream<Uint8Array>;
+  return Readable.toWeb(data as Readable) as ReadableStream<Uint8Array>;
+}
+
 /** Google Drive driver: the Owner's OAuth refresh token (never a service account on a personal Drive). */
 export function createGoogleStorage(creds: GoogleCredentials): StorageAdapter {
   const auth = new OAuth2Client({ clientId: creds.clientId, clientSecret: creds.clientSecret });
@@ -133,13 +153,12 @@ export function createGoogleStorage(creds: GoogleCredentials): StorageAdapter {
       ).catch((e: unknown) => {
         throw Object.assign(new StorageNotFoundError(fileId), { cause: e });
       });
-      const headers = res.headers as Record<string, string | undefined>;
-      const length = headers["content-length"];
+      const length = header(res.headers, "content-length");
       return {
-        body: Readable.toWeb(res.data as unknown as Readable) as ReadableStream<Uint8Array>,
-        contentType: headers["content-type"] ?? "application/octet-stream",
+        body: toWebStream(res.data),
+        contentType: header(res.headers, "content-type") ?? "application/octet-stream",
         contentLength: length ? Number(length) : null,
-        contentRange: headers["content-range"] ?? null,
+        contentRange: header(res.headers, "content-range"),
         status: res.status === 206 ? 206 : 200,
       };
     },

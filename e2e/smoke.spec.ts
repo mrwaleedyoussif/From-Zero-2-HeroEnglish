@@ -9,14 +9,14 @@ test("English page is left-to-right", async ({ page }) => {
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("LinguaPath");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("From Zero 2 Hero English");
 });
 
 test("Arabic page is right-to-left", async ({ page }) => {
   await page.goto("/ar");
   await expect(page.locator("html")).toHaveAttribute("lang", "ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("لينجوا باث");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("From Zero 2 Hero English");
 });
 
 test("language switcher flips direction", async ({ page }) => {

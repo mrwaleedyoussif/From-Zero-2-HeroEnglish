@@ -1,10 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
+import { AppNav } from "@/components/app-nav";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { HomeExperience } from "@/features/home/components/home-experience";
 import { HOME_KEYS, type HomeCopy } from "@/features/home/copy";
+import { publicSchools } from "@/features/home/schools";
 import { routing } from "@/i18n/routing";
 
 async function copyFor(locale: "en" | "ar"): Promise<HomeCopy> {
@@ -28,8 +30,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         main: { lang: locale, copy: await copyFor(locale) },
         other: { lang: other, copy: await copyFor(other) },
       }}
+      schools={await publicSchools()}
       controls={
         <>
+          <AppNav />
           <LocaleSwitcher />
           <ThemeToggle />
         </>

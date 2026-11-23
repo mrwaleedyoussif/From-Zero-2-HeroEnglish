@@ -7,6 +7,7 @@ Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` 
 - Live state: Owner signs in; Google Drive is connected and folders exist; the STEP pack is loaded (5,110 questions, 161 passages, 316 audio tracks in `02_Media`) and listening audio plays for students.
 - A cloud session cannot query the live database (blocked by session policy): give the Owner SQL to paste into Supabase → SQL Editor, ending with the `schema_migrations` insert.
 - Owner still to do in Supabase → Authentication (RUNBOOK §2 steps 7–8): sign-ups off; sign-in rate limit ≥ 300 per 5 min. Google consent screen must be "In production".
+- App name is "Zero-2-Hero English" (the Drive folder stays `LinguaPath`). Home page: welcome with sound → general learner (Soon) / school user → school → branch → student or staff. A branch is a school row named "School · Branch" (Owner → Schools); the pick prefills the school code. `AppNav` (home, back, refresh, update) is on every header.
 - Later: Lessons sheet (none yet, so nothing to assign); Resend SMTP; GitHub Actions `APP_URL` + secrets; STEP mock tests (3,000 items).
 
 ## Review 2026-11-23 (Done)
@@ -32,7 +33,6 @@ Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` 
 ## Next
 - STEP pack is loaded (B2+ stored as CEFR C1); the Google Sheets round trip matched the database exactly (0 changed).
 - Known gaps left by the review (none blocks launch): entitlement checks are not called anywhere (rule 7; no effect while billing is off); Owner insights has no school picker; Visibility Studio can't pick `department.*` keys from a list; monthly reports show last-7-day activity (now labelled so); growth mixes departments for learners placed in two; listening time limits are enforced in the browser only; calibration has no screen.
-- Real placement needs ~150+ items per department.
 
 ## Decisions (with one-line reasons)
 - `src/lib/supabase/batch.ts`: large banks — reads page by key (API caps 1000 rows; offsets hit the 8 s timeout under RLS), `.in()` filters in batches of 100 (URI length). Used by content import and the placement pool.

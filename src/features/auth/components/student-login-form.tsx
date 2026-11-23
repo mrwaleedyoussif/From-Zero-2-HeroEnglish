@@ -9,7 +9,7 @@ import { type FormState, studentSignIn } from "../actions";
 
 const initial: FormState = { status: "idle" };
 
-export function StudentLoginForm() {
+export function StudentLoginForm({ defaultSchool }: { defaultSchool?: string }) {
   const t = useTranslations("Auth");
   const locale = useLocale();
   const [state, action, pending] = useActionState(studentSignIn, initial);
@@ -39,7 +39,7 @@ export function StudentLoginForm() {
         <Input
           id="schoolCode"
           name="schoolCode"
-          defaultValue={state.values?.schoolCode}
+          defaultValue={state.values?.schoolCode ?? defaultSchool}
           dir="ltr"
           autoCapitalize="characters"
           autoComplete="organization"

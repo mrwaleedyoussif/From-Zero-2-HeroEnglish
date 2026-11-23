@@ -1,10 +1,10 @@
 {
   "Meta": {
-    "title": "LinguaPath",
+    "title": "Zero-2-Hero English",
     "description": "Adaptive English learning for schools"
   },
   "Home": {
-    "brand": "From Zero 2 Hero English",
+    "brand": "Zero-2-Hero English",
     "tagline": "Your English journey, one confident step at a time.",
     "start": "Start",
     "startHint": "Tap to begin, with sound",
@@ -25,7 +25,10 @@
     "replay": "Play the welcome sound again",
     "schoolLine": "Andalus International Schools · Taif Boys",
     "designedBy": "Designed by",
-    "designer": "Waleed Youssef"
+    "designer": "Waleed Youssef",
+    "chooseSchool": "Choose your school",
+    "chooseBranch": "Choose your branch",
+    "chooseRole": "Who are you?"
   },
   "LocaleSwitcher": {
     "label": "Language",
@@ -36,18 +39,23 @@
     "label": "Toggle dark mode"
   },
   "Shell": {
-    "appName": "LinguaPath",
+    "appName": "Zero-2-Hero English",
     "viewingAs": "Viewing as {name} — read-only",
     "exitViewAs": "Exit",
     "signOut": "Sign out",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "navHome": "Home page",
+    "navBack": "Go back",
+    "navRefresh": "Refresh this page",
+    "navUpdate": "Update the app to the newest version",
+    "nav": "App buttons"
   },
   "Auth": {
     "staffTitle": "Staff sign in",
     "staffIntro": "We'll email you a sign-in link. No password needed.",
     "email": "Work email",
     "sendLink": "Email me a sign-in link",
-    "sent": "Check your inbox. If this email belongs to a LinguaPath account, a sign-in link is on its way.",
+    "sent": "Check your inbox. If this email belongs to a Zero-2-Hero English account, a sign-in link is on its way.",
     "or": "or",
     "google": "Continue with Google",
     "studentLink": "Student? Sign in with your school code",
@@ -65,7 +73,7 @@
       "wrongCredentials": "School code, username or PIN is not right. Check your card and try again.",
       "accountDisabled": "This account is switched off. Please ask your teacher.",
       "link_invalid": "That sign-in link has expired or was already used. Request a new one.",
-      "no_account": "There is no LinguaPath account for this email. Ask your school to invite you.",
+      "no_account": "There is no Zero-2-Hero English account for this email. Ask your school to invite you.",
       "google_unavailable": "Google sign-in isn't set up yet. Use the email link instead."
     }
   },
@@ -303,7 +311,7 @@
     "downloadCsv": "Download list (CSV)"
   },
   "Cards": {
-    "goTo": "Go to the LinguaPath student sign-in page",
+    "goTo": "Go to the Zero-2-Hero English student sign-in page",
     "school": "School",
     "username": "User",
     "pin": "PIN",
@@ -838,7 +846,7 @@
     "resultTitle": "Your result",
     "resultIntro": "Here is your level and where to start.",
     "yourLevel": "Your level",
-    "scaled": "LinguaPath Scale: {score}",
+    "scaled": "Zero-2-Hero English Scale: {score}",
     "strengths": "You're strong in",
     "practiseMore": "Practise more",
     "awaitingTeacher": "Your teacher will score your writing and speaking soon.",
@@ -1289,7 +1297,7 @@
     "mail": {
       "subject": "{period} report — from {start}",
       "preview": "{period} report from {start}",
-      "title": "Your {period} LinguaPath report",
+      "title": "Your {period} Zero-2-Hero English report",
       "hello": "Hello {name},",
       "range": "{school} · {start} to {end}",
       "classes": "classes",

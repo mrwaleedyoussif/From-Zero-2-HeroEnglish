@@ -1,0 +1,126 @@
+/* Home page: the choice cards, the Start button and the opening screen (see home.css). */
+
+/* Colours shared by cards and floaters. */
+.z2h [data-tone="violet"] {
+  --tone: linear-gradient(135deg, #7c3aed, #4f46e5);
+  --tone-ink: #ffffff;
+  --tone-flat: #c4b5fd;
+}
+.z2h [data-tone="sky"] {
+  --tone: linear-gradient(135deg, #0369a1, #1d4ed8);
+  --tone-ink: #ffffff;
+  --tone-flat: #93c5fd;
+}
+.z2h [data-tone="mint"] {
+  --tone: linear-gradient(135deg, #047857, #0f766e);
+  --tone-ink: #ffffff;
+  --tone-flat: #86efac;
+}
+.z2h [data-tone="rose"] {
+  --tone: linear-gradient(135deg, #be123c, #9d174d);
+  --tone-ink: #ffffff;
+  --tone-flat: #fda4af;
+}
+.z2h [data-tone="gold"] {
+  --tone: linear-gradient(135deg, #f8cf6a, #f59e0b);
+  --tone-ink: #1a1304;
+  --tone-flat: #fcd34d;
+}
+.z2h-floater[data-tone] {
+  background: var(--tone-flat);
+}
+
+/* Choice cards: full colour, a light sweep and a lift on hover, the icon gives a little hop. */
+.z2h-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--tone);
+  color: var(--tone-ink);
+  box-shadow: 0 14px 30px -16px rgb(0 0 0 / 0.7);
+  transition:
+    transform 0.3s var(--z-spring),
+    box-shadow 0.3s ease;
+}
+.z2h-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    rgb(255 255 255 / 0.28) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.z2h-icon {
+  background: rgb(255 255 255 / 0.22);
+  transition: transform 0.35s var(--z-spring);
+}
+.z2h-arrow {
+  transition: transform 0.3s var(--z-spring);
+}
+.z2h-card:not([data-soon]):is(:hover, :focus-visible) {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 26px 44px -18px rgb(0 0 0 / 0.75);
+}
+.z2h-card:not([data-soon]):is(:hover, :focus-visible)::before {
+  transform: translateX(120%);
+}
+.z2h-card:not([data-soon]):is(:hover, :focus-visible) .z2h-icon {
+  transform: rotate(-8deg) scale(1.12);
+}
+.z2h-card:not([data-soon]):is(:hover, :focus-visible) .z2h-arrow {
+  transform: translateX(6px);
+}
+[dir="rtl"] .z2h-card:not([data-soon]):is(:hover, :focus-visible) .z2h-arrow {
+  transform: translateX(-6px); /* already turned round by the rtl rotate */
+}
+.z2h-card:active:not([data-soon]) {
+  transform: scale(0.98);
+}
+.z2h-card[data-soon] {
+  filter: saturate(0.45);
+  outline: 2px dashed rgb(255 255 255 / 0.45);
+  outline-offset: -6px;
+}
+
+/* Start button: a shimmer across the gold and a ring that keeps pulsing outwards. */
+.z2h-start {
+  background: linear-gradient(110deg, #f6dc9c 20%, #fff3cf 40%, #e2bd72 60%, #f6dc9c 80%);
+  background-size: 250% 100%;
+  color: #1a1304;
+  animation:
+    z2h-rise 0.6s var(--z-spring) both,
+    z2h-pulse 2s ease-out infinite,
+    z2h-slide-colours 3.5s linear infinite;
+  transition: transform 0.25s var(--z-spring);
+}
+.z2h-start:hover {
+  transform: scale(1.06);
+}
+.z2h-splash {
+  background:
+    radial-gradient(45% 40% at 0% 0%, rgb(37 99 235 / 0.5), transparent 70%),
+    radial-gradient(40% 36% at 100% 10%, rgb(124 58 237 / 0.4), transparent 70%),
+    radial-gradient(45% 40% at 100% 100%, rgb(245 158 11 / 0.32), transparent 70%),
+    radial-gradient(40% 36% at 0% 100%, rgb(219 39 119 / 0.28), transparent 70%), var(--z-navy);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+.z2h-splash[data-leaving="true"] {
+  opacity: 0;
+  transform: scale(1.08);
+}
+
+@keyframes z2h-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgb(246 220 156 / 0.6);
+  }
+  to {
+    box-shadow: 0 0 0 24px rgb(246 220 156 / 0);
+  }
+}

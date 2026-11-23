@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AppNav } from "@/components/app-nav";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,9 +19,12 @@ export function AuthShell({
 }) {
   return (
     <main data-theme={theme} className="flex flex-1 flex-col bg-background">
-      <header className="flex justify-end gap-2 p-4">
-        <LocaleSwitcher />
-        <ThemeToggle />
+      <header className="flex flex-wrap items-center justify-between gap-2 p-4">
+        <AppNav />
+        <div className="flex gap-2">
+          <LocaleSwitcher />
+          <ThemeToggle />
+        </div>
       </header>
       <div className="flex flex-1 items-start justify-center px-4 pt-8 pb-16 sm:items-center sm:pt-0">
         <Card className="w-full max-w-sm">

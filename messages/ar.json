@@ -1,10 +1,10 @@
 {
   "Meta": {
-    "title": "لينجوا باث",
+    "title": "Zero-2-Hero English",
     "description": "تعلّم تكيّفي للغة الإنجليزية في المدارس"
   },
   "Home": {
-    "brand": "From Zero 2 Hero English",
+    "brand": "Zero-2-Hero English",
     "tagline": "رحلتك مع الإنجليزية، خطوة واثقة بعد خطوة.",
     "start": "ابدأ",
     "startHint": "اضغط للبدء مع الصوت",
@@ -25,7 +25,10 @@
     "replay": "شغّل صوت الترحيب مرة أخرى",
     "schoolLine": "مدارس الأندلس العالمية · الطائف بنين",
     "designedBy": "تصميم",
-    "designer": "وليد يوسف"
+    "designer": "وليد يوسف",
+    "chooseSchool": "اختر مدرستك",
+    "chooseBranch": "اختر الفرع",
+    "chooseRole": "من أنت؟"
   },
   "LocaleSwitcher": {
     "label": "اللغة",
@@ -36,18 +39,23 @@
     "label": "تبديل الوضع الداكن"
   },
   "Shell": {
-    "appName": "لينجوا باث",
+    "appName": "Zero-2-Hero English",
     "viewingAs": "تعرض التطبيق كـ {name} — للقراءة فقط",
     "exitViewAs": "خروج",
     "signOut": "تسجيل الخروج",
-    "loading": "جارٍ التحميل…"
+    "loading": "جارٍ التحميل…",
+    "navHome": "الصفحة الرئيسية",
+    "navBack": "رجوع",
+    "navRefresh": "تحديث هذه الصفحة",
+    "navUpdate": "تحديث التطبيق إلى أحدث إصدار",
+    "nav": "أزرار التطبيق"
   },
   "Auth": {
     "staffTitle": "دخول الموظفين",
     "staffIntro": "سنرسل إليك رابط الدخول عبر البريد. لا حاجة لكلمة مرور.",
     "email": "البريد الإلكتروني للعمل",
     "sendLink": "أرسل لي رابط الدخول",
-    "sent": "تحقق من بريدك. إذا كان هذا البريد مرتبطًا بحساب في لينجوا باث فسيصلك رابط الدخول قريبًا.",
+    "sent": "تحقق من بريدك. إذا كان هذا البريد مرتبطًا بحساب في Zero-2-Hero English فسيصلك رابط الدخول قريبًا.",
     "or": "أو",
     "google": "المتابعة باستخدام Google",
     "studentLink": "طالب؟ ادخل برمز مدرستك",
@@ -65,7 +73,7 @@
       "wrongCredentials": "رمز المدرسة أو اسم المستخدم أو الرمز السري غير صحيح. تحقق من بطاقتك وحاول مجددًا.",
       "accountDisabled": "هذا الحساب موقوف. يرجى سؤال معلمك.",
       "link_invalid": "انتهت صلاحية رابط الدخول أو استُخدم من قبل. اطلب رابطًا جديدًا.",
-      "no_account": "لا يوجد حساب في لينجوا باث لهذا البريد. اطلب من مدرستك دعوتك.",
+      "no_account": "لا يوجد حساب في Zero-2-Hero English لهذا البريد. اطلب من مدرستك دعوتك.",
       "google_unavailable": "الدخول عبر Google غير مفعّل بعد. استخدم رابط البريد بدلًا منه."
     }
   },
@@ -303,7 +311,7 @@
     "downloadCsv": "تنزيل القائمة (CSV)"
   },
   "Cards": {
-    "goTo": "ادخل إلى صفحة دخول الطلاب في لينجوا باث",
+    "goTo": "ادخل إلى صفحة دخول الطلاب في Zero-2-Hero English",
     "school": "المدرسة",
     "username": "المستخدم",
     "pin": "الرقم السري",
@@ -838,7 +846,7 @@
     "resultTitle": "نتيجتك",
     "resultIntro": "هذا مستواك ومن أين تبدأ.",
     "yourLevel": "مستواك",
-    "scaled": "مقياس LinguaPath: {score}",
+    "scaled": "مقياس Zero-2-Hero English: {score}",
     "strengths": "أنت قوي في",
     "practiseMore": "تدرّب أكثر على",
     "awaitingTeacher": "سيقيّم معلمك كتابتك وتحدثك قريبًا.",
@@ -1289,7 +1297,7 @@
     "mail": {
       "subject": "التقرير {period} — من {start}",
       "preview": "التقرير {period} من {start}",
-      "title": "تقريرك {period} من LinguaPath",
+      "title": "تقريرك {period} من Zero-2-Hero English",
       "hello": "مرحبًا {name}،",
       "range": "{school} · من {start} إلى {end}",
       "classes": "فصول",

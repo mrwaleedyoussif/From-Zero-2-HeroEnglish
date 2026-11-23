@@ -8,6 +8,7 @@ import { HomeExperience } from "@/features/home/components/home-experience";
 import { HOME_KEYS, type HomeCopy } from "@/features/home/copy";
 import { publicSchools } from "@/features/home/schools";
 import { routing } from "@/i18n/routing";
+import { learnersOpen } from "@/features/learners/general";
 
 async function copyFor(locale: "en" | "ar"): Promise<HomeCopy> {
   const t = await getTranslations({ locale, namespace: "Home" });
@@ -31,6 +32,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         other: { lang: other, copy: await copyFor(other) },
       }}
       schools={await publicSchools()}
+      generalOpen={learnersOpen()}
       controls={
         <>
           <AppNav />

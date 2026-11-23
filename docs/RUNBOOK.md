@@ -100,6 +100,19 @@ Until `APP_URL` is set, both workflows stay switched off.
 5. **Schools** → add your school, year, grades and classes; **Users** → invite staff, import students
    (CSV), print login cards.
 
+## 6b. General learners (people outside a school) — optional
+
+They join and sign in with a one-time code sent to their email: no password. Off until you turn it on.
+
+1. Email must really be sent: in Vercel set `MAIL_PROVIDER` to `resend` (with `RESEND_API_KEY` and a
+   `MAIL_FROM` on a domain verified in Resend) or to `gmail`. With `console` the feature stays closed.
+2. In Vercel add `GENERAL_LEARNERS_ENABLED` = `true`, and optionally `GENERAL_DAILY_SIGNUPS`
+   (new learners allowed per day; 50 if not set). Redeploy.
+3. The home page's **General learner** card now opens the sign-in. To pause sign-ups, set
+   `GENERAL_LEARNERS_ENABLED` back to `false` and redeploy; existing learners keep their data.
+4. They appear under Owner → Users in the school **General learners**, where you can switch any
+   account off. Adults only (they confirm they are 18 or older).
+
 ## 7. Check that it works (smoke test)
 
 From a computer with the code:

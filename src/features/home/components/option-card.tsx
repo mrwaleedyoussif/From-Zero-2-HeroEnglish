@@ -33,7 +33,7 @@ export function OptionCard({
   hint?: string;
   /** Text of the "Soon" badge: the card is shown but can't be chosen. */
   soon?: string;
-  href?: { pathname: "/student-login" | "/login"; query?: Record<string, string> };
+  href?: { pathname: "/student-login" | "/login" | "/learner"; query?: Record<string, string> };
   onPick?: () => void;
 }) {
   const className =

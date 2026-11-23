@@ -24,7 +24,8 @@ export default async function CoachingLogPage({
     observationRubric(),
   ]);
   const criteria = new Map((rubric?.criteria ?? []).map((c) => [c.key, localName(c, lang)]));
-  const mine = logs.filter((l) => l.coach_id === actor.real.id);
+  // "View as" a coach shows that coach's log.
+  const mine = logs.filter((l) => l.coach_id === actor.effective.id);
 
   return (
     <div className="flex flex-col gap-8">

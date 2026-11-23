@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { visibleOnly } from "@/lib/visibility/server";
 import { loadBlueprint, studentContext } from "./runtime/data";
+import { scaleTime, timeFactor } from "./runtime/extra-time";
 import { publicItem } from "./runtime/public-item";
 import { decideStart, type StartDecision } from "./runtime/rules";
 import { expireIfLate, ownSession, unstick } from "./runtime/session";
@@ -86,7 +87,13 @@ export async function testView(actor: Actor, sessionId: string) {
     deadline: s.deadline_at,
   };
   if (s.status === "in_progress" && s.current_item_id) {
-    return { ...base, item: await publicItem(admin, s.current_item_id), prompts: [] };
+    const item = await publicItem(admin, s.current_item_id);
+    const factor = await timeFactor(admin, s.student_id);
+    return {
+      ...base,
+      item: item && { ...item, timeLimitSec: scaleTime(item.timeLimitSec, factor) },
+      prompts: [],
+    };
   }
   if (s.status === "productive") {
     const pending = await pendingPrompts(admin, s);

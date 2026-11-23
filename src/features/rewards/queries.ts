@@ -1,19 +1,20 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { dayStart, localDay } from "@/lib/time";
 import { teamPoints } from "./engine/kagan";
 import { type Entry, leaderboard } from "./engine/leaderboard";
 import { levelFor } from "./engine/levels";
-import { emptyStreak, shownStreak, weekStart } from "./engine/streaks";
+import { emptyStreak, shownStreak, weekendDays, weekStart } from "./engine/streaks";
 import { coinBalance, totalXp as sumXp } from "./totals";
 
-export const today = () => new Date().toISOString().slice(0, 10);
-/** This week's leaderboards start Monday 00:00 UTC (weekly reset, SPEC §10). */
-export const thisWeek = () => `${weekStart(today())}T00:00:00Z`;
+export const today = () => localDay();
+/** This week's leaderboards start Monday 00:00 school time (weekly reset, SPEC §10). */
+export const thisWeek = () => dayStart(weekStart(today()));
 
 /** A learner's rewards summary (RLS: the learner, or staff with rewards:view over them). */
 export async function rewardsSummary(studentId: string) {
   const db = await createClient();
-  const [xp, coins, levels, streak, badges, owned, certs, redemptions] = await Promise.all([
+  const [xp, coins, levels, streak, badges, owned, certs, redemptions, home] = await Promise.all([
     sumXp(db, studentId),
     coinBalance(db, studentId),
     db.from("levels").select("level, name_en, name_ar, xp_required").order("level"),
@@ -35,8 +36,10 @@ export async function rewardsSummary(studentId: string) {
       .eq("student_id", studentId)
       .order("created_at", { ascending: false })
       .limit(20),
+    db.from("profiles").select("schools(week_start)").eq("id", studentId).maybeSingle(),
   ]);
   const totalXp = xp;
+  const rest = weekendDays(home.data?.schools?.week_start ?? 0);
   const s = streak.data;
   const state = s
     ? {
@@ -52,7 +55,7 @@ export async function rewardsSummary(studentId: string) {
     coins,
     level: levelFor(totalXp, levels.data ?? []),
     streak: {
-      days: shownStreak(state, today()),
+      days: shownStreak(state, today(), rest),
       longest: state.longest,
       freezeUsed: state.freezeWeek === weekStart(today()),
     },

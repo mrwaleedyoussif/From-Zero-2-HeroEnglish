@@ -1,9 +1,10 @@
 import "server-only";
 import type { createAdminClient } from "@/lib/supabase/admin";
+import { dayStart, localDay } from "@/lib/time";
 import { checkBadges, recordLevelUps, totalXp } from "./award-extras";
 import type { Level } from "./engine/levels";
 import { type EventType, evaluateEvent, type RewardEvent, type RewardRule } from "./engine/rules";
-import { emptyStreak, recordActivity, type StreakState } from "./engine/streaks";
+import { emptyStreak, recordActivity, type StreakState, weekendDays } from "./engine/streaks";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -30,7 +31,8 @@ export interface AwardOutcome {
   streak: number | null;
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
+/** Days (streaks, daily caps, once-a-day keys) are school days, not UTC days. */
+const today = () => localDay();
 const EMPTY: AwardOutcome = { xp: 0, coins: 0, badges: [], levels: [], streak: null };
 
 async function grant(
@@ -45,7 +47,7 @@ async function grant(
       .select("xp")
       .eq("student_id", input.studentId)
       .eq("event_type", input.type)
-      .gte("created_at", `${today()}T00:00:00Z`),
+      .gte("created_at", dayStart(today())),
   ]);
   const xpToday = (todays ?? []).reduce((s, r) => s + r.xp, 0);
   const result = evaluateEvent(input, (rule as RewardRule | null) ?? undefined, xpToday);
@@ -75,7 +77,12 @@ async function grant(
   };
 }
 
-async function touchStreak(admin: Admin, studentId: string, schoolId: string) {
+async function touchStreak(
+  admin: Admin,
+  studentId: string,
+  schoolId: string,
+  weekStartsOn: number,
+) {
   const { data } = await admin
     .from("streaks")
     .select("*")
@@ -89,7 +96,7 @@ async function touchStreak(admin: Admin, studentId: string, schoolId: string) {
         freezeWeek: data.freeze_week,
       }
     : emptyStreak;
-  const update = recordActivity(state, today());
+  const update = recordActivity(state, today(), weekendDays(weekStartsOn));
   if (!update.counted) return { current: state.current, counted: false };
   await admin.from("streaks").upsert({
     student_id: studentId,
@@ -109,7 +116,7 @@ async function touchStreak(admin: Admin, studentId: string, schoolId: string) {
 export async function award(admin: Admin, input: AwardInput): Promise<AwardOutcome> {
   const { data: p } = await admin
     .from("profiles")
-    .select("school_id")
+    .select("school_id, schools(week_start)")
     .eq("id", input.studentId)
     .single();
   if (!p?.school_id) return EMPTY;
@@ -120,7 +127,7 @@ export async function award(admin: Admin, input: AwardInput): Promise<AwardOutco
   let streak: number | null = null;
 
   if (ACTIVITY.has(input.type) && !main.gamed) {
-    const s = await touchStreak(admin, input.studentId, p.school_id);
+    const s = await touchStreak(admin, input.studentId, p.school_id, p.schools?.week_start ?? 0);
     streak = s.current;
     if (s.counted) {
       const day = await grant(admin, p.school_id, {

@@ -1,3 +1,4 @@
+import { inBatches } from "@/lib/supabase/batch";
 import "server-only";
 import { cefrDistribution, riskFlags } from "@/features/insights/analytics";
 import type { createAdminClient } from "@/lib/supabase/admin";
@@ -48,13 +49,19 @@ export async function buildReport(
           .gte("created_at", `${p.start}T00:00:00Z`)
           .lte("created_at", `${p.end}T23:59:59Z`)
       : Promise.resolve({ data: [] }),
-    studentClass.size
-      ? admin
+    // Newest first, a few learners per request: long id lists overflow the URL and a request
+    // returns at most 1000 rows.
+    inBatches(
+      [...studentClass.keys()],
+      (ids) =>
+        admin
           .from("ability_estimates")
           .select("student_id, theta, skills(code)")
-          .in("student_id", [...studentClass.keys()])
+          .in("student_id", ids)
           .not("skill_id", "is", null)
-      : Promise.resolve({ data: [] }),
+          .order("measured_at", { ascending: false }),
+      25,
+    ),
     admin
       .from("reports")
       .select("data")
@@ -69,9 +76,12 @@ export async function buildReport(
 
   // Lowest average skill θ per class (classes whose learners the recipient may see).
   const sums = new Map<string, { class: string; skill: string; total: number; n: number }>();
+  const counted = new Set<string>(); // a learner's latest estimate per skill, not their history
   for (const row of skillRows.data ?? []) {
     const cls = studentClass.get(row.student_id);
     if (!cls || !row.skills) continue;
+    if (counted.has(`${row.student_id}/${row.skills.code}`)) continue;
+    counted.add(`${row.student_id}/${row.skills.code}`);
     const s = sums.get(`${cls}/${row.skills.code}`) ?? {
       class: cls,
       skill: row.skills.code,

@@ -1,10 +1,12 @@
+import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /** Shown while a gate page loads: the shape of a page header and a grid of cards. */
 export default function Loading() {
+  const t = useTranslations("Shell");
   return (
     <div className="flex flex-col gap-6" aria-busy="true" aria-live="polite">
-      <span className="sr-only">Loading…</span>
+      <span className="sr-only">{t("loading")}</span>
       <div className="flex flex-col gap-2">
         <Skeleton className="h-8 w-56" />
         <Skeleton className="h-4 w-80 max-w-full" />

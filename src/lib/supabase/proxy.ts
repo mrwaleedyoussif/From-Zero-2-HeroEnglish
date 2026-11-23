@@ -12,7 +12,13 @@ export async function refreshSession(request: NextRequest, response: NextRespons
       getAll: () => request.cookies.getAll(),
       setAll: (toSet) => {
         for (const { name, value } of toSet) request.cookies.set(name, value);
-        for (const { name, value, options } of toSet) response.cookies.set(name, value, options);
+        for (const { name, value, options } of toSet)
+          response.cookies.set(name, value, {
+            ...options,
+            // Server-only cookies (see lib/supabase/server.ts; that file can't be imported here).
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+          });
       },
     },
   });

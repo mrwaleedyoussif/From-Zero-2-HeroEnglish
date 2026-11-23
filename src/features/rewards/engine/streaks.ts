@@ -1,6 +1,7 @@
 /**
  * Daily activity streaks with one "freeze" per week (SPEC §10): missing a single day keeps the
- * streak if the week of that missed day hasn't used its freeze yet. Dates are UTC YYYY-MM-DD.
+ * streak if the week of that missed day hasn't used its freeze yet. Weekend days never count
+ * as missed, so a streak carries over the weekend. Dates are calendar days (YYYY-MM-DD).
  */
 
 export interface StreakState {
@@ -29,6 +30,21 @@ export function weekStart(day: string): string {
   return fromDay(t - dow * DAY);
 }
 
+/** The school's two weekend days (0 = Sunday), from the first day of its week. */
+export function weekendDays(weekStartsOn: number): ReadonlySet<number> {
+  return new Set([(weekStartsOn + 5) % 7, (weekStartsOn + 6) % 7]);
+}
+
+const NO_REST: ReadonlySet<number> = new Set();
+
+/** School days strictly between two days (stops after two: that already breaks a streak). */
+function missedDays(from: string, to: string, rest: ReadonlySet<number>): string[] {
+  const out: string[] = [];
+  for (let t = toDay(from) + DAY; t < toDay(to) && out.length < 2; t += DAY)
+    if (!rest.has(new Date(t).getUTCDay())) out.push(fromDay(t));
+  return out;
+}
+
 export interface StreakUpdate {
   state: StreakState;
   /** First activity of the day: counts as a streak day. */
@@ -36,18 +52,22 @@ export interface StreakUpdate {
   usedFreeze: boolean;
 }
 
-export function recordActivity(state: StreakState, today: string): StreakUpdate {
+export function recordActivity(
+  state: StreakState,
+  today: string,
+  rest: ReadonlySet<number> = NO_REST,
+): StreakUpdate {
   if (state.lastActiveOn === today) return { state, counted: false, usedFreeze: false };
-  const gap =
-    state.lastActiveOn === null ? Infinity : (toDay(today) - toDay(state.lastActiveOn)) / DAY;
-  if (gap < 0) return { state, counted: false, usedFreeze: false }; // clock went backwards
+  if (state.lastActiveOn !== null && toDay(today) < toDay(state.lastActiveOn))
+    return { state, counted: false, usedFreeze: false }; // clock went backwards
 
   let current = 1;
   let freezeWeek = state.freezeWeek;
   let usedFreeze = false;
-  if (gap === 1) current = state.current + 1;
-  else if (gap === 2) {
-    const missedWeek = weekStart(fromDay(toDay(today) - DAY));
+  const missed = state.lastActiveOn === null ? null : missedDays(state.lastActiveOn, today, rest);
+  if (missed?.length === 0) current = state.current + 1;
+  else if (missed?.length === 1) {
+    const missedWeek = weekStart(missed[0] as string);
     if (freezeWeek !== missedWeek) {
       current = state.current + 1;
       freezeWeek = missedWeek;
@@ -62,11 +82,15 @@ export function recordActivity(state: StreakState, today: string): StreakUpdate 
 }
 
 /** The streak as shown today: broken (0) once more than a freezable day has been missed. */
-export function shownStreak(state: StreakState, today: string): number {
+export function shownStreak(
+  state: StreakState,
+  today: string,
+  rest: ReadonlySet<number> = NO_REST,
+): number {
   if (!state.lastActiveOn) return 0;
-  const gap = (toDay(today) - toDay(state.lastActiveOn)) / DAY;
-  if (gap <= 1) return state.current;
-  if (gap === 2 && state.freezeWeek !== weekStart(fromDay(toDay(today) - DAY)))
+  const missed = missedDays(state.lastActiveOn, today, rest);
+  if (missed.length === 0) return state.current;
+  if (missed.length === 1 && state.freezeWeek !== weekStart(missed[0] as string))
     return state.current;
   return 0;
 }

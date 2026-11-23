@@ -26,7 +26,8 @@
     "appName": "LinguaPath",
     "viewingAs": "Viewing as {name} — read-only",
     "exitViewAs": "Exit",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "loading": "Loading…"
   },
   "Auth": {
     "staffTitle": "Staff sign in",
@@ -599,7 +600,7 @@
     "doesNotSee": "does not see it",
     "because": "{level} rule: {effect}",
     "flags": "Feature flags",
-    "flagsHelp": "Turn unfinished features on for everyone, for chosen schools/classes/roles, or off.",
+    "flagsHelp": "Every feature is on unless you change it here: turn one off, or keep it on only for chosen schools, classes or roles.",
     "flagStates": {
       "off": "Off",
       "all": "On for everyone",
@@ -1273,18 +1274,18 @@
       "monthly": "Monthly"
     },
     "mail": {
-      "subject": "{period} report — week of {start}",
+      "subject": "{period} report — from {start}",
       "preview": "{period} report from {start}",
       "title": "Your {period} LinguaPath report",
       "hello": "Hello {name},",
       "range": "{school} · {start} to {end}",
       "classes": "classes",
       "students": "students",
-      "active": "active this week",
-      "lessons": "lessons finished",
+      "active": "active in the last 7 days",
+      "lessons": "lessons finished in the last 7 days",
       "atRisk": "learners needing attention",
       "followUps": "coaching follow-ups due",
-      "nextWeek": "Suggested for next week",
+      "nextWeek": "Suggested next steps",
       "open": "Open the full report",
       "footer": "You get this because of your role. You can turn report emails off on the Reports page."
     },
@@ -1305,13 +1306,13 @@
       "followUps": "Coaching follow-ups due",
       "cefr": "CEFR distribution",
       "coaching": "Coaching activity",
-      "suggestions": "Suggested for next week"
+      "suggestions": "Suggested next steps"
     },
     "col": {
       "class": "Class",
       "students": "Students",
-      "active": "Active",
-      "lessons": "Lessons",
+      "active": "Active (7 days)",
+      "lessons": "Lessons (7 days)",
       "accuracy": "Accuracy",
       "atRisk": "At risk",
       "overdue": "Overdue",

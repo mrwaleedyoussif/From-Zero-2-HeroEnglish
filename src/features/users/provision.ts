@@ -1,6 +1,7 @@
 import "server-only";
 import { ActionError, check } from "@/lib/action-result";
 import type { Scope } from "@/lib/auth/engine";
+import { pinPassword } from "@/lib/auth/pin-password";
 import { generatePin, isStudentEmail, studentEmail } from "@/lib/auth/student-identity";
 import { publicEnv } from "@/lib/env.public";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -80,9 +81,10 @@ export async function provisionStudent(
   const admin = createAdminClient();
   const id = await withAuthUser(
     async () => {
+      const email = studentEmail(s.schoolCode, s.username);
       const { data, error } = await admin.auth.admin.createUser({
-        email: studentEmail(s.schoolCode, s.username),
-        password: pin,
+        email,
+        password: pinPassword(email, pin),
         email_confirm: true,
         user_metadata: { full_name: s.fullName },
       });
@@ -184,8 +186,11 @@ export async function setPin(userId: string): Promise<string> {
   const pin = generatePin();
   const admin = createAdminClient();
   const { data: existing } = await admin.auth.admin.getUserById(userId);
-  if (!isStudentEmail(existing.user?.email ?? "")) throw new ActionError("studentsOnly");
-  const { error } = await admin.auth.admin.updateUserById(userId, { password: pin });
+  const email = existing.user?.email ?? "";
+  if (!isStudentEmail(email)) throw new ActionError("studentsOnly");
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    password: pinPassword(email, pin),
+  });
   if (error) throw new ActionError("failed");
   return pin;
 }

@@ -7,6 +7,7 @@ import type { Tables } from "@/types/db";
 import { step } from "../engine/cat";
 import { stepRng } from "../engine/rng";
 import { loadAnswers, loadBlueprint, loadPool, studentContext } from "./data";
+import { scaleTime, timeFactor } from "./extra-time";
 import { finishReceptive } from "./finish";
 import { elapsedSec } from "./rules";
 
@@ -46,14 +47,15 @@ export async function advance(admin: Admin, s: SessionRow): Promise<"continue" |
     s.kind === "progress" ? "progress" : "placement",
   );
   if (!student || !blueprint) throw new ActionError("notAvailable");
-  const [pool, answers] = await Promise.all([
+  const [pool, answers, factor] = await Promise.all([
     loadPool(admin, s.department_id, student),
     loadAnswers(admin, s.id),
+    timeFactor(admin, s.student_id),
   ]);
   const r = step({
     answers,
     pool,
-    blueprint,
+    blueprint: { ...blueprint, timeLimitSec: scaleTime(blueprint.timeLimitSec, factor) },
     prior: { mean: Number(s.theta0), sd: 1 },
     rng: stepRng(Number(s.rng_seed), answers.length),
     elapsedSec: elapsedSec(new Date(s.started_at), new Date()),

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { average, memberImprovement, teamPoints } from "./kagan";
 import { leaderboard, rankAll } from "./leaderboard";
 import { type Level, levelFor, levelsCrossed } from "./levels";
-import { emptyStreak, recordActivity, shownStreak, weekStart } from "./streaks";
+import { emptyStreak, recordActivity, shownStreak, weekendDays, weekStart } from "./streaks";
 
 const levels: Level[] = [
   { level: 2, name_en: "Voyager", name_ar: "ر", xp_required: 100 },
@@ -63,6 +63,26 @@ describe("streaks with a weekly freeze", () => {
     expect(shownStreak({ ...st, freezeWeek: "2026-11-16" }, "2026-11-20")).toBe(0);
     expect(shownStreak(st, "2026-11-22")).toBe(0);
     expect(weekStart("2026-11-22")).toBe("2026-11-16"); // Sunday → Monday before
+  });
+
+  it("carries over the school weekend (Friday and Saturday for a Sunday-start week)", () => {
+    const rest = weekendDays(0);
+    expect([...rest].sort()).toEqual([5, 6]);
+    expect([...weekendDays(1)].sort()).toEqual([0, 6]); // Monday start → Saturday, Sunday
+    const thursday = { ...emptyStreak, current: 4, longest: 4, lastActiveOn: "2026-11-19" };
+    // Without weekend days, Thursday → Sunday misses two days and resets.
+    expect(recordActivity(thursday, "2026-11-22").state.current).toBe(1);
+    expect(recordActivity(thursday, "2026-11-22", rest)).toMatchObject({
+      usedFreeze: false,
+      state: { current: 5 },
+    });
+    // Thursday → Monday misses one school day (Sunday): the freeze covers it.
+    expect(recordActivity(thursday, "2026-11-23", rest)).toMatchObject({
+      usedFreeze: true,
+      state: { current: 5, freezeWeek: "2026-11-16" },
+    });
+    expect(shownStreak(thursday, "2026-11-21", rest)).toBe(4); // Saturday: still alive
+    expect(shownStreak(thursday, "2026-11-24", rest)).toBe(0); // two school days missed
   });
 });
 

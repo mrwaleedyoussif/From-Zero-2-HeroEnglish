@@ -3,6 +3,7 @@ import { serverEnv } from "@/lib/env";
 import { StorageNotConnectedError } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { archiveResponses } from "./archive";
+import { notifyDueSoon } from "./due-soon";
 import { planDue } from "./enqueue";
 import { handleEmail } from "./email";
 import { Deferred, handlePdf, handleReport } from "./handlers";
@@ -57,6 +58,7 @@ export async function runTick(source: string, now = new Date()): Promise<TickRes
         else if (job.kind === "refresh_insights") {
           const { error } = await admin.rpc("refresh_insights");
           if (error) throw new Error(error.message);
+          await notifyDueSoon(admin, now); // the other once-a-day duty
         }
         await admin
           .from("report_jobs")

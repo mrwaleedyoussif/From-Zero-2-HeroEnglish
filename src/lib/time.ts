@@ -38,3 +38,13 @@ export function zonedTimeToUtc(local: string, timeZone = appTimeZone()): Date {
   const asUtc = new Date(`${local.slice(0, 16)}:00Z`);
   return new Date(asUtc.getTime() - offsetMs(asUtc, timeZone));
 }
+
+/** Today's calendar day ("2026-11-23") in the app's zone: a school day starts at local midnight. */
+export function localDay(now: Date = new Date(), timeZone = appTimeZone()): string {
+  return new Date(now.getTime() + offsetMs(now, timeZone)).toISOString().slice(0, 10);
+}
+
+/** The instant a local calendar day starts, as an ISO string for database filters. */
+export function dayStart(day: string, timeZone = appTimeZone()): string {
+  return zonedTimeToUtc(`${day}T00:00`, timeZone).toISOString();
+}

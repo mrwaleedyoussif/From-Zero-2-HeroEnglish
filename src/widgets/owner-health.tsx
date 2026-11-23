@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { budgetStats } from "@/features/insights/queries";
+import { serverEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import type { WidgetProps } from ".";
 import { WidgetCard } from "./widget-card";
@@ -71,7 +72,7 @@ export async function OwnerBudgetWidget(_: WidgetProps) {
         label={t("emailsToday")}
         value={b.emails_today}
         max={LIMITS.emails}
-        warnAt={LIMITS.emailStop}
+        warnAt={Math.min(LIMITS.emailStop, serverEnv().EMAIL_DAILY_BUDGET)}
         display={`${b.emails_today} / ${LIMITS.emails}`}
       />
       <p className="text-sm text-muted-foreground">

@@ -5,6 +5,7 @@ import type { Actor } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isVisible } from "@/lib/visibility/server";
 import { loadBlueprint, priorTheta, studentContext } from "./data";
+import { scaleTime, timeFactor } from "./extra-time";
 import { decideStart } from "./rules";
 import { advance } from "./session";
 
@@ -115,6 +116,7 @@ export async function startTest(
       .eq("id", retakeId);
   }
   const now = Date.now();
+  const limitSec = scaleTime(blueprint.timeLimitSec, await timeFactor(admin, student.id));
   const { data: s, error } = await admin
     .from("test_sessions")
     .insert({
@@ -124,9 +126,7 @@ export async function startTest(
       kind,
       theta0: await priorTheta(admin, student.id, dept.id, student.band),
       rng_seed: Math.floor(Math.random() * 2 ** 31),
-      deadline_at: blueprint.timeLimitSec
-        ? new Date(now + blueprint.timeLimitSec * 1000).toISOString()
-        : null,
+      deadline_at: limitSec ? new Date(now + limitSec * 1000).toISOString() : null,
       window_id: decision.windowId,
     })
     .select("*")

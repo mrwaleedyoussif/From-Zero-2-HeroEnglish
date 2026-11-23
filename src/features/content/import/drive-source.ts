@@ -9,7 +9,7 @@ import type { StorageAdapter } from "@/lib/storage/types";
 import type { createClient } from "@/lib/supabase/server";
 import type { RawSheets } from "./pipeline";
 import { SHEETS } from "./sheets";
-import { chunks, PAGE, selectAll } from "@/lib/supabase/batch";
+import { chunks, IN_BATCH, PAGE, selectAll } from "@/lib/supabase/batch";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
 
@@ -66,6 +66,24 @@ export async function listMedia(storage: StorageAdapter): Promise<MediaFile[]> {
 /** Cache Drive file ids in media_assets (SPEC §5) and mark files that disappeared. Name → asset id. */
 export async function syncMediaAssets(db: Db, media: MediaFile[]): Promise<Map<string, string>> {
   const now = new Date().toISOString();
+  // A file renamed in Drive keeps its Drive id: remove the row under the old name first, or the
+  // unique Drive id would reject the new one. Rows that used it are linked again by name.
+  const nameOf = new Map(media.map((m) => [m.driveId, m.name]));
+  const { data: known, error: knownError } = await selectAll(
+    (after) => {
+      const q = db.from("media_assets").select("id, file_name, drive_file_id");
+      return (after ? q.gt("id", after) : q).order("id").limit(PAGE);
+    },
+    (a) => a.id,
+  );
+  if (knownError || !known) throw new Error("Could not read media list", { cause: knownError });
+  const renamed = known
+    .filter((a) => nameOf.has(a.drive_file_id) && nameOf.get(a.drive_file_id) !== a.file_name)
+    .map((a) => a.id);
+  for (const ids of chunks(renamed, IN_BATCH)) {
+    const { error } = await db.from("media_assets").delete().in("id", ids);
+    if (error) throw new Error("Could not save media list", { cause: error });
+  }
   for (const batch of chunks(media)) {
     const { error } = await db.from("media_assets").upsert(
       batch.map((m) => ({

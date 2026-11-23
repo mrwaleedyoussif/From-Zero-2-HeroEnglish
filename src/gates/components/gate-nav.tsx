@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { canSomewhere } from "@/lib/auth/can";
+import { isKnownKey } from "@/lib/registry";
 import type { Actor } from "@/lib/auth/session";
 import { visibleOnly } from "@/lib/visibility/server";
 import type { GateConfig } from "../types";
@@ -9,7 +10,13 @@ import type { GateConfig } from "../types";
 export async function GateNav({ gate, actor }: { gate: GateConfig; actor: Actor }) {
   const t = await getTranslations("Registry");
   const tg = await getTranslations("Gates");
-  const visible = await visibleOnly(actor, gate.nav, (item) => item.key);
+  // A link is shown only if its page is too: hiding `page.x` must not leave a link that 404s.
+  const pageKey = (key: string) => {
+    const page = key.replace(/^nav\./, "page.");
+    return isKnownKey(page) ? page : key;
+  };
+  const shown = await visibleOnly(actor, gate.nav, (item) => item.key);
+  const visible = await visibleOnly(actor, shown, (item) => pageKey(item.key));
   const items = [];
   for (const item of visible) {
     if (!item.permission || (await canSomewhere(actor, item.permission))) items.push(item);

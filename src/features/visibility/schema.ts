@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { zonedTimeToUtc } from "@/lib/time";
 import { subjectTypes } from "@/lib/visibility/engine";
 
 /** Subject pickers submit "type:id"; "user:" means "look up the typed user". */
@@ -17,7 +18,8 @@ const optionalDateTime = z.preprocess(
   z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/)
-    .transform((s) => new Date(s).toISOString())
+    // Typed as school (Riyadh) time, not the server's UTC.
+    .transform((s) => zonedTimeToUtc(s).toISOString())
     .nullable(),
 );
 

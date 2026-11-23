@@ -102,6 +102,18 @@ describe("item selection", () => {
     expect([...picks].sort()).toEqual(["b2", "b3", "b4", "b5", "b6"]); // b ∈ {−1 … 1}
     expect(selectItem(pool, 2, [], {}, () => 0).id).toBe("a1"); // no quota → closest overall
   });
+  it("draws from every item tied at the same distance, not only the lowest ids", () => {
+    // A bank graded on a few difficulty steps: 40 items at the same distance from θ̂.
+    const pool = Array.from({ length: 40 }, (_, i) => ({
+      id: `t${String(i).padStart(2, "0")}`,
+      skill: "A",
+      b: 0,
+    })) as unknown as [EngineItem, ...EngineItem[]];
+    const picks = new Set<string>();
+    const r = mulberry32(7);
+    for (let i = 0; i < 2000; i++) picks.add(selectItem(pool, 0.3, [], {}, r).id);
+    expect(picks.size).toBe(40);
+  });
 });
 
 describe("stopping rule", () => {

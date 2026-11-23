@@ -21,7 +21,8 @@ export function contentSecurityPolicy(
     "media-src": ["'self'", "blob:"],
     "font-src": ["'self'", "data:"],
     "connect-src": ["'self'", ...(supabase ? [supabase] : []), ...(opts.dev ? ["ws:"] : [])],
-    "frame-src": ["https://www.youtube-nocookie.com"],
+    // 'self': PDF lessons are framed from /api/media.
+    "frame-src": ["'self'", "https://www.youtube-nocookie.com"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],

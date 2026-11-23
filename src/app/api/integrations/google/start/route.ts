@@ -28,11 +28,22 @@ export async function GET(request: NextRequest) {
   const env = serverEnv();
   if (!env.GOOGLE_OAUTH_CLIENT_ID || !env.GOOGLE_OAUTH_CLIENT_SECRET) return back("not_configured");
 
+  const redirectUri = googleRedirectUri(env.NEXT_PUBLIC_APP_URL, env.GOOGLE_OAUTH_REDIRECT_URI);
+  // Google returns to the configured address. Started from another address of the same site
+  // (www, a preview URL), the state cookie would stay behind and the attempt could never finish:
+  // restart once from the configured host.
+  const home = new URL(redirectUri);
+  if (request.nextUrl.host !== home.host && !request.nextUrl.searchParams.has("moved")) {
+    return NextResponse.redirect(
+      new URL(`${request.nextUrl.pathname}?locale=${locale}&moved=1`, home.origin),
+    );
+  }
+
   const state = packState(randomBytes(24).toString("base64url"), locale);
   const client = new OAuth2Client({
     clientId: env.GOOGLE_OAUTH_CLIENT_ID,
     clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
-    redirectUri: googleRedirectUri(env.NEXT_PUBLIC_APP_URL, env.GOOGLE_OAUTH_REDIRECT_URI),
+    redirectUri,
   });
   const url = client.generateAuthUrl({
     access_type: "offline",

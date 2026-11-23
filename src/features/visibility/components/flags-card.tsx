@@ -9,7 +9,7 @@ import { saveFlag, setFlagSubject } from "../actions";
 import type { StudioData } from "../queries";
 import { subjectLabel } from "../subjects";
 
-/** Feature flags for unfinished features: off, on for everyone, or on for a list of subjects. */
+/** Feature switches: on for everyone (the default), off, or on for a list of subjects. */
 export async function FlagsCard({ data, subjects }: { data: StudioData; subjects: Option[] }) {
   const t = await getTranslations("Visibility");
   const tr = await getTranslations("Registry");
@@ -26,7 +26,8 @@ export async function FlagsCard({ data, subjects }: { data: StudioData; subjects
       <CardContent className="flex flex-col gap-4">
         {features.map((f) => {
           const flag = data.flags.find((x) => x.key === f.key);
-          const enabled = flag?.enabled ?? false;
+          // No flag yet = the feature is on for everyone.
+          const enabled = flag?.enabled ?? true;
           const list = Array.isArray(flag?.subjects)
             ? (flag.subjects as { type: string; id: string }[])
             : [];

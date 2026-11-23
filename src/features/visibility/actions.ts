@@ -20,12 +20,20 @@ async function authorize() {
 
 const revalidate = () => revalidatePath("/[locale]/owner/visibility", "page");
 const knownKey = z.string().refine(isKnownKey);
+const PROTECTED_KEYS: ReadonlySet<string> = new Set([
+  "gate.owner",
+  "nav.owner.visibility",
+  "page.owner.visibility",
+]);
 
 /** Show/hide a key for one subject. Audited by trigger; takes effect on the next page load. */
 export async function addRule(_p: unknown, form: FormData): Promise<ActionResult> {
   return runAction(async () => {
     const input = ruleSchema.parse(Object.fromEntries(form.entries()));
     knownKey.parse(input.target_key);
+    // The Owner console is where a wrong rule gets undone: it can't be hidden from anyone.
+    if (input.effect === "hide" && PROTECTED_KEYS.has(input.target_key))
+      throw new ActionError("protectedKey");
     const db = await authorize();
     let subject = input.subject;
     if (subject.type === "user") {

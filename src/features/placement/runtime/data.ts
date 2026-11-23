@@ -92,7 +92,7 @@ export async function loadPool(
   student: StudentContext,
 ): Promise<PoolItem[]> {
   const since = new Date(Date.now() - SEEN_WINDOW_DAYS * 86_400_000).toISOString();
-  const [{ data: items }, { data: seen }] = await Promise.all([
+  const [{ data: items, error: itemsError }, { data: seen, error: seenError }] = await Promise.all([
     // Banks hold thousands of items; the API returns 1000 rows per request, so read by pages.
     selectAll(
       (after) => {
@@ -108,6 +108,10 @@ export async function loadPool(
     ),
     admin.from("responses").select("item_id").eq("student_id", student.id).gte("created_at", since),
   ]);
+  // A failed read must stop here: an empty pool would look like "no questions left" and end
+  // the learner's test early with a wrong level.
+  if (itemsError || !items) throw new Error(`placement pool: ${itemsError?.message}`);
+  if (seenError) throw new Error(`placement history: ${seenError.message}`);
   const seenIds = new Set((seen ?? []).map((r) => r.item_id));
   const all = (items ?? [])
     .filter((i) => !seenIds.has(i.id))
@@ -127,12 +131,13 @@ export async function loadPool(
 }
 
 export async function loadAnswers(admin: Admin, sessionId: string): Promise<EngineAnswer[]> {
-  const { data } = await admin
+  const { data, error } = await admin
     .from("responses")
     .select("item_id, skill_id, b_used, correct")
     .eq("session_id", sessionId)
     .not("correct", "is", null)
     .order("seq");
+  if (error) throw new Error(`placement answers: ${error.message}`);
   return (data ?? []).map((r) => ({
     itemId: r.item_id,
     skill: r.skill_id,

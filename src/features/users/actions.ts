@@ -28,14 +28,17 @@ export async function inviteStaff(_p: unknown, form: FormData): Promise<ActionRe
     await assertCanWrite(a, "users:invite", target);
     await assertCanWrite(a, "roles:assign", target);
     const db = await createClient();
-    const id = await provisionStaff(db, {
-      email: input.email,
-      fullName: input.full_name,
-      schoolId: input.school_id ?? null,
-      locale: input.locale,
-      sendInvite: true,
-    });
-    await grantRole(db, id, input.role_id, input.scope, true);
+    await provisionStaff(
+      db,
+      {
+        email: input.email,
+        fullName: input.full_name,
+        schoolId: input.school_id ?? null,
+        locale: input.locale,
+        sendInvite: true,
+      },
+      (id) => grantRole(db, id, input.role_id, input.scope, true),
+    );
     revalidatePath("/[locale]/owner/users", "page");
   });
 }

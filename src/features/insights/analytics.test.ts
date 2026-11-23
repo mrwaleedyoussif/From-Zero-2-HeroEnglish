@@ -49,8 +49,11 @@ describe("insights analytics", () => {
         ['Say "hi"', null],
         ["=1+1", "-2"],
         ["لمى", 5],
+        ["growth", -0.4], // a negative number is data, not a formula
       ],
     );
-    expect(csv).toBe('﻿name,score\r\n"Omar, S",80\r\n"Say ""hi""",\r\n\'=1+1,\'-2\r\nلمى,5\r\n');
+    expect(csv).toBe(
+      '﻿name,score\r\n"Omar, S",80\r\n"Say ""hi""",\r\n\'=1+1,\'-2\r\nلمى,5\r\ngrowth,-0.4\r\n',
+    );
   });
 });

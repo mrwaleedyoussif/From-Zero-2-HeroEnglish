@@ -20,7 +20,7 @@ async function answerCurrent(page: Page) {
   const choice = page.getByRole("radio").or(page.getByRole("checkbox")).first();
   if (await choice.isVisible()) await choice.check();
   else await page.getByLabel("Type your answer.").fill("went");
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
 }
 
 test("student takes the GEN placement, resumes after reload, sees result; teacher scores writing", async ({

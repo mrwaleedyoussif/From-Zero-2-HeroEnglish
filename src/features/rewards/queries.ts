@@ -4,6 +4,7 @@ import { teamPoints } from "./engine/kagan";
 import { type Entry, leaderboard } from "./engine/leaderboard";
 import { levelFor } from "./engine/levels";
 import { emptyStreak, shownStreak, weekStart } from "./engine/streaks";
+import { coinBalance, totalXp as sumXp } from "./totals";
 
 export const today = () => new Date().toISOString().slice(0, 10);
 /** This week's leaderboards start Monday 00:00 UTC (weekly reset, SPEC §10). */
@@ -13,8 +14,8 @@ export const thisWeek = () => `${weekStart(today())}T00:00:00Z`;
 export async function rewardsSummary(studentId: string) {
   const db = await createClient();
   const [xp, coins, levels, streak, badges, owned, certs, redemptions] = await Promise.all([
-    db.from("xp_events").select("xp").eq("student_id", studentId),
-    db.from("coin_ledger").select("delta").eq("student_id", studentId),
+    sumXp(db, studentId),
+    coinBalance(db, studentId),
     db.from("levels").select("level, name_en, name_ar, xp_required").order("level"),
     db.from("streaks").select("*").eq("student_id", studentId).maybeSingle(),
     db
@@ -35,7 +36,7 @@ export async function rewardsSummary(studentId: string) {
       .order("created_at", { ascending: false })
       .limit(20),
   ]);
-  const totalXp = (xp.data ?? []).reduce((s, r) => s + r.xp, 0);
+  const totalXp = xp;
   const s = streak.data;
   const state = s
     ? {
@@ -48,7 +49,7 @@ export async function rewardsSummary(studentId: string) {
   const earned = new Map((owned.data ?? []).map((o) => [o.badge_id, o.awarded_at]));
   return {
     xp: totalXp,
-    coins: (coins.data ?? []).reduce((sum, r) => sum + r.delta, 0),
+    coins,
     level: levelFor(totalXp, levels.data ?? []),
     streak: {
       days: shownStreak(state, today()),

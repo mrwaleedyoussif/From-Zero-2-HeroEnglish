@@ -4,7 +4,8 @@ import { StorageNotConnectedError } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { archiveResponses } from "./archive";
 import { planDue } from "./enqueue";
-import { Deferred, handleEmail, handlePdf, handleReport } from "./handlers";
+import { handleEmail } from "./email";
+import { Deferred, handlePdf, handleReport } from "./handlers";
 import { nextDay } from "./plan";
 
 export const MAX_JOBS = 20;
@@ -40,16 +41,23 @@ export async function runTick(source: string, now = new Date()): Promise<TickRes
     Date.now() - started < MAX_MS &&
     result.processed + result.failed + result.deferred < MAX_JOBS
   ) {
-    const { data: jobs } = await admin.rpc("claim_jobs", { p_n: 5 });
+    // One job at a time, so the time budget is checked before each one: a claimed job that
+    // never starts would sit "running" for 10 minutes.
+    const { data: jobs } = await admin.rpc("claim_jobs", { p_n: 1 });
     if (!jobs?.length) break;
     for (const job of jobs) {
       try {
+        // Claimed again and again without finishing (each run was cut off): stop retrying.
+        if (job.attempts > MAX_ATTEMPTS + 1) throw new Error("timed out repeatedly");
         let again = false;
         if (job.kind === "report") await handleReport(admin, job);
         else if (job.kind === "email") await handleEmail(admin, job, budget);
         else if (job.kind === "pdf") await handlePdf(admin, job);
         else if (job.kind === "archive_responses") again = await archiveResponses(admin, now);
-        else if (job.kind === "refresh_insights") await admin.rpc("refresh_insights");
+        else if (job.kind === "refresh_insights") {
+          const { error } = await admin.rpc("refresh_insights");
+          if (error) throw new Error(error.message);
+        }
         await admin
           .from("report_jobs")
           .update(again ? { status: "queued", attempts: 0 } : { status: "done", last_error: null })

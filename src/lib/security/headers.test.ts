@@ -10,6 +10,8 @@ describe("security headers", () => {
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("connect-src 'self' https://x.supabase.co");
     expect(csp).toContain("upgrade-insecure-requests");
+    // PDF lessons are framed from our own /api/media; YouTube is the only outside frame.
+    expect(csp).toContain("frame-src 'self' https://www.youtube-nocookie.com;");
   });
 
   it("relaxes only what Next.js dev mode needs", () => {

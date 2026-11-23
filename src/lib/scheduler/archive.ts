@@ -4,11 +4,13 @@ import { toCsv } from "@/features/insights/analytics";
 import { getStorage } from "@/lib/storage";
 import { findLayoutFolder } from "@/lib/storage/layout";
 import type { createAdminClient } from "@/lib/supabase/admin";
+import { chunks, IN_BATCH, inBatches } from "@/lib/supabase/batch";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
 export const ARCHIVE_AFTER_MONTHS = 6;
-export const BATCH = 5000;
+/** The API returns at most 1000 rows per request; a larger batch would look like "no more rows". */
+export const BATCH = 1000;
 
 /**
  * DB budget guard (SPEC §12): move answers older than 6 months to Drive
@@ -21,7 +23,7 @@ export async function archiveResponses(admin: Admin, now: Date): Promise<boolean
   const { data: rows, error } = await admin
     .from("responses")
     .select(
-      "id, session_id, student_id, item_id, item_version, skill_id, seq, correct, time_ms, b_used, theta_after, created_at",
+      "id, session_id, student_id, item_id, item_version, skill_id, seq, answer, correct, time_ms, b_used, theta_after, se_after, created_at",
     )
     .lt("created_at", cutoff.toISOString())
     .order("created_at")
@@ -36,7 +38,12 @@ export async function archiveResponses(admin: Admin, now: Date): Promise<boolean
   const headers = Object.keys(rows[0] as object);
   const csv = toCsv(
     headers,
-    rows.map((r) => headers.map((h) => (r as Record<string, unknown>)[h])),
+    rows.map((r) =>
+      headers.map((h) => {
+        const v = (r as Record<string, unknown>)[h];
+        return v !== null && typeof v === "object" ? JSON.stringify(v) : v;
+      }),
+    ),
   );
   const first = rows[0]?.created_at.slice(0, 10);
   const last = rows.at(-1)?.created_at.slice(0, 10);
@@ -67,25 +74,34 @@ export async function archiveResponses(admin: Admin, now: Date): Promise<boolean
     totals.set(k, t);
   }
   const keys = [...totals.values()];
-  const { data: existing } = await admin
-    .from("response_aggregates")
-    .select("student_id, skill_id, month, answered, correct")
-    .in("student_id", [...new Set(keys.map((k) => k.student_id))]);
+  const months = [...new Set(keys.map((k) => k.month))];
+  const { data: existing, error: readError } = await inBatches(
+    [...new Set(keys.map((k) => k.student_id))],
+    (ids) =>
+      admin
+        .from("response_aggregates")
+        .select("student_id, skill_id, month, answered, correct")
+        .in("student_id", ids)
+        .in("month", months),
+    25, // 25 students x their skills x 1-2 months stays under the 1000-row page
+  );
+  if (readError || !existing) throw new Error(`response_aggregates: ${readError?.message}`);
+  const before = new Map(existing.map((e) => [`${e.student_id}/${e.skill_id}/${e.month}`, e]));
   const merged = keys.map((k) => {
-    const e = existing?.find(
-      (x) => x.student_id === k.student_id && x.skill_id === k.skill_id && x.month === k.month,
-    );
+    const e = before.get(`${k.student_id}/${k.skill_id}/${k.month}`);
     return e ? { ...k, answered: k.answered + e.answered, correct: k.correct + e.correct } : k;
   });
   const { error: aggError } = await admin.from("response_aggregates").upsert(merged);
   if (aggError) throw aggError;
 
-  // 3. Free the space.
-  const ids = rows.map((r) => r.id);
-  for (let i = 0; i < ids.length; i += 500)
-    await admin
-      .from("responses")
-      .delete()
-      .in("id", ids.slice(i, i + 500));
+  // 3. Free the space. A failed delete must stop the job: the same rows would be archived and
+  // counted again on the next run.
+  for (const ids of chunks(
+    rows.map((r) => r.id),
+    IN_BATCH,
+  )) {
+    const { error: deleteError } = await admin.from("responses").delete().in("id", ids);
+    if (deleteError) throw deleteError;
+  }
   return rows.length === BATCH;
 }

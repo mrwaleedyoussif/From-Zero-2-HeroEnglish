@@ -37,7 +37,7 @@ async function grant(
   admin: Admin,
   schoolId: string,
   input: AwardInput,
-): Promise<{ xp: number; coins: number } | null> {
+): Promise<{ xp: number; coins: number; gamed: boolean } | null> {
   const [{ data: rule }, { data: todays }] = await Promise.all([
     admin.from("reward_rules").select("*").eq("event_type", input.type).maybeSingle(),
     admin
@@ -67,7 +67,12 @@ async function grant(
       delta: result.coins,
       reason: "earned",
     });
-  return { xp: result.xp, coins: result.coins };
+  return {
+    xp: result.xp,
+    coins: result.coins,
+    // Rushed through or guessed: not a day of real activity (no streak day for it).
+    gamed: result.blocked === "tooFast" || result.blocked === "lowAccuracy",
+  };
 }
 
 async function touchStreak(admin: Admin, studentId: string, schoolId: string) {
@@ -114,7 +119,7 @@ export async function award(admin: Admin, input: AwardInput): Promise<AwardOutco
   let coins = main.coins;
   let streak: number | null = null;
 
-  if (ACTIVITY.has(input.type)) {
+  if (ACTIVITY.has(input.type) && !main.gamed) {
     const s = await touchStreak(admin, input.studentId, p.school_id);
     streak = s.current;
     if (s.counted) {

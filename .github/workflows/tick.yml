@@ -25,5 +25,5 @@ jobs:
           APP_URL: ${{ vars.APP_URL }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          curl --fail-with-body --silent --show-error --max-time 90 -X POST "$APP_URL/api/cron/tick" \
+          curl --fail-with-body --silent --show-error --max-time 90 -X POST "${APP_URL%/}/api/cron/tick" \
             -H "Authorization: Bearer $CRON_SECRET" -H "x-tick-source: github"

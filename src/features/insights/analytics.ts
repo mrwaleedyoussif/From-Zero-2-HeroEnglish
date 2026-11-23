@@ -63,7 +63,8 @@ export function growthVsAverage(
 export function toCsv(headers: readonly string[], rows: readonly (readonly unknown[])[]): string {
   const cell = (v: unknown) => {
     let s = v === null || v === undefined ? "" : String(v);
-    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    // Text only: a negative number is data, not a spreadsheet formula.
+    if (typeof v === "string" && /^[=+\-@\t\r]/.test(s)) s = `'${s}`;
     return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   return `﻿${[headers, ...rows].map((r) => r.map(cell).join(",")).join("\r\n")}\r\n`;

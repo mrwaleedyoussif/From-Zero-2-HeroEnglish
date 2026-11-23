@@ -37,3 +37,9 @@ export function missingScopes(granted: string | null | undefined): string[] {
   const have = new Set((granted ?? "").split(/\s+/).filter(Boolean));
   return GOOGLE_SCOPES.filter((s) => s.startsWith("https://") && !have.has(s));
 }
+
+/** Google's error code from a failed token exchange ("invalid_client", "invalid_grant", …). */
+export function googleErrorCode(e: unknown): string | null {
+  const data = (e as { response?: { data?: { error?: unknown } } } | null)?.response?.data;
+  return typeof data?.error === "string" ? data.error : null;
+}

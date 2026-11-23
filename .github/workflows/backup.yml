@@ -36,9 +36,12 @@ jobs:
       - name: pg_dump (Postgres 17 client, same major version as Supabase)
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        # pipefail: a failed pg_dump must fail the job, or gzip uploads an empty "backup".
         run: |
+          set -euo pipefail
           file="db-$(date -u +%Y-%m-%d).sql.gz"
           docker run --rm postgres:17 pg_dump --no-owner --no-privileges "$SUPABASE_DB_URL" | gzip -9 > "$file"
-          test -s "$file"
+          gzip -t "$file"
+          test "$(stat -c %s "$file")" -gt 10000
           echo "BACKUP_FILE=$file" >> "$GITHUB_ENV"
       - run: npm run backup:upload -- "$BACKUP_FILE"

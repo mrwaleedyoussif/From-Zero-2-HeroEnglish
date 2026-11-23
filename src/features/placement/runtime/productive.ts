@@ -11,7 +11,12 @@ export const MAX_WRITING_CHARS = 5000;
 
 /** Prompts chosen for this session's level that have no submission yet. */
 export async function pendingPrompts(admin: Admin, s: SessionRow) {
-  const prompts = await choosePrompts(admin, s.department_id, Number(s.theta ?? s.theta0));
+  const prompts = await choosePrompts(
+    admin,
+    s.department_id,
+    Number(s.theta ?? s.theta0),
+    s.student_id,
+  );
   const { data: done } = await admin
     .from("productive_submissions")
     .select("item_id")
@@ -20,7 +25,8 @@ export async function pendingPrompts(admin: Admin, s: SessionRow) {
   return prompts.filter((p) => !submitted.has(p.id));
 }
 
-async function completeIfDone(admin: Admin, s: SessionRow) {
+/** Close the test once no prompt is left (all answered, or the remaining part was switched off). */
+export async function completeIfDone(admin: Admin, s: SessionRow) {
   if ((await pendingPrompts(admin, s)).length === 0) {
     await admin
       .from("test_sessions")

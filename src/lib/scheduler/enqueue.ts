@@ -1,6 +1,6 @@
 import "server-only";
 import type { createAdminClient } from "@/lib/supabase/admin";
-import { monthlyPeriod, type Period, weeklyPeriod } from "./plan";
+import { isTimeZone, monthlyPeriod, type Period, weeklyPeriod } from "./plan";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -56,10 +56,9 @@ export async function planDue(
   const jobs: PlannedJob[] = [];
   const periods: Period[] = [];
   for (const school of await activeSchools(admin)) {
-    for (const p of [
-      weeklyPeriod(now, school.timezone, school.week_start),
-      monthlyPeriod(now, school.timezone),
-    ]) {
+    // One school with a bad zone must not stop every school's reports.
+    const zone = isTimeZone(school.timezone) ? school.timezone : "Asia/Riyadh";
+    for (const p of [weeklyPeriod(now, zone, school.week_start), monthlyPeriod(now, zone)]) {
       periods.push(p);
       for (const r of await recipients(admin, school.id, p.period))
         jobs.push({

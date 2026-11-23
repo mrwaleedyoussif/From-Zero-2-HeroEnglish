@@ -1,15 +1,13 @@
 import "server-only";
 import type { createAdminClient } from "@/lib/supabase/admin";
+import { PAGE, selectAll } from "@/lib/supabase/batch";
 import { type HistoryEvent, newBadges } from "./engine/badges";
 import { type Level, levelsCrossed } from "./engine/levels";
 import { EVENT_TYPES, type EventType } from "./engine/rules";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
-export async function totalXp(admin: Admin, studentId: string): Promise<number> {
-  const { data } = await admin.from("xp_events").select("xp").eq("student_id", studentId);
-  return (data ?? []).reduce((s, r) => s + r.xp, 0);
-}
+export { totalXp } from "./totals";
 
 /** Badges whose rules now hold: recorded, bonus XP added, learner notified. Returns codes. */
 export async function checkBadges(
@@ -22,12 +20,17 @@ export async function checkBadges(
   const [{ data: badges }, { data: owned }, { data: events }] = await Promise.all([
     admin.from("badges").select("id, code, rule, xp_bonus").eq("status", "active"),
     admin.from("user_badges").select("badges(code)").eq("student_id", studentId),
-    admin
-      .from("xp_events")
-      .select("event_type, created_at, meta")
-      .eq("student_id", studentId)
-      .gte("created_at", since)
-      .limit(5000),
+    selectAll(
+      (after) => {
+        const q = admin
+          .from("xp_events")
+          .select("id, event_type, created_at, meta")
+          .eq("student_id", studentId)
+          .gte("created_at", since);
+        return (after ? q.gt("id", after) : q).order("id").limit(PAGE);
+      },
+      (r) => r.id,
+    ),
   ]);
   const history: HistoryEvent[] = (events ?? [])
     .filter((e) => (EVENT_TYPES as readonly string[]).includes(e.event_type))

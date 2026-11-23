@@ -5,11 +5,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 /** Limits per action (SPEC §15: rate limiting on auth and public routes). */
 export const LIMITS = {
-  /** Student PIN sign-in: per IP and per school+username (PINs are short). */
-  pinIp: { max: 30, windowSec: 15 * 60 },
+  /**
+   * Student PIN sign-in: per school+username (PINs are short) and per IP. A whole school shares
+   * one public IP, so the IP limit must fit every class signing in during the same lesson.
+   */
+  pinIp: { max: 600, windowSec: 15 * 60 },
   pinUser: { max: 8, windowSec: 15 * 60 },
   /** Staff magic links: per IP and per email address (also protects the email budget). */
-  linkIp: { max: 20, windowSec: 60 * 60 },
+  linkIp: { max: 60, windowSec: 60 * 60 },
   linkEmail: { max: 5, windowSec: 60 * 60 },
 } as const;
 

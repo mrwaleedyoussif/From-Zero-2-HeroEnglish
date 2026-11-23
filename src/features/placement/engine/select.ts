@@ -29,7 +29,8 @@ export function chooseSkill(
 
 /**
  * Next item from the unused candidates: within the balanced skill, pick at random among the
- * `k` items whose difficulty is closest to θ̂ (randomesque exposure control, SPEC §7).
+ * `k` items whose difficulty is closest to θ̂, plus any tied with the k-th (randomesque exposure
+ * control, SPEC §7).
  */
 export function selectItem(
   candidates: NonEmpty<EngineItem>,
@@ -41,9 +42,12 @@ export function selectItem(
 ): EngineItem {
   const skill = chooseSkill(shares, answers, new Set(candidates.map((i) => i.skill)));
   const inSkill = skill ? candidates.filter((i) => i.skill === skill) : [...candidates];
-  const closest = inSkill
-    .sort((a, b) => Math.abs(a.b - theta) - Math.abs(b.b - theta) || a.id.localeCompare(b.id))
-    .slice(0, k);
-  // chooseSkill only returns skills present in candidates, so `closest` is never empty.
+  const dist = (i: EngineItem) => Math.abs(i.b - theta);
+  const sorted = inSkill.sort((a, b) => dist(a) - dist(b) || a.id.localeCompare(b.id));
+  // chooseSkill only returns skills present in candidates, so `sorted` is never empty.
+  // Banks graded on a few difficulty steps have hundreds of items at the same distance: all of
+  // them share the draw, or every learner would get the same k items with the lowest ids.
+  const cut = dist(sorted[Math.min(k, sorted.length) - 1] as EngineItem) + 1e-9;
+  const closest = sorted.filter((i) => dist(i) <= cut);
   return closest[Math.floor(rng() * closest.length)] as EngineItem;
 }

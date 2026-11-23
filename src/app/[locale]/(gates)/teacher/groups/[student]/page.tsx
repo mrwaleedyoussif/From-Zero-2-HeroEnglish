@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { learnerLevels, learnerProfile, profileOptions } from "@/features/learning/profile/queries";
 import { addLearnerNote } from "@/features/learning/teacher/assign-actions";
+import { resetPin } from "@/features/users/actions";
+import { SecretResultForm } from "@/features/users/components/secret-result-form";
 import { can } from "@/lib/auth/can";
 import { requirePermission } from "@/lib/auth/guard";
 import { formatDate, localName } from "@/lib/i18n-names";
@@ -29,7 +31,7 @@ export default async function LearnerPage({
   const tl = await getTranslations("Learning");
   const db = await createClient();
   const [{ data: person }, profile, levels, options, { data: notes }] = await Promise.all([
-    db.from("profiles").select("full_name").eq("id", student).maybeSingle(),
+    db.from("profiles").select("full_name, username").eq("id", student).maybeSingle(),
     learnerProfile(student),
     learnerLevels(student),
     profileOptions(),
@@ -41,6 +43,7 @@ export default async function LearnerPage({
       .limit(50),
   ]);
   if (!person) notFound();
+  const canResetPin = !actor.viewAs && (await can(actor, "users:reset_pin", { userId: student }));
   const label = (kind: string, key: string) => {
     const o = options.find((x) => x.kind === kind && x.key === key);
     return o ? `${o.emoji ?? ""} ${locale === "ar" ? o.name_ar : o.name_en}`.trim() : key;
@@ -82,6 +85,20 @@ export default async function LearnerPage({
           </p>
         </section>
       ))}
+      {canResetPin && (
+        <section className="flex flex-col gap-2">
+          <h2 className="font-semibold">{t("signIn")}</h2>
+          <p className="text-sm text-muted-foreground">
+            {t("signInHelp", { username: person.username ?? "—" })}
+          </p>
+          <SecretResultForm action={resetPin}>
+            <input type="hidden" name="user_id" value={student} />
+            <Button type="submit" variant="outline" size="sm">
+              {t("resetPin")}
+            </Button>
+          </SecretResultForm>
+        </section>
+      )}
       <section className="flex flex-col gap-3">
         <h2 className="font-semibold">{t("notes")}</h2>
         {!actor.viewAs && (

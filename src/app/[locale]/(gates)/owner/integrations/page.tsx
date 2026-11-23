@@ -22,6 +22,8 @@ const errors = [
   "no_refresh_token",
   "scopes",
   "exchange",
+  "client_secret",
+  "redirect_uri",
 ] as const;
 
 /** Connect the Owner's Google Drive (SPEC §5): OAuth once, refresh token stored encrypted. */

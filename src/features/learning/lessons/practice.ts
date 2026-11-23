@@ -73,7 +73,11 @@ export async function choosePractice(
   return out.filter((i) => i !== null);
 }
 
-/** Score submitted answers; only items from this lesson's practice pool count. */
+/**
+ * Score submitted answers; only items from this lesson's practice pool count, each once. The
+ * score is out of the number of items the check serves, so sending one easy answer (or none)
+ * can't produce 100%.
+ */
 export async function scorePractice(
   admin: Admin,
   lesson: { id: string; skill_id: string; cefr: string | null },
@@ -82,8 +86,9 @@ export async function scorePractice(
   const items = new Map(
     (await pool(admin, lesson.id, lesson.skill_id, lesson.cefr)).map((i) => [i.id, i]),
   );
+  const seen = new Set<string>();
   const results = answers
-    .filter((a) => items.has(a.itemId))
+    .filter((a) => items.has(a.itemId) && !seen.has(a.itemId) && seen.add(a.itemId))
     .slice(0, PRACTICE_ITEMS)
     .map((a) => {
       const item = items.get(a.itemId) as PoolItem;
@@ -92,8 +97,9 @@ export async function scorePractice(
         correct: isCorrect(item.item_type as ItemType, item.correct, a.answer) === true,
       };
     });
-  const score = results.length
-    ? Math.round((results.filter((r) => r.correct).length / results.length) * 100)
+  const served = Math.max(results.length, Math.min(PRACTICE_ITEMS, items.size));
+  const score = served
+    ? Math.round((results.filter((r) => r.correct).length / served) * 100)
     : null;
   return { score, results };
 }

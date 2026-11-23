@@ -5,7 +5,8 @@ import { describe, expect, it, vi } from "vitest";
 import { isRetryable, withBackoff } from "./backoff";
 import { decryptSecret, encryptSecret } from "./crypto";
 import { createFakeStorage, parseRange } from "./fake";
-import { childQuery, escapeQuery } from "./google";
+import { Readable } from "node:stream";
+import { childQuery, escapeQuery, header, toWebStream } from "./google";
 import { DRIVE_ROOT, findLayoutFolder, initLayout, LAYOUT, listRecursive } from "./layout";
 import { SHEET_MIME } from "./types";
 
@@ -132,5 +133,24 @@ describe("parseRange", () => {
     [null, 1000, null],
   ])("%s of %i", (range, size, expected) => {
     expect(parseRange(range, size)).toEqual(expected);
+  });
+});
+
+describe("Google Drive responses", () => {
+  it("reads headers from a Fetch Headers object and from a plain record", () => {
+    const fetched = new Headers({ "Content-Range": "bytes 0-99/5000", "Content-Length": "100" });
+    expect(header(fetched, "content-range")).toBe("bytes 0-99/5000");
+    expect(header(fetched, "content-length")).toBe("100");
+    expect(header(fetched, "etag")).toBeNull();
+    expect(header({ "content-range": "bytes 0-1/2" }, "content-range")).toBe("bytes 0-1/2");
+    expect(header({}, "content-range")).toBeNull();
+    expect(header(undefined, "content-range")).toBeNull();
+  });
+
+  it("turns either kind of stream into a web stream", async () => {
+    const read = async (s: ReadableStream<Uint8Array>) =>
+      Buffer.from(await new Response(s).arrayBuffer()).toString();
+    expect(await read(toWebStream(Readable.from([Buffer.from("node")])))).toBe("node");
+    expect(await read(toWebStream(new Response("web").body))).toBe("web");
   });
 });

@@ -1,21 +1,21 @@
 # PROGRESS (Claude Code updates this at the end of every session — keep ≤ 60 lines total)
 
 ## Current phase
-Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` eu-central-1; Vercel `linguapath` auto-deploys from GitHub `main`). A full review (2026-11-23) fixed the list below on branch `claude/zen-curie-nz8wj5` — **not live until merged to `main`**.
+Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` eu-central-1, ref `lemqmbjlsodfzqdqlwjt`; Vercel `linguapath` auto-deploys from GitHub `main`, functions in `fra1`). The 2026-11-23 review is merged and live (PRs #1–#3); migration `20261130000001` was applied by the Owner in the SQL editor and recorded in `schema_migrations`.
 
-## Handoff — to put the review fixes live (in this order)
-1. `npx supabase link --project-ref <ref>` then `npx supabase db push` (adds `20261130000001_review_hardening.sql`). Needs a Supabase access token `sbp_…`. The code also runs without it (feature switches then stay "on"), but push first.
-2. Merge the branch into `main` (Vercel deploys; functions now run in `fra1`, next to the database). Then `E2E_BASE_URL=https://zero-2-heroenglish.com npm run test:smoke`.
-3. Supabase dashboard (RUNBOOK §2 steps 7–8): turn public sign-ups off; raise the sign-in rate limit to ≥ 300 per 5 min (student logins all arrive from Vercel's addresses).
-4. Still BLOCKED on the Owner: Google connect. The app now names the wrong setting (client secret / redirect address). If Google's own page says `invalid_client`, the **client ID** in Vercel is wrong. Then Create Drive folders → load the STEP pack (scripts/step-import/README.md) → Content → Check sheets → Apply.
-5. Later: Resend SMTP; GitHub Actions `APP_URL` + secrets; STEP mock tests (3,000 items).
+## Handoff
+- Live state: Owner signs in; Google Drive is connected and folders exist; the STEP pack is loaded (5,110 questions, 161 passages, 316 audio tracks in `02_Media`) and listening audio plays for students.
+- A cloud session cannot query the live database (blocked by session policy): give the Owner SQL to paste into Supabase → SQL Editor, ending with the `schema_migrations` insert.
+- Owner still to do in Supabase → Authentication (RUNBOOK §2 steps 7–8): sign-ups off; sign-in rate limit ≥ 300 per 5 min. Google consent screen must be "In production".
+- Later: Lessons sheet (none yet, so nothing to assign); Resend SMTP; GitHub Actions `APP_URL` + secrets; STEP mock tests (3,000 items).
 
 ## Review 2026-11-23 (Done)
 - Sign-in: real front page (was the Phase 0 placeholder); invitation emails sign in (`/auth/session` finishes fragment tokens); per-IP student limit 30 → 600 per 15 min; role grant inside account rollback; stray Google accounts removed; student PINs stored as a keyed hash (`lib/auth/pin-password.ts`, old PINs upgrade on first sign-in); session cookies HttpOnly; teachers can reset a PIN (Groups → student).
 - Content/placement: late media is linked on the next Apply (`import/link-media.ts`); Drive renames handled; imports audited by counts; placement loaders throw, stuck tests recover (`unstick`), tied items share the draw; writing/speaking follow their feature switches; extra-time and easy-font accommodations applied; PDF lessons allowed by the CSP.
 - Scheduler/rewards: email digests survive a cut-off run (`scheduler/email.ts`); bad school time zone can't stop ticks; archive pages by 1000; XP/coin totals paged (`rewards/totals.ts`); practice scored out of items served, lesson time bounded by the server; streaks skip the school weekend and use school-time days (`lib/time.ts`); "due soon" reminders with the daily tick; backup workflow fails on an empty dump.
 - DB migration: profile identity frozen for signed-in users; class/people rows must match the row's school; `feature_flags_off_for`; `import_jobs` audit trigger dropped.
-- Tests: 234 unit (engines 100%), 57 DB, 26 e2e (run one at a time: `workers: 1`).
+- After go-live: old site's service worker is replaced by a clean-up worker (`public/sw.js`, `service-worker.js`); Drive audio lost its `Content-Range` (gaxios returns Fetch `Headers`) — fixed in `lib/storage/google.ts`. The Google driver has no test against real Drive: check on the live site after touching it.
+- Tests: 236 unit (engines 100%), 57 DB, 26 e2e (run one at a time: `workers: 1`).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.
@@ -30,7 +30,7 @@ Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` 
 - Phase 9: nonce CSP + strict headers (`src/proxy.ts`), DB rate limits, student export/erase (PDPL), RLS sweep test, translated 404/error pages, axe WCAG A/AA e2e, Lighthouse ≥ 90, `docs/RUNBOOK.md`, `test:smoke`, `lighthouse`.
 
 ## Next
-- STEP pack: 5,110 MCQs (161 passages, 316 audio tracks) converted and validated locally; B2+ stored as CEFR C1. Loads once Drive is connected. First real import: read the preview carefully — Google Sheets may reformat numbers/TRUE/dates (the local trial used CSV files).
+- STEP pack is loaded (B2+ stored as CEFR C1); the Google Sheets round trip matched the database exactly (0 changed).
 - Known gaps left by the review (none blocks launch): entitlement checks are not called anywhere (rule 7; no effect while billing is off); Owner insights has no school picker; Visibility Studio can't pick `department.*` keys from a list; monthly reports show last-7-day activity (now labelled so); growth mixes departments for learners placed in two; listening time limits are enforced in the browser only; calibration has no screen.
 - Real placement needs ~150+ items per department.
 

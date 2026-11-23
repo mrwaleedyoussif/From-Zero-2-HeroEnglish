@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
+import { AppNav } from "@/components/app-nav";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: R
       )}
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 print:hidden">
         <div className="flex flex-wrap items-center gap-3">
+          <AppNav home="/home" />
           <Link href="/home" className="text-lg font-bold text-primary">
             {t("appName")}
           </Link>

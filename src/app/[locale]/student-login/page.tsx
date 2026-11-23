@@ -2,9 +2,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { StudentLoginForm } from "@/features/auth/components/student-login-form";
 import { Link } from "@/i18n/navigation";
+import { schoolCodeSchema } from "@/lib/auth/student-identity";
 
-export default async function StudentLoginPage({ params }: PageProps<"/[locale]/student-login">) {
+export default async function StudentLoginPage({
+  params,
+  searchParams,
+}: PageProps<"/[locale]/student-login">) {
   const { locale } = await params;
+  // The home page passes the school the learner picked, so they need not type its code.
+  const school = schoolCodeSchema.safeParse((await searchParams).school);
   setRequestLocale(locale);
   const t = await getTranslations("Auth");
 
@@ -19,7 +25,7 @@ export default async function StudentLoginPage({ params }: PageProps<"/[locale]/
         </Link>
       }
     >
-      <StudentLoginForm />
+      <StudentLoginForm defaultSchool={school.success ? school.data : undefined} />
     </AuthShell>
   );
 }

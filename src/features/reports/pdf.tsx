@@ -41,7 +41,10 @@ export async function reportPdf(data: ReportData, locale: MailLocale): Promise<B
   const rtl = locale === "ar";
   const dir = { flexDirection: rtl ? ("row-reverse" as const) : ("row" as const) };
   const doc = (
-    <Document title={`LinguaPath ${data.period} ${data.start}`} author="LinguaPath">
+    <Document
+      title={`Zero-2-Hero English ${data.period} ${data.start}`}
+      author="Zero-2-Hero English"
+    >
       <Page size="A4" style={s.page}>
         <Txt rtl={rtl} style={s.title}>
           {t("pdfTitle", { period: t(`period.${data.period}`) })}

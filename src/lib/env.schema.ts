@@ -43,7 +43,7 @@ export const serverEnvSchema = publicEnvSchema
     ENCRYPTION_KEY: encryptionKey,
     MAIL_PROVIDER: z.enum(["console", "resend", "gmail"]).default("console"),
     RESEND_API_KEY: optionalString,
-    MAIL_FROM: z.string().min(3).default("LinguaPath <reports@example.com>"),
+    MAIL_FROM: z.string().min(3).default("Zero-2-Hero English <reports@example.com>"),
     EMAIL_DAILY_BUDGET: z.coerce.number().int().min(0).max(100).default(90),
     CRON_SECRET: z.string().min(32, "CRON_SECRET must be at least 32 characters"),
     BILLING_ENABLED: flag(false),

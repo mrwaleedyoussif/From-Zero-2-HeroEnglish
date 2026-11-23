@@ -58,7 +58,7 @@ test("student takes the GEN placement, resumes after reload, sees result; teache
   await page.getByRole("button", { name: "Send" }).click();
   await expect(page).toHaveURL(/\/result$/);
   await expect(page.locator("[data-result]")).toContainText("Your level");
-  await expect(page.getByText(/LinguaPath Scale: \d+/)).toBeVisible();
+  await expect(page.getByText(/Zero-2-Hero English Scale: \d+/)).toBeVisible();
   await expect(page.getByText("Your teacher will score your writing")).toBeVisible();
 
   // The test page now only redirects to the result.

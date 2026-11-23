@@ -49,7 +49,7 @@ export function CertificateDocument({
   data: CertificateData;
 }): ReactElement<DocumentProps> {
   return (
-    <Document title={`Certificate — ${data.achievement}`} author="LinguaPath">
+    <Document title={`Certificate — ${data.achievement}`} author="Zero-2-Hero English">
       <Page size="A4" orientation="landscape" style={s.page}>
         <View style={s.frame}>
           <View style={s.ribbon} />

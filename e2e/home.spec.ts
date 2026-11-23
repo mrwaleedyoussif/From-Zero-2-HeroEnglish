@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
-// The public home page: no sign-in and no data, so it is safe against a deployed site too.
+// The public home page (needs the seeded local database for the demo school).
 const audit = async (page: Page) => {
   const { violations } = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -10,23 +10,42 @@ const audit = async (page: Page) => {
 };
 
 for (const c of [
-  { path: "/en", start: /Start/, school: /School user/, student: /Student/, soon: "Soon" },
-  { path: "/ar", start: /ابدأ/, school: /مستخدم مدرسة/, student: /طالب/, soon: "قريبًا" },
+  {
+    path: "/en",
+    start: /Start/,
+    school: /School user/,
+    mine: /Riyadh Demo School/,
+    student: /Student/,
+    soon: "Soon",
+  },
+  {
+    path: "/ar",
+    start: /ابدأ/,
+    school: /مستخدم مدرسة/,
+    mine: /مدرسة الرياض التجريبية/,
+    student: /طالب/,
+    soon: "قريبًا",
+  },
 ]) {
-  test(`home ${c.path}: welcome screen, then general learner or school user`, async ({ page }) => {
+  test(`home ${c.path}: welcome, then school, then student or staff`, async ({ page }) => {
+    // Colours are measured once things stand still: ask for reduced motion, as some users do.
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(c.path);
     await page.getByRole("button", { name: c.start }).click();
     // The choice: general learners are announced as coming soon and are not clickable.
     await expect(page.getByText(c.soon)).toBeVisible();
     await expect(page.getByRole("button", { name: c.school })).toBeVisible();
-    await page.waitForTimeout(1200); // entrance animations finished
     await audit(page);
 
+    // School users pick their school (and branch, when it has several) before who they are.
     await page.getByRole("button", { name: c.school }).click();
-    await page.waitForTimeout(900);
+    await audit(page);
+    await page.getByRole("button", { name: c.mine }).click();
     await audit(page);
     await page.getByRole("link", { name: c.student }).click();
-    await expect(page).toHaveURL(/\/student-login$/);
+    // The sign-in form already knows the school.
+    await expect(page).toHaveURL(/\/student-login\?school=RIY01$/);
+    await expect(page.getByLabel(/School code|رمز المدرسة/)).toHaveValue("RIY01");
 
     // The welcome screen shows once per visit, and the last choice is offered as a shortcut.
     await page.goto(c.path);

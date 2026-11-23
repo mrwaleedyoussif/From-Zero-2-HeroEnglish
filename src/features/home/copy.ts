@@ -5,6 +5,9 @@ export const HOME_KEYS = [
   "start",
   "startHint",
   "choose",
+  "chooseSchool",
+  "chooseBranch",
+  "chooseRole",
   "general",
   "generalHint",
   "school",
@@ -20,6 +23,7 @@ export const HOME_KEYS = [
   "soundOff",
   "replay",
   "schoolLine",
+  "schoolLine2",
   "designedBy",
   "designer",
 ] as const;
@@ -33,3 +37,12 @@ export interface HomeTexts {
   /** The other language, shown smaller beside it (bilingual labels). */
   other: { lang: "en" | "ar"; copy: HomeCopy };
 }
+
+/** The steps of the choice, and the heading each one shows. */
+export type Step = "who" | "school" | "branch" | "role";
+export const STEP_HEADING: Record<Step, HomeKey> = {
+  who: "choose",
+  school: "chooseSchool",
+  branch: "chooseBranch",
+  role: "chooseRole",
+};

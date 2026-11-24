@@ -9,7 +9,7 @@ export function DepartmentsLink({ texts, audience }: { texts: HomeTexts; audienc
   return (
     <Link
       href={`/departments/${audience}`}
-      className="z2h-rise inline-flex min-h-11 items-center gap-2 self-center rounded-full border border-white/20 bg-white/10 px-5 font-semibold text-white outline-none hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white"
+      className="z2h-rise inline-flex min-h-11 items-center gap-2 self-center rounded-full border border-white/20 bg-[#1b3157] px-5 font-semibold text-white outline-none hover:bg-[#274472] focus-visible:ring-2 focus-visible:ring-white"
     >
       <LayoutGrid aria-hidden className="size-5 text-[#fcd34d]" />
       {texts.main.copy.seeDepartments}

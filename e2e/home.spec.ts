@@ -15,8 +15,8 @@ for (const c of [
     start: /Start/,
     school: /School user/,
     mine: /Riyadh Demo School/,
-    general: /General learner/,
-    student: /Student/,
+    general: /General learner /,
+    student: /student( |$)/i,
     soon: "Soon",
   },
   {
@@ -85,7 +85,8 @@ for (const c of [
     await expect(page.getByRole("heading", { level: 1 })).toContainText(c.title);
     const cards = page.locator("[data-department]");
     await expect(cards).toHaveCount(10);
-    await expect(page.locator("[data-department][data-soon]")).toHaveCount(10);
+    // Reading and Writing is open for general learners; the rest say Soon.
+    await expect(page.locator("[data-department][data-soon]")).toHaveCount(9);
     await expect(page.locator('[data-department="step"]')).toContainText(c.step);
     await expect(page.locator("[data-department] a, [data-department] button")).toHaveCount(0);
     await audit(page);
@@ -96,3 +97,17 @@ for (const c of [
     await audit(page);
   });
 }
+
+test("the opening plays after Start and can be skipped", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByRole("button", { name: /Start/ }).click();
+  // The intro (the bloom, to music) is on: the choices wait behind it until it ends or is skipped.
+  await expect(page.locator("main")).toHaveAttribute("inert", "");
+  await page.getByRole("button", { name: /Skip/ }).click();
+  await expect(page.locator("main")).not.toHaveAttribute("inert", "");
+  // The public menu is beside the page.
+  await expect(page.getByRole("link", { name: "Teachers and staff" })).toHaveAttribute(
+    "href",
+    "/en/login",
+  );
+});

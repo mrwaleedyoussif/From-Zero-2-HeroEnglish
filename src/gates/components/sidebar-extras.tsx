@@ -57,10 +57,19 @@ async function Departments({ actor }: { actor: Actor }) {
                 <Icon className="size-4" />
               </span>
               <span className="min-w-0 flex-1 truncate">{t(`names.${d.key}`)}</span>
-              {d.soon && (
+              {d.soon ? (
                 <span className="dept-soon rounded-full px-1.5 text-[11px] font-semibold">
                   {t("soon")}
                 </span>
+              ) : (
+                d.strand && (
+                  <Link
+                    href={`/student/units/${d.strand}`}
+                    className="dept-soon rounded-full px-2 py-0.5 text-[11px] font-bold hover:underline"
+                  >
+                    {t("open")}
+                  </Link>
+                )
               )}
             </li>
           );

@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { AppNav } from "@/components/app-nav";
+import { PublicSidebar } from "@/components/public-sidebar";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { HomeExperience } from "@/features/home/components/home-experience";
@@ -33,6 +34,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       }}
       schools={await publicSchools()}
       generalOpen={learnersOpen()}
+      sidebar={<PublicSidebar />}
       controls={
         <>
           <AppNav />

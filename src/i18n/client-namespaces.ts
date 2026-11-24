@@ -22,5 +22,6 @@ export const CLIENT_NAMESPACES = [
   "SchoolTheme",
   "Shell",
   "ThemeToggle",
+  "Units",
   "Users",
 ] as const;

@@ -56,7 +56,10 @@ export function AppNav({ home = "/" }: { home?: "/" | "/home" }) {
         title={t("navRefresh")}
         onClick={() => startRefresh(() => router.refresh())}
       >
-        <RefreshCw aria-hidden className={refreshing ? "animate-spin text-emerald-300" : "text-emerald-300"} />
+        <RefreshCw
+          aria-hidden
+          className={refreshing ? "animate-spin text-emerald-300" : "text-emerald-300"}
+        />
       </Button>
       <Button
         variant="ghost"

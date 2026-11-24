@@ -288,3 +288,53 @@
   --hue-fg: #fdba74;
   --hue-on: #0e223d;
 }
+[data-hue="indigo"] {
+  --hue-bg: #e0e7ff;
+  --hue-fg: #3730a3;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="indigo"] {
+  --hue-bg: color-mix(in srgb, #a5b4fc 18%, transparent);
+  --hue-fg: #a5b4fc;
+  --hue-on: #0e223d;
+}
+[data-hue="cyan"] {
+  --hue-bg: #cffafe;
+  --hue-fg: #0e7490;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="cyan"] {
+  --hue-bg: color-mix(in srgb, #67e8f9 18%, transparent);
+  --hue-fg: #67e8f9;
+  --hue-on: #0e223d;
+}
+[data-hue="lime"] {
+  --hue-bg: #ecfccb;
+  --hue-fg: #3f6212;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="lime"] {
+  --hue-bg: color-mix(in srgb, #bef264 18%, transparent);
+  --hue-fg: #bef264;
+  --hue-on: #0e223d;
+}
+[data-hue="fuchsia"] {
+  --hue-bg: #fae8ff;
+  --hue-fg: #86198f;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="fuchsia"] {
+  --hue-bg: color-mix(in srgb, #f0abfc 18%, transparent);
+  --hue-fg: #f0abfc;
+  --hue-on: #0e223d;
+}
+[data-hue="brown"] {
+  --hue-bg: #f5e6d8;
+  --hue-fg: #7c2d12;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="brown"] {
+  --hue-bg: color-mix(in srgb, #e7b98f 18%, transparent);
+  --hue-fg: #e7b98f;
+  --hue-on: #0e223d;
+}

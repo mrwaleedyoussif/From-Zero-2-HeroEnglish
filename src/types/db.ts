@@ -397,6 +397,52 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"course_unit_progress": {
+                  Row: {
+                    "answers": NonNullable<Json>,"completed_at": string | null,"correct": number,"created_at": string,"school_id": string,"student_id": string,"total": number,"unit_id": string,"updated_at": string,"writing": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answers"?: NonNullable<Json>,"completed_at"?: string | null,"correct"?: number,"created_at"?: string,"school_id": string,"student_id": string,"total"?: number,"unit_id": string,"updated_at"?: string,"writing"?: string | null
+                  }
+                  Update: {
+                    "answers"?: NonNullable<Json>,"completed_at"?: string | null,"correct"?: number,"created_at"?: string,"school_id"?: string,"student_id"?: string,"total"?: number,"unit_id"?: string,"updated_at"?: string,"writing"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "course_unit_progress_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "course_unit_progress_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "course_unit_progress_unit_id_fkey"
+      columns: ["unit_id"]
+isOneToOne: false
+      referencedRelation: "course_units"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"course_units": {
+                  Row: {
+                    "content": NonNullable<Json>,"created_at": string,"hash": string,"id": string,"level": string,"status": string,"strand": string,"title": string,"title_ar": string | null,"unit": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "content": NonNullable<Json>,"created_at"?: string,"hash": string,"id": string,"level": string,"status"?: string,"strand": string,"title": string,"title_ar"?: string | null,"unit": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "content"?: NonNullable<Json>,"created_at"?: string,"hash"?: string,"id"?: string,"level"?: string,"status"?: string,"strand"?: string,"title"?: string,"title_ar"?: string | null,"unit"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"cron_runs": {
                   Row: {
                     "deferred": number,"failed": number,"finished_at": string | null,"id": string,"planned": number,"processed": number,"source": string,"started_at": string

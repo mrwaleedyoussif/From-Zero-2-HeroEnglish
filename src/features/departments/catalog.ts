@@ -3,7 +3,21 @@
  * "Departments" messages (English and Arabic); `inside` lists what a department contains.
  * A department stays `soon` until its content is loaded: shown, but not yet open.
  */
-export const HUES = ["violet", "blue", "green", "amber", "rose", "teal", "pink", "orange"] as const;
+export const HUES = [
+  "violet",
+  "blue",
+  "green",
+  "amber",
+  "rose",
+  "teal",
+  "pink",
+  "orange",
+  "indigo",
+  "cyan",
+  "lime",
+  "fuchsia",
+  "brown",
+] as const;
 export type Hue = (typeof HUES)[number];
 
 export interface Department {
@@ -11,6 +25,8 @@ export interface Department {
   hue: Hue;
   inside?: readonly string[];
   soon: boolean;
+  /** The course units behind the department, once loaded (see features/units). */
+  strand?: string;
 }
 
 const dept = (key: string, hue: Hue, inside?: readonly string[]): Department => ({
@@ -32,19 +48,24 @@ const EXAMS = [
   dept("step", "teal", PREP),
   dept("ielts", "pink", PREP),
   dept("sat", "orange", PREP),
-  dept("gat", "violet", PREP),
+  dept("gat", "fuchsia", PREP),
 ];
 
 export const AUDIENCES = ["general", "andalus-international"] as const;
 export type Audience = (typeof AUDIENCES)[number];
 
 export const CATALOG: Record<Audience, readonly Department[]> = {
-  general: [...SKILLS, dept("handwriting", "blue"), ...EXAMS],
+  // General learners' Reading and Writing is open: its units are loaded (strand RW).
+  general: [
+    ...SKILLS.map((d) => (d.key === "readingWriting" ? { ...d, soon: false, strand: "RW" } : d)),
+    dept("handwriting", "cyan"),
+    ...EXAMS,
+  ],
   "andalus-international": [
     ...SKILLS,
-    dept("ghars", "green", ["wordLine", "performingArts"]),
-    dept("mcgrawHill", "rose", ["grades3to12"]),
-    dept("mapTest", "blue"),
+    dept("ghars", "lime", ["wordLine", "performingArts"]),
+    dept("mcgrawHill", "brown", ["grades3to12"]),
+    dept("mapTest", "indigo"),
     ...EXAMS,
   ],
 };

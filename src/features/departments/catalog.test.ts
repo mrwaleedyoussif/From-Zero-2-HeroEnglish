@@ -33,8 +33,17 @@ describe("department catalogue", () => {
     ]);
   });
 
-  it("marks every department as coming soon, STEP included", () => {
-    for (const a of AUDIENCES) expect(CATALOG[a].every((d) => d.soon)).toBe(true);
+  it("marks every department as coming soon (STEP too), except general Reading and Writing", () => {
+    const open = AUDIENCES.flatMap((a) => CATALOG[a].filter((d) => !d.soon).map((d) => [a, d.key]));
+    expect(open).toEqual([["general", "readingWriting"]]);
+    expect(CATALOG.general.find((d) => d.key === "readingWriting")?.strand).toBe("RW");
+  });
+
+  it("gives every department on a list a colour of its own", () => {
+    for (const a of AUDIENCES) {
+      const hues = CATALOG[a].map((d) => d.hue);
+      expect(new Set(hues).size, a).toBe(hues.length);
+    }
   });
 
   it("has a name in both languages for every department and part", () => {

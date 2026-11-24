@@ -1,6 +1,7 @@
 import {
   BarChart3,
   BookOpen,
+  BookOpenCheck,
   Building2,
   ClipboardList,
   Compass,
@@ -8,8 +9,10 @@ import {
   Eye,
   FileText,
   GitBranch,
+  GraduationCap,
   Home,
   KeyRound,
+  LayoutGrid,
   Library,
   type LucideIcon,
   NotebookPen,
@@ -46,6 +49,10 @@ export const ICONS: Record<string, LucideIcon> = {
   assignments: ClipboardList,
   groups: UsersRound,
   coachingLog: NotebookPen,
+  learner: BookOpenCheck,
+  studentLogin: GraduationCap,
+  staffLogin: Users,
+  departments: LayoutGrid,
 };
 
 /** Every icon gets a colour of its own, the same on every visit (by its position in the list). */

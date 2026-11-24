@@ -56,18 +56,18 @@ export default async function DepartmentsPage({
               className="size-20 rounded-2xl bg-white object-contain p-1"
             />
           )}
-          <h1 className="text-3xl font-extrabold">
+          <h1 className="flex flex-wrap items-baseline justify-center gap-x-3 text-3xl font-extrabold">
             <span className="z2h-rainbow">{t("title")}</span>
-            <span lang={other} dir={other === "ar" ? "rtl" : "ltr"} className="ms-3 text-xl">
+            <span lang={other} dir={other === "ar" ? "rtl" : "ltr"} className="text-xl">
               {o("title")}
             </span>
           </h1>
-          <p className="text-lg font-semibold text-[#f6dc9c]">
-            {t(`audience.${audience}`)}
+          <p className="flex flex-wrap items-baseline justify-center gap-x-3 text-lg font-semibold text-[#f6dc9c]">
+            <span>{t(`audience.${audience}`)}</span>
             <span
               lang={other}
               dir={other === "ar" ? "rtl" : "ltr"}
-              className="ms-3 font-normal text-[var(--z-soft)]"
+              className="font-normal text-[var(--z-soft)]"
             >
               {o(`audience.${audience}`)}
             </span>

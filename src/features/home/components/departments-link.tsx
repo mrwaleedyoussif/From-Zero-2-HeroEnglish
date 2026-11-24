@@ -13,7 +13,11 @@ export function DepartmentsLink({ texts, audience }: { texts: HomeTexts; audienc
     >
       <LayoutGrid aria-hidden className="size-5 text-[#fcd34d]" />
       {texts.main.copy.seeDepartments}
-      <span lang={other} dir={other === "ar" ? "rtl" : "ltr"} className="font-normal opacity-80">
+      <span
+        lang={other}
+        dir={other === "ar" ? "rtl" : "ltr"}
+        className="inline-block font-normal opacity-80"
+      >
         {texts.other.copy.seeDepartments}
       </span>
     </Link>

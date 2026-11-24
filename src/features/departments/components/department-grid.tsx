@@ -71,7 +71,7 @@ export async function DepartmentGrid({
                 <span
                   lang={other}
                   dir={other === "ar" ? "rtl" : "ltr"}
-                  className="text-start text-sm font-normal text-muted-foreground"
+                  className={`text-sm font-normal text-muted-foreground ${other === "ar" ? "text-left" : "text-right"}`}
                 >
                   {o(`names.${d.key}`)}
                 </span>
@@ -85,13 +85,12 @@ export async function DepartmentGrid({
             {d.inside && (
               <ul className="flex flex-wrap gap-1.5" aria-label={t("inside")}>
                 {d.inside.map((p) => (
-                  <li key={p} className="dept-part rounded-full px-2.5 py-1 text-xs font-medium">
-                    {t(`parts.${p}`)}
-                    <span
-                      lang={other}
-                      dir={other === "ar" ? "rtl" : "ltr"}
-                      className="ms-1.5 opacity-80"
-                    >
+                  <li
+                    key={p}
+                    className="dept-part inline-flex gap-2 rounded-full px-2.5 py-1 text-xs font-medium"
+                  >
+                    <span>{t(`parts.${p}`)}</span>
+                    <span lang={other} dir={other === "ar" ? "rtl" : "ltr"} className="opacity-80">
                       {o(`parts.${p}`)}
                     </span>
                   </li>

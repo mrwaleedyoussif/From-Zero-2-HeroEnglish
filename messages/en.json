@@ -57,7 +57,12 @@
     "sideStudent": "Students",
     "sideStaff": "Teachers and staff",
     "sideDepartments": "Departments",
-    "sideLine": "Learn English, step by step"
+    "sideLine": "Learn English, step by step",
+    "install": "Install the app",
+    "installHelpIos": "On iPhone or iPad: tap the Share button in Safari, then “Add to Home Screen”.",
+    "installHelpMac": "On a Mac in Safari: open the File menu, then “Add to Dock”. In Chrome or Edge: use the install icon in the address bar.",
+    "installHelpOther": "In your browser's menu, choose “Install app” or “Add to Home screen”.",
+    "installed": "The app is installed on this device."
   },
   "Auth": {
     "staffTitle": "Staff sign in",
@@ -1662,6 +1667,16 @@
     "importDone": "{files} files read: {imported} saved, {unchanged} unchanged, {problems} with problems.",
     "loaded": "{n} units in the app",
     "open": "Open now",
-    "wordsCount": "{n} words"
+    "wordsCount": "{n} words",
+    "playAll": "Play it all",
+    "stop": "Stop",
+    "showScript": "Show the script",
+    "listenQuestions": "Listen and answer",
+    "speakingTask": "Your speaking task",
+    "speakingTime": "Prepare {prep} seconds · speak {speak} seconds",
+    "shadowHelp": "Listen to each piece, then say it at the same time as the voice. Stress the words in CAPITALS and follow the arrow with your voice.",
+    "rule": "The rule",
+    "tryIt": "Try it",
+    "practice": "Practice"
   }
 }

@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AppNav } from "@/components/app-nav";
+import { InstallApp } from "@/components/install-app";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: R
               <LocaleSwitcher />
               <ThemeToggle />
             </div>
+            <InstallApp />
             <form action={signOut}>
               <input type="hidden" name="locale" value={locale} />
               <Button type="submit" variant="outline" size="sm" className="w-full">

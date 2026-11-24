@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { InstallApp } from "@/components/install-app";
 import { GateSidebar } from "@/gates/components/gate-sidebar";
 
 const LINKS = [
@@ -25,6 +26,7 @@ export async function PublicSidebar() {
         more: tg("more"),
       }}
       profile={{ initials: "", name: t("appName"), line: t("sideLine"), image: "/brand/badge.png" }}
+      extra={{ bottom: <InstallApp /> }}
       items={LINKS.map(([icon, href, label]) => ({ icon, href, label: t(label) }))}
     />
   );

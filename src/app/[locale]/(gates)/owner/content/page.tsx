@@ -12,6 +12,9 @@ import { formatDateTime } from "@/lib/i18n-names";
 import { googleConnection } from "@/lib/storage/secret";
 import { createClient } from "@/lib/supabase/server";
 
+// Importing a few hundred unit files from Drive takes longer than the default limit.
+export const maxDuration = 60;
+
 /** Content sync from Google Sheets (SPEC §6) + recent import history. */
 export default async function ContentPage({ params }: PageProps<"/[locale]/owner/content">) {
   const { locale } = await params;

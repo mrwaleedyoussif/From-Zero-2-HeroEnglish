@@ -33,6 +33,12 @@ const question = z.discriminatedUnion("type", [
   }),
   z.object({ ...base, type: z.literal("tfng"), answer: z.enum(["True", "False", "Not Given"]) }),
   z.object({ ...base, type: z.literal("short"), answer: text }),
+  // Typed answers the app can mark: a missing word, a word to form, a sentence to rewrite.
+  z.object({
+    ...base,
+    type: z.enum(["cloze", "word_formation", "error_correction", "transformation"]),
+    answer: text,
+  }),
   z.object({
     ...base,
     type: z.literal("sequence"),
@@ -68,8 +74,61 @@ export const unitSchema = z
       )
       .default([]),
     hook: z.object({ question: bi, prediction: bi }).optional(),
-    passage: z.looseObject({ id: text, title: text, paragraphs: z.array(text).min(1) }),
-    comprehension: z.array(question).min(1),
+    // Reading and Writing: a text and questions about it.
+    passage: z.looseObject({ id: text, title: text, paragraphs: z.array(text).min(1) }).optional(),
+    comprehension: z.array(question).default([]),
+    // Listening and Speaking: a script to hear, questions, and a speaking task.
+    script: z
+      .looseObject({
+        id: text,
+        title: text,
+        setting: z.string().optional(),
+        lines: z.array(z.object({ speaker: text, text })).min(1),
+      })
+      .optional(),
+    listening: z.array(question).default([]),
+    speaking_task: z
+      .looseObject({
+        prompt: bi,
+        points: z.array(text).default([]),
+        frames: z.array(text).default([]),
+        prep_time_s: z.number().int().optional(),
+        speak_time_s: z.number().int().optional(),
+      })
+      .optional(),
+    // Shadowing: a model text in short chunks to hear and repeat.
+    model_text: z
+      .looseObject({
+        id: text,
+        title: text,
+        chunks: z
+          .array(
+            z.looseObject({
+              id: text,
+              text,
+              display: z.string().optional(),
+              intonation: z.string().optional(),
+              linking: z.string().optional(),
+            }),
+          )
+          .min(1),
+      })
+      .optional(),
+    // Language Usage: a text in context, a grammar lesson and practice.
+    context_text: z
+      .looseObject({ id: text, title: text, paragraphs: z.array(text).min(1) })
+      .optional(),
+    grammar_lesson: z
+      .looseObject({
+        name: bi,
+        noticing: bi.optional(),
+        rule: bi,
+        examples: z.array(text).default([]),
+        controlled: z.array(question).default([]),
+        freer: bi.optional(),
+      })
+      .optional(),
+    practice: z.array(question).default([]),
     writing_skill: z
       .looseObject({
         name: bi,
@@ -95,8 +154,13 @@ export const unitSchema = z
   })
   .loose()
   .superRefine((unit, ctx) => {
+    if (!unit.passage && !unit.script && !unit.model_text && !unit.context_text)
+      ctx.addIssue({
+        code: "custom",
+        message: "no text: passage, script, model_text or context_text",
+      });
     const ids = new Set<string>();
-    for (const q of unit.comprehension) {
+    for (const q of questionsOf(unit)) {
       if (ids.has(q.id)) ctx.addIssue({ code: "custom", message: `duplicate question ${q.id}` });
       ids.add(q.id);
       if (q.type === "mcq" && !(q.answer in q.options))
@@ -105,13 +169,39 @@ export const unitSchema = z
   });
 export type Unit = z.infer<typeof unitSchema>;
 
+/** Every question of a unit, wherever it sits (reading, listening, grammar, practice). */
+export function questionsOf(unit: {
+  comprehension: Question[];
+  listening: Question[];
+  practice: Question[];
+  grammar_lesson?: { controlled: Question[] };
+}): Question[] {
+  return [
+    ...unit.comprehension,
+    ...unit.listening,
+    ...(unit.grammar_lesson?.controlled ?? []),
+    ...unit.practice,
+  ];
+}
+
+/** Letters and digits only, lower case: "There are two." equals "there are two". */
+const plain = (v: string) =>
+  v
+    .toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/[^a-z0-9' ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 /** Whether a learner's choice is right. Short answers are not marked by the app. */
 export function isCorrect(q: Question, choice: string): boolean | null {
   const said = choice.trim().toLowerCase();
   if (q.type === "short") return null;
   if (q.type === "sequence")
     return said.replace(/[\s,]/g, "") === q.answer.toLowerCase().replace(/[\s,]/g, "");
-  return said === q.answer.toLowerCase();
+  if (q.type === "mcq" || q.type === "tfng") return said === q.answer.toLowerCase();
+  // Typed answers: capitals, punctuation and spacing are forgiven; "a / b" lists alternatives.
+  return q.answer.split(" / ").some((accepted) => plain(accepted) === plain(choice));
 }
 
 /** Tries before the answer is shown: every hint first for multiple choice, two tries otherwise. */

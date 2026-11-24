@@ -57,7 +57,12 @@
     "sideStudent": "الطلاب",
     "sideStaff": "المعلمون والموظفون",
     "sideDepartments": "الأقسام",
-    "sideLine": "تعلّم الإنجليزية خطوة بخطوة"
+    "sideLine": "تعلّم الإنجليزية خطوة بخطوة",
+    "install": "تثبيت التطبيق",
+    "installHelpIos": "على iPhone أو iPad: اضغط زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».",
+    "installHelpMac": "على Mac في Safari: افتح قائمة «ملف» ثم «إضافة إلى Dock». في Chrome أو Edge: استخدم أيقونة التثبيت في شريط العنوان.",
+    "installHelpOther": "من قائمة المتصفح اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».",
+    "installed": "التطبيق مثبّت على هذا الجهاز."
   },
   "Auth": {
     "staffTitle": "دخول الموظفين",
@@ -1662,6 +1667,16 @@
     "importDone": "قُرئ {files} ملفًا: حُفظ {imported}، بلا تغيير {unchanged}، بها مشاكل {problems}.",
     "loaded": "{n} وحدة في التطبيق",
     "open": "مفتوح الآن",
-    "wordsCount": "{n} كلمة"
+    "wordsCount": "{n} كلمة",
+    "playAll": "شغّل الكل",
+    "stop": "إيقاف",
+    "showScript": "أظهر النص",
+    "listenQuestions": "استمع وأجب",
+    "speakingTask": "مهمة التحدث",
+    "speakingTime": "حضّر {prep} ثانية · تحدّث {speak} ثانية",
+    "shadowHelp": "استمع إلى كل جزء ثم قله مع الصوت في الوقت نفسه. شدّد على الكلمات المكتوبة بحروف كبيرة واتبع السهم بصوتك.",
+    "rule": "القاعدة",
+    "tryIt": "جرّب",
+    "practice": "تدريب"
   }
 }

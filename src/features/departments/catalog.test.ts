@@ -33,10 +33,16 @@ describe("department catalogue", () => {
     ]);
   });
 
-  it("marks every department as coming soon (STEP too), except general Reading and Writing", () => {
-    const open = AUDIENCES.flatMap((a) => CATALOG[a].filter((d) => !d.soon).map((d) => [a, d.key]));
-    expect(open).toEqual([["general", "readingWriting"]]);
-    expect(CATALOG.general.find((d) => d.key === "readingWriting")?.strand).toBe("RW");
+  it("opens general learners' four unit departments; everything else says Soon, STEP too", () => {
+    const open = AUDIENCES.flatMap((a) =>
+      CATALOG[a].filter((d) => !d.soon).map((d) => `${a}:${d.key}:${d.strand}`),
+    );
+    expect(open).toEqual([
+      "general:listeningSpeaking:LS",
+      "general:shadowing:SH",
+      "general:readingWriting:RW",
+      "general:languageUsage:LU",
+    ]);
   });
 
   it("gives every department on a list a colour of its own", () => {

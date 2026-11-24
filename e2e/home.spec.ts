@@ -85,8 +85,8 @@ for (const c of [
     await expect(page.getByRole("heading", { level: 1 })).toContainText(c.title);
     const cards = page.locator("[data-department]");
     await expect(cards).toHaveCount(10);
-    // Reading and Writing is open for general learners; the rest say Soon.
-    await expect(page.locator("[data-department][data-soon]")).toHaveCount(9);
+    // Four unit departments are open for general learners; the rest say Soon.
+    await expect(page.locator("[data-department][data-soon]")).toHaveCount(6);
     await expect(page.locator('[data-department="step"]')).toContainText(c.step);
     await expect(page.locator("[data-department] a, [data-department] button")).toHaveCount(0);
     await audit(page);

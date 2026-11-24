@@ -39,6 +39,13 @@ describe("department catalogue", () => {
     expect(CATALOG.general.find((d) => d.key === "readingWriting")?.strand).toBe("RW");
   });
 
+  it("gives every department on a list a colour of its own", () => {
+    for (const a of AUDIENCES) {
+      const hues = CATALOG[a].map((d) => d.hue);
+      expect(new Set(hues).size, a).toBe(hues.length);
+    }
+  });
+
   it("has a name in both languages for every department and part", () => {
     for (const messages of [en, ar]) {
       const names = messages.Departments.names as Record<string, string>;

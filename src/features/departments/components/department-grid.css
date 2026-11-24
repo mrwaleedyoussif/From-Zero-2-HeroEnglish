@@ -41,6 +41,26 @@
   --dept-bg: #c2410c;
   --dept-line: #fdba74;
 }
+.dept-card[data-hue="indigo"] {
+  --dept-bg: #3730a3;
+  --dept-line: #a5b4fc;
+}
+.dept-card[data-hue="cyan"] {
+  --dept-bg: #0e7490;
+  --dept-line: #67e8f9;
+}
+.dept-card[data-hue="lime"] {
+  --dept-bg: #3f6212;
+  --dept-line: #bef264;
+}
+.dept-card[data-hue="fuchsia"] {
+  --dept-bg: #86198f;
+  --dept-line: #f0abfc;
+}
+.dept-card[data-hue="brown"] {
+  --dept-bg: #7c2d12;
+  --dept-line: #e7b98f;
+}
 .dept-card[data-soon] {
   border-style: dashed;
   border-inline-start-style: solid;

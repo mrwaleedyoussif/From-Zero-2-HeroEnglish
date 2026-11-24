@@ -120,7 +120,8 @@
     "notEnoughCoins": "You don't have enough coins for that yet.",
     "kudosCap": "That's the most kudos this student can get today.",
     "confirmMismatch": "The username you typed does not match.",
-    "protectedKey": "The Owner console and its Visibility page can't be hidden: they are where a wrong rule is undone."
+    "protectedKey": "The Owner console and its Visibility page can't be hidden: they are where a wrong rule is undone.",
+    "gradeCode": "The grade code must be 1 to 4 letters or digits with no spaces, for example 4 or KG1. Put the full name (Grade 4) in the name boxes."
   },
   "Done": {
     "saved": "Saved",
@@ -174,7 +175,13 @@
     "classes": "Classes",
     "students": "Students",
     "teachers": "Teachers",
-    "loginCards": "Login cards"
+    "loginCards": "Login cards",
+    "gradeRange": "Quick add: a run of grades",
+    "gradeFrom": "From grade",
+    "gradeTo": "To grade",
+    "addGrades": "Add these grades",
+    "gradeOne": "Or add one grade (for example KG1)",
+    "gradeCodeHint": "Code: 1 to 4 letters or digits, no spaces — for example 4, 11 or KG1. The full name goes in the name boxes."
   },
   "Users": {
     "title": "Users",
@@ -582,7 +589,10 @@
       "content": "Content",
       "reports": "Reports",
       "system": "System"
-    }
+    },
+    "collapse": "Fold the menu",
+    "expand": "Open the menu",
+    "more": "More"
   },
   "Widgets": {
     "people": "{count} people",

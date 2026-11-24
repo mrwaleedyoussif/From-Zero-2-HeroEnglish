@@ -6,7 +6,16 @@ import { assertCanWrite } from "@/lib/auth/can";
 import { platformTarget, schoolTarget } from "@/lib/auth/scope";
 import { getActor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { classSchema, formObject, gradeSchema, schoolSchema, yearSchema } from "./schema";
+import {
+  classSchema,
+  formObject,
+  GRADE_CODE,
+  gradeRangeSchema,
+  gradeRows,
+  gradeSchema,
+  schoolSchema,
+  yearSchema,
+} from "./schema";
 
 async function actor() {
   const a = await getActor();
@@ -55,10 +64,27 @@ export async function createYear(_p: unknown, form: FormData): Promise<ActionRes
 
 export async function createGrade(_p: unknown, form: FormData): Promise<ActionResult> {
   return runAction(async () => {
+    // The usual slip is a long code ("Grade 4"): say exactly what a code is.
+    if (!GRADE_CODE.test(String(form.get("code") ?? "").trim())) throw new ActionError("gradeCode");
     const input = gradeSchema.parse(formObject(form));
     await assertCanWrite(await actor(), "classes:manage", schoolTarget(input.school_id));
     const supabase = await createClient();
     check(await supabase.from("grades").insert({ ...input, code: input.code.toUpperCase() }));
+    revalidatePath("/[locale]/owner/schools/[id]", "page");
+  });
+}
+
+/** Several grades at once; ones the school already has are left as they are. */
+export async function createGradeRange(_p: unknown, form: FormData): Promise<ActionResult> {
+  return runAction(async () => {
+    const input = gradeRangeSchema.parse(formObject(form));
+    await assertCanWrite(await actor(), "classes:manage", schoolTarget(input.school_id));
+    const supabase = await createClient();
+    check(
+      await supabase
+        .from("grades")
+        .upsert(gradeRows(input), { onConflict: "school_id,code", ignoreDuplicates: true }),
+    );
     revalidatePath("/[locale]/owner/schools/[id]", "page");
   });
 }

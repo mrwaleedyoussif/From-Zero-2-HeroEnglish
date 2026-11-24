@@ -13,6 +13,7 @@ export const studentGate = defineGate({
     { key: "nav.student.rewards", href: "/student/rewards", permission: "rewards:view" },
     { key: "nav.student.profile", href: "/student/profile", permission: "learning:self" },
   ],
+  sidebar: ["continue", "departments"],
   homeWidgets: [
     "widget.student.journey",
     "widget.student.fromMyTeacher",

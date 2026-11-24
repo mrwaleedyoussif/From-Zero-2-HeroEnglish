@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { type ReactNode, useRef, useState } from "react";
+import { InstallApp } from "@/components/install-app";
 import type { HomeTexts } from "../copy";
 import { remember, useStored } from "../storage";
 import { BLOOM_SECONDS } from "../bloom";
@@ -149,6 +150,9 @@ export function HomeExperience({
           <Journey texts={texts} schools={schools} generalOpen={generalOpen} heading={heading} />
 
           <footer className="mt-auto flex flex-col items-center gap-3 pt-6 text-center text-sm text-[var(--z-soft)]">
+            <div className="w-full max-w-xs md:hidden">
+              <InstallApp />
+            </div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-[#13284a] py-1.5 ps-1.5 pe-5 text-[#dbe4f5]">
               <Image
                 src="/brand/designer.webp"

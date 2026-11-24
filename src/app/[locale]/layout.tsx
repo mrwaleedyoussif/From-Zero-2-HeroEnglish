@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible, IBM_Plex_Sans_Arabic, Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
@@ -32,8 +32,16 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Meta" });
-  return { title: t("title"), description: t("description") };
+  return {
+    title: t("title"),
+    description: t("description"),
+    applicationName: "Zero-2-Hero English",
+    // Lets iPhones and iPads open the installed app full-screen, without the browser's bars.
+    appleWebApp: { capable: true, title: "Zero-2-Hero", statusBarStyle: "black-translucent" },
+  };
 }
+
+export const viewport: Viewport = { themeColor: "#0e223d" };
 
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;

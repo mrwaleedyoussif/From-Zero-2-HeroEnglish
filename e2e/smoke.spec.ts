@@ -35,3 +35,16 @@ test("dark mode toggle", async ({ page }) => {
   await page.getByRole("button", { name: "Toggle dark mode" }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
+
+test("the site can be installed as an app", async ({ page, request }) => {
+  const manifest = await (await request.get("/manifest.webmanifest")).json();
+  expect(manifest.display).toBe("standalone");
+  expect(manifest.icons.map((i: { sizes: string }) => i.sizes)).toContain("512x512");
+  for (const icon of manifest.icons) expect((await request.get(icon.src)).status()).toBe(200);
+
+  await page.goto("/en/login");
+  await expect(page.locator('link[rel="manifest"]')).toHaveCount(1);
+  // No one-tap install in the test browser: the button explains how instead.
+  await page.getByRole("button", { name: "Install the app" }).click();
+  await expect(page.getByRole("status").filter({ hasText: /Install app|Add to/ })).toBeVisible();
+});

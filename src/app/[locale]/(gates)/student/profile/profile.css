@@ -1,0 +1,56 @@
+/* The learner's profile: an identity card in the brand colours, then coloured panels. */
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, #0e223d 0%, #4c1d95 55%, #9d174d 100%);
+  box-shadow: 0 18px 34px -22px rgb(76 29 149 / 0.8);
+}
+.profile-card::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -3rem;
+  top: -5rem;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgb(246 220 156 / 0.35), transparent 65%);
+  pointer-events: none;
+}
+.profile-avatar {
+  background: linear-gradient(135deg, #f6dc9c, #e2bd72);
+  color: #1a1304;
+  box-shadow:
+    0 0 0 4px rgb(255 255 255 / 0.18),
+    0 0 0 8px rgb(255 255 255 / 0.08);
+  animation: profile-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.14);
+  padding: 0.3rem 0.8rem;
+}
+.profile-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--hue-fg);
+  box-shadow: 0 10px 24px -18px rgb(15 23 42 / 0.45);
+}
+.profile-pick,
+.profile-level {
+  background: var(--hue-bg);
+  color: var(--hue-fg);
+}
+@keyframes profile-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-avatar {
+    animation: none;
+  }
+}

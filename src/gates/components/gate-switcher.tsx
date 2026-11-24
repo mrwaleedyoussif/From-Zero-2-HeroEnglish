@@ -14,13 +14,13 @@ export async function GateSwitcher({
   const t = await getTranslations("Registry");
   const tg = await getTranslations("Gates");
   return (
-    <nav aria-label={tg("switcherLabel")} className="flex flex-wrap gap-1">
+    <nav aria-label={tg("switcherLabel")} className="flex max-w-full gap-1 overflow-x-auto">
       {gates.map((g) => (
         <Link
           key={g.key}
           href={g.basePath}
           aria-current={g.key === current ? "page" : undefined}
-          className="rounded-full border border-border px-3 py-1 text-xs aria-[current=page]:border-primary aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground"
+          className="rounded-full border border-white/30 px-3 py-1 text-xs whitespace-nowrap hover:bg-white/10 aria-[current=page]:border-[#f6dc9c] aria-[current=page]:bg-[#f6dc9c] aria-[current=page]:font-semibold aria-[current=page]:text-[#0e223d]"
         >
           {t(`gate.${g.key}`)}
         </Link>

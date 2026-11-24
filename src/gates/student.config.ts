@@ -14,6 +14,7 @@ export const studentGate = defineGate({
     { key: "nav.student.profile", href: "/student/profile", permission: "learning:self" },
   ],
   homeWidgets: [
+    "widget.student.journey",
     "widget.student.fromMyTeacher",
     "widget.student.placementCta",
     "widget.student.recommended",

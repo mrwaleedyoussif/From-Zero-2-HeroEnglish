@@ -25,6 +25,7 @@ export const teacherGate = defineGate({
     },
   ],
   homeWidgets: [
+    "widget.teacher.headline",
     "widget.teacher.classRoster",
     "widget.teacher.atRiskStudents",
     "widget.teacher.assignmentTracker",

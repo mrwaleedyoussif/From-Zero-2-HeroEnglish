@@ -26,9 +26,16 @@ export async function GateNav({ gate, actor }: { gate: GateConfig; actor: Actor 
   return (
     <nav
       aria-label={tg("navLabel")}
-      className="flex gap-1 overflow-x-auto border-b border-border bg-card p-2 md:w-52 md:flex-col md:border-e md:border-b-0 print:hidden"
+      className="flex gap-1 overflow-x-auto border-b border-border bg-card p-2 md:w-60 md:flex-col md:gap-0.5 md:border-e md:border-b-0 md:p-3 print:hidden"
     >
-      <GateNavLinks items={items.map((item) => ({ href: item.href, label: t(item.key) }))} />
+      <GateNavLinks
+        items={items.map((item) => ({
+          href: item.href,
+          label: t(item.key),
+          icon: item.key.split(".").at(-1) ?? "",
+          group: item.group ? tg(`groups.${item.group}`) : undefined,
+        }))}
+      />
     </nav>
   );
 }

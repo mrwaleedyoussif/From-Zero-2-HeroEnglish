@@ -48,7 +48,8 @@
     "navBack": "Go back",
     "navRefresh": "Refresh this page",
     "navUpdate": "Update the app to the newest version",
-    "nav": "App buttons"
+    "nav": "App buttons",
+    "account": "Account menu:"
   },
   "Auth": {
     "staffTitle": "Staff sign in",
@@ -509,7 +510,8 @@
         "schools": "Schools",
         "auditLog": "Recent changes",
         "budgetMeters": "Free-tier budget",
-        "contentHealth": "Content health"
+        "contentHealth": "Content health",
+        "todo": "Needs your attention"
       },
       "student": {
         "placementCta": "Find your level",
@@ -518,7 +520,8 @@
         "streak": "My streak",
         "badges": "My badges",
         "leaderboard": "Class leaderboard",
-        "progress": "My progress"
+        "progress": "My progress",
+        "journey": "My journey"
       },
       "teacher": {
         "assignmentTracker": "Assignment tracker",
@@ -526,7 +529,8 @@
         "quickActions": "Quick actions",
         "classRoster": "Class roster",
         "atRiskStudents": "Students at risk",
-        "skillHeatmap": "Skill heat-map"
+        "skillHeatmap": "Skill heat-map",
+        "headline": "This week at a glance"
       },
       "coach": {
         "supportedTeachers": "Teachers I support",
@@ -541,7 +545,8 @@
         "teacherUsage": "Teachers' platform use",
         "interventionList": "Students needing help",
         "supervisionTree": "Supervision tree",
-        "reportArchive": "Report archive"
+        "reportArchive": "Report archive",
+        "headline": "This week at a glance"
       }
     },
     "feature": {
@@ -568,7 +573,14 @@
     "comingSoon": "Coming soon",
     "plannedFor": "Arrives in build phase {phase}.",
     "planned": "Planned for a later release.",
-    "freePeriodEnded": "This school's free period ended on {date}. Please contact the platform owner."
+    "freePeriodEnded": "This school's free period ended on {date}. Please contact the platform owner.",
+    "groups": {
+      "people": "People",
+      "school": "School setup",
+      "content": "Content",
+      "reports": "Reports",
+      "system": "System"
+    }
   },
   "Widgets": {
     "people": "{count} people",
@@ -1077,7 +1089,24 @@
     "seeAll": "See all",
     "earnedNow": "+{xp} XP · +{coins} coins",
     "newBadges": "{count, plural, one {New badge!} other {# new badges!}}",
-    "levelUp": "Level up! You are now a {name}"
+    "levelUp": "Level up! You are now a {name}",
+    "cheer": {
+      "great": {
+        "1": "Excellent!",
+        "2": "Brilliant!",
+        "3": "Well done!",
+        "4": "Fantastic work!"
+      },
+      "good": {
+        "1": "Good job — keep going!",
+        "2": "Nice work!"
+      },
+      "tryAgain": {
+        "1": "You're getting there — try once more!",
+        "2": "Good effort. Have another go!"
+      },
+      "replay": "Play the sound again"
+    }
   },
   "TeacherRewards": {
     "title": "Rewards",
@@ -1488,5 +1517,44 @@
       "full": "Used up"
     },
     "noEnd": "No end date"
+  },
+  "Journey": {
+    "morning": "Good morning, {name}",
+    "afternoon": "Good afternoon, {name}",
+    "evening": "Good evening, {name}",
+    "level": "Level {n}",
+    "xp": "{xp} XP",
+    "toNext": "{left} XP to {name}",
+    "top": "Top level reached",
+    "streak": "{days, plural, =0 {Start your streak today} one {# day streak} other {# day streak}}",
+    "coins": "{n} coins",
+    "findLevel": "Find your level",
+    "findLevelHint": "Take a short test so we can match lessons to you.",
+    "continue": "Continue learning",
+    "continueHint": "Your lessons are ready.",
+    "path": "Your path",
+    "here": "You are here",
+    "pathHelp": "Your level in {department}. Each step is a level.",
+    "ringLevel": "To next level",
+    "ringTasks": "Assignments done",
+    "ringAccuracy": "Practice accuracy",
+    "ringStreak": "Days in a row"
+  },
+  "Todo": {
+    "clear": "Nothing needs you right now.",
+    "learners": "{n, plural, one {# learner is} other {# learners are}} waiting for your approval",
+    "media": "{n, plural, one {# question has} other {# questions have}} no audio or image file yet",
+    "drive": "Google Drive is not connected",
+    "jobs": "{n, plural, one {# report job} other {# report jobs}} failed",
+    "open": "Open"
+  },
+  "Headline": {
+    "label": "This week at a glance",
+    "students": "Students",
+    "active": "Active this week",
+    "lessons": "Lessons finished (7 days)",
+    "accuracy": "Practice accuracy (7 days)",
+    "atRisk": "Need attention",
+    "overdue": "Overdue assignments"
   }
 }

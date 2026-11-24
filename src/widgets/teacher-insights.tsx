@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { ProgressRing } from "@/components/progress-ring";
 import { riskFlags } from "@/features/insights/analytics";
 import { ChartFrame } from "@/features/insights/components/chart-frame";
 import { BarChart, CEFR_BG } from "@/features/insights/components/charts";
@@ -31,8 +32,15 @@ export async function TeacherClassRosterWidget({ actor }: WidgetProps) {
               ? null
               : Number(s.theta_now) - Number(s.theta_first);
           return (
-            <li key={s.student_id} className="flex justify-between gap-2">
-              <span>{s.full_name}</span>
+            <li key={s.student_id} className="flex items-center justify-between gap-2">
+              <span className="flex items-center gap-2">
+                <ProgressRing
+                  size={36}
+                  value={s.accuracy_7d === null ? null : Number(s.accuracy_7d)}
+                  label={`${s.full_name} · ${t("accuracy")}`}
+                />
+                {s.full_name}
+              </span>
               <span className="flex items-center gap-2">
                 {s.cefr_now && (
                   <span

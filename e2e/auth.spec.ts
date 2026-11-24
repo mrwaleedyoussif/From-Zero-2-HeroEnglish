@@ -26,6 +26,22 @@ test("student signs in with school code, username and PIN", async ({ page }) => 
   await expect(page).toHaveURL(/\/en\/student$/);
 });
 
+test("an Arabic reader gets the portal in Arabic after signing in", async ({ page }) => {
+  await page.goto("/ar/student-login");
+  await page.locator("#schoolCode").fill("riy01");
+  await page.locator("#username").fill("omar.s");
+  await page.locator('input[name="pin"]').fill("246810");
+  await page.locator('button[type="submit"]').click();
+  await expect(page).toHaveURL(/\/ar\/student$/);
+  // Pages after sign-in once fell back to English: the page's language was not passed on.
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("تعلّمي");
+  await expect(page.getByRole("link", { name: "دروسي" })).toBeVisible();
+  // No sideways scrolling on a phone.
+  await page.setViewportSize({ width: 390, height: 800 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+});
+
 test("signed-out visitors are sent to sign in", async ({ page }) => {
   await page.goto("/en/owner/roles");
   await expect(page).toHaveURL(/\/en\/login$/);

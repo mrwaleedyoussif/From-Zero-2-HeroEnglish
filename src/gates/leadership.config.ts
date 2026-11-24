@@ -17,6 +17,7 @@ export const leadershipGate = defineGate({
     { key: "nav.leadership.reports", href: "/leadership/reports", permission: "reports:view" },
   ],
   homeWidgets: [
+    "widget.leadership.headline",
     "widget.leadership.schoolOverview",
     "widget.leadership.gradeComparison",
     "widget.leadership.placementDistribution",

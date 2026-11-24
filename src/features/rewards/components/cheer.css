@@ -1,0 +1,55 @@
+/* Celebration after a practice check: a burst of stars and a line that pops in. */
+.cheer-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cheer-burst span {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  font-size: 1.5rem;
+  opacity: 0;
+  animation: cheer-fly 1.4s ease-out forwards;
+  animation-delay: calc(var(--n) * 40ms);
+  --angle: calc(var(--n) * 30deg);
+}
+.cheer-line {
+  animation: cheer-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.cheer[data-cheer="tryAgain"] .cheer-line {
+  /* A small friendly nod, not a shake or a flash. */
+  animation: cheer-nod 0.6s ease-in-out both;
+}
+@keyframes cheer-fly {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--angle)) translateY(0) scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-9rem) scale(1.2);
+  }
+}
+@keyframes cheer-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes cheer-nod {
+  30% {
+    transform: translateY(4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cheer-burst {
+    display: none;
+  }
+  .cheer-line {
+    animation: none !important;
+  }
+}

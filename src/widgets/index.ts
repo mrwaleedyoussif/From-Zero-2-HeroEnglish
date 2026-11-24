@@ -21,6 +21,7 @@ import { OwnerAuditLogWidget } from "./owner-audit-log";
 import { OwnerBudgetWidget, OwnerContentHealthWidget } from "./owner-health";
 import { OwnerSchoolsWidget } from "./owner-schools";
 import { OwnerTodoWidget } from "./owner-todo";
+import { LeadershipHeadlineWidget, TeacherHeadlineWidget } from "./staff-headline";
 import { StudentJourneyWidget } from "./student-journey";
 import { StudentFromMyTeacherWidget, StudentRecommendedWidget } from "./student-learning";
 import { StudentPlacementCtaWidget } from "./student-placement-cta";
@@ -51,6 +52,8 @@ export interface WidgetProps {
  */
 export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
   "widget.owner.todo": OwnerTodoWidget,
+  "widget.teacher.headline": TeacherHeadlineWidget,
+  "widget.leadership.headline": LeadershipHeadlineWidget,
   "widget.owner.schools": OwnerSchoolsWidget,
   "widget.owner.auditLog": OwnerAuditLogWidget,
   "widget.owner.budgetMeters": OwnerBudgetWidget,

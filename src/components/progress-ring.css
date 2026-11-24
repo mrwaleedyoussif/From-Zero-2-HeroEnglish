@@ -1,0 +1,33 @@
+/* Progress circles: a strong colour on light pages, its light twin on dark pages and panels. */
+.ring-wrap {
+  --c: var(--ring);
+}
+.dark .ring-wrap,
+.ring-wrap.ring-on-dark {
+  --c: var(--ring-light);
+}
+.ring-track {
+  stroke: var(--c);
+  opacity: 0.2;
+}
+.ring-arc {
+  stroke: var(--c);
+  stroke-dashoffset: var(--gap);
+  animation: ring-fill 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.ring-label {
+  color: var(--muted-foreground);
+}
+.ring-on-dark .ring-label {
+  color: rgb(255 255 255 / 0.92);
+}
+@keyframes ring-fill {
+  from {
+    stroke-dashoffset: var(--full);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ring-arc {
+    animation: none;
+  }
+}

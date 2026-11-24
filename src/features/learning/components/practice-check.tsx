@@ -9,6 +9,7 @@ import type { PublicItem } from "@/features/placement/runtime/public-item";
 import { completeLesson, openLesson } from "../lessons/actions";
 import type { AwardOutcome } from "@/features/rewards/award";
 import { Celebration } from "@/features/rewards/components/celebration";
+import { Cheer } from "@/features/rewards/components/cheer";
 
 /** Short practice check at the end of a lesson; marks the lesson (and its assignments) done. */
 export function PracticeCheck({
@@ -56,6 +57,7 @@ export function PracticeCheck({
     return (
       <div className="rounded-lg border-2 border-primary p-4 text-center" data-done>
         <p className="text-2xl">🎉 {t("lessonDone")}</p>
+        {result.score !== null && <Cheer score={result.score} />}
         {result.score !== null && (
           <p className="text-lg">{t("yourScore", { score: result.score })}</p>
         )}

@@ -1,5 +1,6 @@
 import { ArrowRight, Coins, Flame, Star } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
+import { ProgressRing } from "@/components/progress-ring";
 import { learnerLevels } from "@/features/learning/profile/queries";
 import { rewardsSummary } from "@/features/rewards/queries";
 import { Link } from "@/i18n/navigation";
@@ -40,6 +41,13 @@ export async function StudentJourneyWidget({ actor }: WidgetProps) {
         .eq("department_id", placed.department_id)
         .order("min_theta")
     : { data: [] };
+  const [{ data: lessons }, { data: tasks }] = await Promise.all([
+    db.from("lesson_progress").select("status, best_score").eq("student_id", id).limit(1000),
+    db.from("assignment_progress").select("status").eq("student_id", id).limit(1000),
+  ]);
+  const scores = (lessons ?? []).flatMap((l) => (l.best_score === null ? [] : [l.best_score]));
+  const accuracy = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+  const tasksDone = (tasks ?? []).filter((x) => x.status === "done").length;
   const { current, next, progress } = summary.level;
   const first = actor.effective.full_name.split(/\s+/)[0] ?? "";
   const next_ = placed
@@ -77,6 +85,25 @@ export async function StudentJourneyWidget({ actor }: WidgetProps) {
           </span>
           <ArrowRight aria-hidden className="size-6 shrink-0 rtl:rotate-180" />
         </Link>
+      </div>
+
+      <div className="flex flex-wrap justify-around gap-4 rounded-2xl bg-black/20 p-4">
+        <ProgressRing onDark tone="gold" value={progress * 100} label={t("ringLevel")} />
+        <ProgressRing
+          onDark
+          tone="green"
+          value={tasks?.length ? (tasksDone / tasks.length) * 100 : null}
+          display={tasks?.length ? `${tasksDone}/${tasks.length}` : undefined}
+          label={t("ringTasks")}
+        />
+        <ProgressRing onDark tone="blue" value={accuracy} label={t("ringAccuracy")} />
+        <ProgressRing
+          onDark
+          tone="rose"
+          value={Math.min(100, (summary.streak.days / 7) * 100)}
+          display={String(summary.streak.days)}
+          label={t("ringStreak")}
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">

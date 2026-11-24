@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { ProgressRing } from "@/components/progress-ring";
 import { budgetStats } from "@/features/insights/queries";
 import { serverEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
@@ -13,68 +14,31 @@ export const LIMITS = {
   emailStop: 90,
 };
 
-function Meter({
-  label,
-  value,
-  max,
-  warnAt,
-  display,
-}: {
-  label: string;
-  value: number;
-  max: number;
-  warnAt: number;
-  display: string;
-}) {
-  const pct = Math.min(100, Math.round((value / max) * 100));
-  const warn = value >= warnAt;
-  return (
-    <div className="flex flex-col gap-1" data-meter={label} data-warn={warn ? "yes" : "no"}>
-      <div className="flex justify-between text-sm">
-        <span>{label}</span>
-        <span className={warn ? "font-semibold text-destructive" : "text-muted-foreground"}>
-          {display}
-        </span>
-      </div>
-      <div
-        role="meter"
-        aria-label={label}
-        aria-valuenow={value}
-        aria-valuemin={0}
-        aria-valuemax={max}
-        className="h-3 overflow-hidden rounded-full bg-muted"
-      >
-        <div
-          className={`h-full rounded-full ${warn ? "bg-destructive" : "bg-primary"}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
 /** Owner home: database size, emails sent today, Drive calls today. */
 export async function OwnerBudgetWidget(_: WidgetProps) {
   const t = await getTranslations("Insights");
   const b = await budgetStats();
   if (!b) return null;
   const mb = (n: number) => `${Math.round(n / 1024 / 1024)} MB`;
+  const emailWarn = Math.min(LIMITS.emailStop, serverEnv().EMAIL_DAILY_BUDGET);
   return (
     <WidgetCard widgetKey="widget.owner.budgetMeters">
-      <Meter
-        label={t("dbSize")}
-        value={Number(b.db_bytes)}
-        max={LIMITS.dbBytes}
-        warnAt={LIMITS.dbWarn}
-        display={`${mb(Number(b.db_bytes))} / 500 MB`}
-      />
-      <Meter
-        label={t("emailsToday")}
-        value={b.emails_today}
-        max={LIMITS.emails}
-        warnAt={Math.min(LIMITS.emailStop, serverEnv().EMAIL_DAILY_BUDGET)}
-        display={`${b.emails_today} / ${LIMITS.emails}`}
-      />
+      <div className="flex flex-wrap justify-around gap-4">
+        <ProgressRing
+          value={(Number(b.db_bytes) / LIMITS.dbBytes) * 100}
+          display={mb(Number(b.db_bytes))}
+          tone={Number(b.db_bytes) >= LIMITS.dbWarn ? "rose" : "blue"}
+          label={`${t("dbSize")} / 500 MB`}
+          size={112}
+        />
+        <ProgressRing
+          value={(b.emails_today / LIMITS.emails) * 100}
+          display={String(b.emails_today)}
+          tone={b.emails_today >= emailWarn ? "rose" : "green"}
+          label={`${t("emailsToday")} / ${LIMITS.emails}`}
+          size={112}
+        />
+      </div>
       <p className="text-sm text-muted-foreground">
         {t("driveCalls", { n: b.drive_calls_today })} ·{" "}
         {t("people", { students: b.students, staff: b.staff })}

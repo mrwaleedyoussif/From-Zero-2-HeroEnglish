@@ -25,16 +25,53 @@ export const yearSchema = z
   })
   .refine((y) => y.ends_on > y.starts_on, { path: ["ends_on"] });
 
+/** A grade's short code: "4", "11", "KG1". */
+export const GRADE_CODE = /^[A-Z0-9]{1,4}$/i;
+
 export const gradeSchema = z.object({
   school_id: z.guid(),
-  code: z
-    .string()
-    .trim()
-    .regex(/^[A-Z0-9]{1,4}$/i),
+  code: z.string().trim().regex(GRADE_CODE),
   name_en: name,
   name_ar: name,
   sort_order: z.coerce.number().int().min(0).max(20).default(0),
 });
+
+/** Grades from..to in one go (e.g. 1 to 12), named "Grade 4" / "الصف الرابع". */
+export const gradeRangeSchema = z
+  .object({
+    school_id: z.guid(),
+    from: z.coerce.number().int().min(1).max(12),
+    to: z.coerce.number().int().min(1).max(12),
+  })
+  .refine((r) => r.to >= r.from, { path: ["to"] });
+
+const ORDINALS_AR = [
+  "الأول",
+  "الثاني",
+  "الثالث",
+  "الرابع",
+  "الخامس",
+  "السادس",
+  "السابع",
+  "الثامن",
+  "التاسع",
+  "العاشر",
+  "الحادي عشر",
+  "الثاني عشر",
+];
+
+export function gradeRows(input: z.infer<typeof gradeRangeSchema>) {
+  return Array.from({ length: input.to - input.from + 1 }, (_, i) => {
+    const n = input.from + i;
+    return {
+      school_id: input.school_id,
+      code: String(n),
+      name_en: `Grade ${n}`,
+      name_ar: `الصف ${ORDINALS_AR[n - 1]}`,
+      sort_order: n,
+    };
+  });
+}
 
 export const classSchema = z.object({
   school_id: z.guid(),

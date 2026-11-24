@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { formatDate, localName } from "@/lib/i18n-names";
-import { createClass, createGrade, createYear } from "../actions";
+import { createClass, createGrade, createGradeRange, createYear } from "../actions";
 import type { SchoolDetail } from "../queries";
 
 export async function YearsCard({ detail, canEdit }: { detail: SchoolDetail; canEdit: boolean }) {
@@ -80,7 +80,39 @@ export async function GradesCard({ detail, canEdit }: { detail: SchoolDetail; ca
           ))}
         </div>
         {canEdit && (
+          <ActionForm action={createGradeRange} resetOnSuccess={false}>
+            <input type="hidden" name="school_id" value={detail.school.id} />
+            <p className="mb-2 text-sm font-medium">{t("gradeRange")}</p>
+            <FormRow>
+              <TextField
+                idPrefix="range"
+                label={t("gradeFrom")}
+                name="from"
+                type="number"
+                min={1}
+                max={12}
+                defaultValue={1}
+                required
+                className="w-20"
+              />
+              <TextField
+                idPrefix="range"
+                label={t("gradeTo")}
+                name="to"
+                type="number"
+                min={1}
+                max={12}
+                defaultValue={12}
+                required
+                className="w-20"
+              />
+              <Button type="submit">{t("addGrades")}</Button>
+            </FormRow>
+          </ActionForm>
+        )}
+        {canEdit && (
           <ActionForm action={createGrade}>
+            <p className="mb-2 text-sm font-medium">{t("gradeOne")}</p>
             <input type="hidden" name="school_id" value={detail.school.id} />
             <FormRow>
               <TextField
@@ -89,6 +121,10 @@ export async function GradesCard({ detail, canEdit }: { detail: SchoolDetail; ca
                 name="code"
                 required
                 dir="ltr"
+                placeholder="KG1"
+                maxLength={4}
+                pattern="[A-Za-z0-9]{1,4}"
+                title={t("gradeCodeHint")}
                 className="w-20"
               />
               <TextField idPrefix="grade" label={t("nameEn")} name="name_en" required dir="ltr" />
@@ -104,6 +140,7 @@ export async function GradesCard({ detail, canEdit }: { detail: SchoolDetail; ca
               />
               <Button type="submit">{t("addGrade")}</Button>
             </FormRow>
+            <p className="mt-2 text-sm text-muted-foreground">{t("gradeCodeHint")}</p>
           </ActionForm>
         )}
       </CardContent>

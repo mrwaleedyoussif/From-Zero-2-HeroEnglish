@@ -1,38 +1,7 @@
-import {
-  AudioLines,
-  BookOpenText,
-  Ear,
-  GraduationCap,
-  Languages,
-  LibraryBig,
-  LineChart,
-  type LucideIcon,
-  PenLine,
-  Repeat2,
-  Sigma,
-  Sprout,
-  Target,
-  Trophy,
-} from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { type Audience, CATALOG } from "../catalog";
+import { departmentIcon } from "../icons";
 import "./department-grid.css";
-
-const ICONS: Record<string, LucideIcon> = {
-  phonics: AudioLines,
-  listeningSpeaking: Ear,
-  shadowing: Repeat2,
-  readingWriting: BookOpenText,
-  languageUsage: Languages,
-  handwriting: PenLine,
-  ghars: Sprout,
-  mcgrawHill: LibraryBig,
-  mapTest: LineChart,
-  step: Target,
-  ielts: GraduationCap,
-  sat: Trophy,
-  gat: Sigma,
-};
 
 /**
  * One audience's departments as colour cards: icon, name in both languages, what is inside,
@@ -52,7 +21,7 @@ export async function DepartmentGrid({
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-departments={audience}>
       {CATALOG[audience].map((d, i) => {
-        const Icon = ICONS[d.key] ?? BookOpenText;
+        const Icon = departmentIcon(d.key);
         return (
           <li
             key={d.key}

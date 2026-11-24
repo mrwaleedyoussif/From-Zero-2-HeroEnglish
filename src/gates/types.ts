@@ -14,6 +14,9 @@ export interface GateNavItem {
   group?: string;
 }
 
+/** Blocks a gate may show above its menu (see gates/components/sidebar-extras.tsx). */
+export type SidebarBlock = "continue" | "departments";
+
 export interface GateConfig {
   key: string;
   basePath: `/${string}`;
@@ -22,6 +25,8 @@ export interface GateConfig {
   priority: number;
   theme: "staff" | "student";
   nav: readonly GateNavItem[];
+  /** Extra blocks above the menu, in order. */
+  sidebar?: readonly SidebarBlock[];
   /** Registry widget keys shown on the gate home, in order. */
   homeWidgets: readonly string[];
 }

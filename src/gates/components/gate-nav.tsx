@@ -4,7 +4,19 @@ import { isKnownKey } from "@/lib/registry";
 import type { Actor } from "@/lib/auth/session";
 import { visibleOnly } from "@/lib/visibility/server";
 import type { GateConfig } from "../types";
-import { GateNavLinks } from "./gate-nav-links";
+import { navBadges } from "../nav-badges";
+import { GateSidebar } from "./gate-sidebar";
+import { SidebarExtras } from "./sidebar-extras";
+
+/** "Omar Saleh" → "OS" (works for Arabic names too). */
+const initials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => [...w][0] ?? "")
+    .join("")
+    .toUpperCase();
 
 /** Nav items from the gate config, minus hidden ones and ones the user lacks permission for. */
 export async function GateNav({ gate, actor }: { gate: GateConfig; actor: Actor }) {
@@ -22,20 +34,30 @@ export async function GateNav({ gate, actor }: { gate: GateConfig; actor: Actor 
     if (!item.permission || (await canSomewhere(actor, item.permission))) items.push(item);
   }
   if (items.length <= 1) return null;
+  const badges = await navBadges(actor, gate.key);
+  const name = actor.effective.full_name;
+  const blocks = gate.sidebar ?? [];
 
   return (
-    <nav
-      aria-label={tg("navLabel")}
-      className="flex gap-1 overflow-x-auto border-b border-border bg-card p-2 md:w-60 md:flex-col md:gap-0.5 md:border-e md:border-b-0 md:p-3 print:hidden"
-    >
-      <GateNavLinks
-        items={items.map((item) => ({
-          href: item.href,
-          label: t(item.key),
-          icon: item.key.split(".").at(-1) ?? "",
-          group: item.group ? tg(`groups.${item.group}`) : undefined,
-        }))}
-      />
-    </nav>
+    <GateSidebar
+      labels={{
+        nav: tg("navLabel"),
+        collapse: tg("collapse"),
+        expand: tg("expand"),
+        more: tg("more"),
+      }}
+      profile={{ initials: initials(name), name, line: t(`gate.${gate.key}`) }}
+      extra={{
+        top: <SidebarExtras blocks={blocks.filter((b) => b === "continue")} actor={actor} />,
+        bottom: <SidebarExtras blocks={blocks.filter((b) => b !== "continue")} actor={actor} />,
+      }}
+      items={items.map((item) => ({
+        href: item.href,
+        label: t(item.key),
+        icon: item.key.split(".").at(-1) ?? "",
+        group: item.group ? tg(`groups.${item.group}`) : undefined,
+        badge: badges[item.key],
+      }))}
+    />
   );
 }

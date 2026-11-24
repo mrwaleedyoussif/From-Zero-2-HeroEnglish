@@ -109,6 +109,7 @@ export const registry = [
     "student.progress",
   ]),
   ...group("widget", 8, ["leadership.reportArchive"]),
+  ...group("widget", 10, ["student.journey", "owner.todo"]),
 
   ...group("feature", 4, ["placementWriting", "placementSpeaking"]),
   ...group("feature", 6, ["leaderboards", "coins", "streaks", "kaganTeams"]),

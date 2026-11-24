@@ -10,6 +10,8 @@ export interface GateNavItem {
   href: string;
   /** Optional extra permission needed to see this item. */
   permission?: string;
+  /** Optional menu section (label key `Gates.groups.<group>`); consecutive items share one. */
+  group?: string;
 }
 
 export interface GateConfig {

@@ -509,7 +509,8 @@
         "schools": "Schools",
         "auditLog": "Recent changes",
         "budgetMeters": "Free-tier budget",
-        "contentHealth": "Content health"
+        "contentHealth": "Content health",
+        "todo": "Needs your attention"
       },
       "student": {
         "placementCta": "Find your level",
@@ -518,7 +519,8 @@
         "streak": "My streak",
         "badges": "My badges",
         "leaderboard": "Class leaderboard",
-        "progress": "My progress"
+        "progress": "My progress",
+        "journey": "My journey"
       },
       "teacher": {
         "assignmentTracker": "Assignment tracker",
@@ -568,7 +570,14 @@
     "comingSoon": "Coming soon",
     "plannedFor": "Arrives in build phase {phase}.",
     "planned": "Planned for a later release.",
-    "freePeriodEnded": "This school's free period ended on {date}. Please contact the platform owner."
+    "freePeriodEnded": "This school's free period ended on {date}. Please contact the platform owner.",
+    "groups": {
+      "people": "People",
+      "school": "School setup",
+      "content": "Content",
+      "reports": "Reports",
+      "system": "System"
+    }
   },
   "Widgets": {
     "people": "{count} people",
@@ -1488,5 +1497,31 @@
       "full": "Used up"
     },
     "noEnd": "No end date"
+  },
+  "Journey": {
+    "morning": "Good morning, {name}",
+    "afternoon": "Good afternoon, {name}",
+    "evening": "Good evening, {name}",
+    "level": "Level {n}",
+    "xp": "{xp} XP",
+    "toNext": "{left} XP to {name}",
+    "top": "Top level reached",
+    "streak": "{days, plural, =0 {Start your streak today} one {# day streak} other {# day streak}}",
+    "coins": "{n} coins",
+    "findLevel": "Find your level",
+    "findLevelHint": "Take a short test so we can match lessons to you.",
+    "continue": "Continue learning",
+    "continueHint": "Your lessons are ready.",
+    "path": "Your path",
+    "here": "You are here",
+    "pathHelp": "Your level in {department}. Each step is a level."
+  },
+  "Todo": {
+    "clear": "Nothing needs you right now.",
+    "learners": "{n, plural, one {# learner is} other {# learners are}} waiting for your approval",
+    "media": "{n, plural, one {# question has} other {# questions have}} no audio or image file yet",
+    "drive": "Google Drive is not connected",
+    "jobs": "{n, plural, one {# report job} other {# report jobs}} failed",
+    "open": "Open"
   }
 }

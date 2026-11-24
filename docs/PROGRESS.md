@@ -9,6 +9,7 @@ Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` 
 - Owner still to do in Supabase → Authentication (RUNBOOK §2 steps 7–8): sign-ups off; sign-in rate limit ≥ 300 per 5 min. Google consent screen must be "In production".
 - App name is "Zero-2-Hero English" (the Drive folder stays `LinguaPath`). Home page: welcome with sound → general learner (Soon) / school user → school → branch → student or staff. A branch is a school row named "School · Branch" (Owner → Schools); the pick prefills the school code. `AppNav` (home, back, refresh, update) is on every header.
 - General learners (`src/features/learners`, `/learner`, Owner → General learners): email + one-time code (Supabase `generateLink` OTP, emailed by `lib/mail`), one school record `GENERAL`. Owner controls entry: invitation code = in at once, else profile stays `disabled` until approved (`learner_requests`, `learner_invites`, migration `20261201000001` — NOT yet applied to the live database). Closed until `GENERAL_LEARNERS_ENABLED=true` and a real mail provider (RUNBOOK §6b).
+- Inside the app: navy/gold brand header, icon menu (Owner's grouped: `group` in the gate config), student "My journey" hero (`widget.student.journey`: level, streak, next step, CEFR path from cut scores) and Owner to-do strip (`widget.owner.todo`). Fixed: `src/proxy.ts` dropped the locale header, so signed-in Arabic pages rendered in English.
 - Later: Lessons sheet (none yet, so nothing to assign); Resend SMTP; GitHub Actions `APP_URL` + secrets; STEP mock tests (3,000 items).
 
 ## Review 2026-11-23 (Done)
@@ -17,7 +18,6 @@ Phase 9 built and LIVE at https://zero-2-heroenglish.com (Supabase `linguapath` 
 - Scheduler/rewards: email digests survive a cut-off run (`scheduler/email.ts`); bad school time zone can't stop ticks; archive pages by 1000; XP/coin totals paged (`rewards/totals.ts`); practice scored out of items served, lesson time bounded by the server; streaks skip the school weekend and use school-time days (`lib/time.ts`); "due soon" reminders with the daily tick; backup workflow fails on an empty dump.
 - DB migration: profile identity frozen for signed-in users; class/people rows must match the row's school; `feature_flags_off_for`; `import_jobs` audit trigger dropped.
 - After go-live: old site's service worker is replaced by a clean-up worker (`public/sw.js`, `service-worker.js`); Drive audio lost its `Content-Range` (gaxios returns Fetch `Headers`) — fixed in `lib/storage/google.ts`. The Google driver has no test against real Drive: check on the live site after touching it.
-- Tests: 236 unit (engines 100%), 57 DB, 26 e2e (run one at a time: `workers: 1`).
 
 ## Done
 - Phase 0: Next 16 + Tailwind 4 + shadcn (RTL) + next-intl (en/ar), SPEC §16 tokens, Zod env, CI.

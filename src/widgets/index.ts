@@ -20,6 +20,8 @@ import { LeadershipReportArchiveWidget } from "./leadership-reports";
 import { OwnerAuditLogWidget } from "./owner-audit-log";
 import { OwnerBudgetWidget, OwnerContentHealthWidget } from "./owner-health";
 import { OwnerSchoolsWidget } from "./owner-schools";
+import { OwnerTodoWidget } from "./owner-todo";
+import { StudentJourneyWidget } from "./student-journey";
 import { StudentFromMyTeacherWidget, StudentRecommendedWidget } from "./student-learning";
 import { StudentPlacementCtaWidget } from "./student-placement-cta";
 import { StudentProgressWidget } from "./student-progress";
@@ -48,6 +50,7 @@ export interface WidgetProps {
  * "coming in a later phase" card (see gates/components/widget-slot.tsx).
  */
 export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
+  "widget.owner.todo": OwnerTodoWidget,
   "widget.owner.schools": OwnerSchoolsWidget,
   "widget.owner.auditLog": OwnerAuditLogWidget,
   "widget.owner.budgetMeters": OwnerBudgetWidget,
@@ -66,6 +69,7 @@ export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
   "widget.teacher.classRoster": TeacherClassRosterWidget,
   "widget.teacher.atRiskStudents": TeacherAtRiskWidget,
   "widget.teacher.skillHeatmap": TeacherSkillHeatmapWidget,
+  "widget.student.journey": StudentJourneyWidget,
   "widget.student.progress": StudentProgressWidget,
   "widget.student.placementCta": StudentPlacementCtaWidget,
   "widget.student.fromMyTeacher": StudentFromMyTeacherWidget,

@@ -9,6 +9,16 @@ import type { Actor } from "@/lib/auth/session";
 import { stopViewAs } from "@/features/users/view-as-actions";
 import { signOut } from "../actions";
 
+/** "Omar Saleh" → "OS" (works for Arabic names too). */
+const initials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => [...w][0] ?? "")
+    .join("")
+    .toUpperCase();
+
 export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: ReactNode }) {
   const t = await getTranslations("Shell");
   const locale = await getLocale();
@@ -29,16 +39,23 @@ export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: R
           </form>
         </div>
       )}
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 print:hidden">
+      {/* Brand bar: navy with a gold edge, the same in every portal (dark scope for its buttons). */}
+      <header className="dark flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#e2bd72] bg-[linear-gradient(100deg,#0e223d,#16356b_55%,#3b2a7a)] px-4 py-2.5 text-white print:hidden">
         <div className="flex flex-wrap items-center gap-3">
           <AppNav home="/home" />
-          <Link href="/home" className="text-lg font-bold text-primary">
+          <Link href="/home" className="text-lg font-extrabold tracking-tight text-[#f6dc9c]">
             {t("appName")}
           </Link>
           {extra}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">{actor.real.full_name}</span>
+          <span
+            aria-hidden
+            className="flex size-9 items-center justify-center rounded-full bg-[#f6dc9c] text-sm font-bold text-[#0e223d]"
+          >
+            {initials(actor.real.full_name)}
+          </span>
+          <span className="text-sm font-medium">{actor.real.full_name}</span>
           <LocaleSwitcher />
           <ThemeToggle />
           <form action={signOut}>

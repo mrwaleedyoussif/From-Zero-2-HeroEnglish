@@ -8,17 +8,24 @@ const intl = createMiddleware(routing);
 
 /**
  * Pass extra request headers to the app (what `NextResponse.next({ request: { headers } })` does),
- * so Next.js reads the CSP nonce and applies it to its own scripts.
+ * so Next.js reads the CSP nonce and applies it to its own scripts. The language middleware has
+ * already forwarded headers of its own (the page's locale): add to its list, never replace it,
+ * or signed-in pages lose their language and fall back to English.
  */
 function forwardRequestHeaders(
   response: NextResponse,
   request: NextRequest,
   extra: Record<string, string>,
 ) {
-  const headers = new Headers(request.headers);
-  for (const [k, v] of Object.entries(extra)) headers.set(k, v);
-  response.headers.set("x-middleware-override-headers", [...headers.keys()].join(","));
-  for (const [k, v] of headers) response.headers.set(`x-middleware-request-${k}`, v);
+  const already = response.headers.get("x-middleware-override-headers");
+  const names = new Set(already ? already.split(",") : request.headers.keys());
+  if (!already)
+    for (const [k, v] of request.headers) response.headers.set(`x-middleware-request-${k}`, v);
+  for (const [k, v] of Object.entries(extra)) {
+    names.add(k);
+    response.headers.set(`x-middleware-request-${k}`, v);
+  }
+  response.headers.set("x-middleware-override-headers", [...names].join(","));
 }
 
 export default async function proxy(request: NextRequest) {

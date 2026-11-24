@@ -22,6 +22,7 @@ import { OwnerBudgetWidget, OwnerContentHealthWidget } from "./owner-health";
 import { OwnerSchoolsWidget } from "./owner-schools";
 import { OwnerTodoWidget } from "./owner-todo";
 import { LeadershipHeadlineWidget, TeacherHeadlineWidget } from "./staff-headline";
+import { StudentDepartmentsWidget } from "./student-departments";
 import { StudentJourneyWidget } from "./student-journey";
 import { StudentFromMyTeacherWidget, StudentRecommendedWidget } from "./student-learning";
 import { StudentPlacementCtaWidget } from "./student-placement-cta";
@@ -73,6 +74,7 @@ export const widgets: Partial<Record<string, ComponentType<WidgetProps>>> = {
   "widget.teacher.atRiskStudents": TeacherAtRiskWidget,
   "widget.teacher.skillHeatmap": TeacherSkillHeatmapWidget,
   "widget.student.journey": StudentJourneyWidget,
+  "widget.student.departments": StudentDepartmentsWidget,
   "widget.student.progress": StudentProgressWidget,
   "widget.student.placementCta": StudentPlacementCtaWidget,
   "widget.student.fromMyTeacher": StudentFromMyTeacherWidget,

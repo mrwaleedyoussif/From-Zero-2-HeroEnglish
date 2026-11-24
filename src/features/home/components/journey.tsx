@@ -10,10 +10,12 @@ import {
   Users,
 } from "lucide-react";
 import { type RefObject, useState } from "react";
+import { audienceFor } from "@/features/departments/catalog";
 import { type HomeTexts, type Step, STEP_HEADING as HEADING } from "../copy";
 import type { SchoolChoice } from "../school-choices";
 import { schoolLogo } from "../school-logos";
 import { remember } from "../storage";
+import { DepartmentsLink } from "./departments-link";
 import { OptionCard, TONES } from "./option-card";
 import { DOOR, ResumeLink, SCHOOL } from "./resume-link";
 import { SchoolStrip } from "./school-strip";
@@ -61,6 +63,13 @@ export function Journey({
           ? "who"
           : "school",
     );
+  // Which departments to preview: general learners' at first, the chosen school's after.
+  const audience =
+    step === "who"
+      ? "general"
+      : school && step !== "school"
+        ? audienceFor({ code: "", name_en: school.name.en })
+        : null;
   const query = (c: string | null) => (c ? { school: c } : undefined);
 
   return (
@@ -166,6 +175,7 @@ export function Journey({
         )}
       </div>
 
+      {audience && <DepartmentsLink texts={texts} audience={audience} />}
       {step !== "who" && (
         <button
           type="button"

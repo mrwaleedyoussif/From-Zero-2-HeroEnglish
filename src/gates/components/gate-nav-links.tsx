@@ -54,6 +54,13 @@ const ICONS: Record<string, LucideIcon> = {
   coachingLog: NotebookPen,
 };
 
+/** Every icon gets a colour of its own, the same on every visit (by its position in the list). */
+const HUES = ["violet", "blue", "green", "amber", "rose", "teal", "pink", "orange"] as const;
+const hueOf = (icon: string) => {
+  const at = Object.keys(ICONS).indexOf(icon);
+  return HUES[(at < 0 ? icon.length : at) % HUES.length];
+};
+
 export interface NavLink {
   href: string;
   label: string;
@@ -81,10 +88,13 @@ export function GateNavLinks({ items }: { items: readonly NavLink[] }) {
           aria-current={item.href === current ? "page" : undefined}
           className="group flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm whitespace-nowrap text-foreground transition-colors hover:bg-accent aria-[current=page]:bg-primary aria-[current=page]:font-semibold aria-[current=page]:text-primary-foreground"
         >
-          <Icon
+          <span
             aria-hidden
-            className="size-4 shrink-0 opacity-80 group-aria-[current=page]:opacity-100"
-          />
+            data-hue={hueOf(item.icon)}
+            className="icon-tile size-7 rounded-lg group-aria-[current=page]:bg-white"
+          >
+            <Icon className="size-4" />
+          </span>
           {item.label}
         </Link>
       </Fragment>

@@ -85,12 +85,16 @@ export function HomeExperience({
 
       <header className="relative z-30 flex flex-wrap items-center justify-end gap-2 p-4">
         <button type="button" onClick={toggleSound} className={round} aria-pressed={!muted}>
-          {muted ? <VolumeX aria-hidden /> : <Volume2 aria-hidden />}
+          {muted ? (
+            <VolumeX aria-hidden className="text-rose-300" />
+          ) : (
+            <Volume2 aria-hidden className="text-sky-300" />
+          )}
           <span className="sr-only">{muted ? t.soundOff : t.soundOn}</span>
         </button>
         {!splash && !muted && (
           <button type="button" onClick={playWelcome} className={round}>
-            <RotateCcw aria-hidden />
+            <RotateCcw aria-hidden className="text-emerald-300" />
             <span className="sr-only">{t.replay}</span>
           </button>
         )}

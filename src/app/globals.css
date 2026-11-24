@@ -198,3 +198,93 @@
     @apply bg-background font-sans text-foreground;
   }
 }
+
+/* Icon colours: a tinted tile with a strong icon; lighter icon on dark pages and panels. */
+.icon-tile {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--hue-bg);
+  color: var(--hue-fg);
+}
+[data-hue="violet"] {
+  --hue-bg: #ede9fe;
+  --hue-fg: #6d28d9;
+  --hue-on: #ffffff;
+}
+[data-hue="blue"] {
+  --hue-bg: #dbeafe;
+  --hue-fg: #1d4ed8;
+  --hue-on: #ffffff;
+}
+[data-hue="green"] {
+  --hue-bg: #d1fae5;
+  --hue-fg: #047857;
+  --hue-on: #ffffff;
+}
+[data-hue="amber"] {
+  --hue-bg: #fef3c7;
+  --hue-fg: #b45309;
+  --hue-on: #ffffff;
+}
+[data-hue="rose"] {
+  --hue-bg: #ffe4e6;
+  --hue-fg: #be123c;
+  --hue-on: #ffffff;
+}
+[data-hue="teal"] {
+  --hue-bg: #ccfbf1;
+  --hue-fg: #0f766e;
+  --hue-on: #ffffff;
+}
+[data-hue="pink"] {
+  --hue-bg: #fce7f3;
+  --hue-fg: #be185d;
+  --hue-on: #ffffff;
+}
+[data-hue="orange"] {
+  --hue-bg: #ffedd5;
+  --hue-fg: #c2410c;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="violet"] {
+  --hue-bg: color-mix(in srgb, #c4b5fd 18%, transparent);
+  --hue-fg: #c4b5fd;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="blue"] {
+  --hue-bg: color-mix(in srgb, #93c5fd 18%, transparent);
+  --hue-fg: #93c5fd;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="green"] {
+  --hue-bg: color-mix(in srgb, #6ee7b7 18%, transparent);
+  --hue-fg: #6ee7b7;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="amber"] {
+  --hue-bg: color-mix(in srgb, #fcd34d 18%, transparent);
+  --hue-fg: #fcd34d;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="rose"] {
+  --hue-bg: color-mix(in srgb, #fda4af 18%, transparent);
+  --hue-fg: #fda4af;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="teal"] {
+  --hue-bg: color-mix(in srgb, #5eead4 18%, transparent);
+  --hue-fg: #5eead4;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="pink"] {
+  --hue-bg: color-mix(in srgb, #f9a8d4 18%, transparent);
+  --hue-fg: #f9a8d4;
+  --hue-on: #0e223d;
+}
+.dark [data-hue="orange"] {
+  --hue-bg: color-mix(in srgb, #fdba74 18%, transparent);
+  --hue-fg: #fdba74;
+  --hue-on: #0e223d;
+}

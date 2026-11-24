@@ -60,3 +60,39 @@ for (const c of [
     await expect(page.getByRole("link", { name: c.student })).toBeVisible();
   });
 }
+
+for (const c of [
+  {
+    path: "/en",
+    start: /Start/,
+    see: /See the departments/,
+    title: "Departments",
+    step: "STEP Preparation",
+  },
+  {
+    path: "/ar",
+    start: /ابدأ/,
+    see: /شاهد الأقسام/,
+    title: "الأقسام",
+    step: "التحضير لاختبار STEP",
+  },
+]) {
+  test(`departments ${c.path}: every one is shown, all marked Soon`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(c.path);
+    await page.getByRole("button", { name: c.start }).click();
+    await page.getByRole("link", { name: c.see }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(c.title);
+    const cards = page.locator("[data-department]");
+    await expect(cards).toHaveCount(10);
+    await expect(page.locator("[data-department][data-soon]")).toHaveCount(10);
+    await expect(page.locator('[data-department="step"]')).toContainText(c.step);
+    await expect(page.locator("[data-department] a, [data-department] button")).toHaveCount(0);
+    await audit(page);
+
+    await page.goto(`${c.path}/departments/andalus-international`);
+    await expect(page.locator("[data-department]")).toHaveCount(12);
+    await expect(page.locator('[data-department="ghars"]')).toContainText("غرس");
+    await audit(page);
+  });
+}

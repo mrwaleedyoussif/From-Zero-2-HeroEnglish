@@ -18,6 +18,7 @@ export const studentGate = defineGate({
     "widget.student.fromMyTeacher",
     "widget.student.placementCta",
     "widget.student.recommended",
+    "widget.student.departments",
     "widget.student.progress",
     "widget.student.streak",
     "widget.student.badges",

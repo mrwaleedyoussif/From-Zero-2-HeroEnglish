@@ -1,14 +1,64 @@
 /* Department cards: each has its own colour (see the hue variables in globals.css). */
+/* Each card is filled with its department's colour; the outline is the same colour's light
+   shade, and the writing is white so it reads on every one of them (same in light and dark). */
 .dept-card {
-  background: var(--card);
-  color: var(--card-foreground);
-  border: 1px solid var(--border);
-  border-inline-start: 6px solid var(--hue-fg);
+  background: linear-gradient(135deg, var(--dept-bg), color-mix(in srgb, var(--dept-bg) 82%, #000));
+  color: #ffffff;
+  border: 1px solid var(--dept-line);
+  border-inline-start: 6px solid var(--dept-line);
+  box-shadow: 0 14px 26px -18px rgb(0 0 0 / 0.7);
   animation: dept-in 0.4s ease both;
+}
+.dept-card[data-hue="violet"] {
+  --dept-bg: #5b21b6;
+  --dept-line: #c4b5fd;
+}
+.dept-card[data-hue="blue"] {
+  --dept-bg: #1d4ed8;
+  --dept-line: #93c5fd;
+}
+.dept-card[data-hue="green"] {
+  --dept-bg: #047857;
+  --dept-line: #6ee7b7;
+}
+.dept-card[data-hue="amber"] {
+  --dept-bg: #a16207;
+  --dept-line: #fcd34d;
+}
+.dept-card[data-hue="rose"] {
+  --dept-bg: #be123c;
+  --dept-line: #fda4af;
+}
+.dept-card[data-hue="teal"] {
+  --dept-bg: #0f766e;
+  --dept-line: #5eead4;
+}
+.dept-card[data-hue="pink"] {
+  --dept-bg: #be185d;
+  --dept-line: #f9a8d4;
+}
+.dept-card[data-hue="orange"] {
+  --dept-bg: #c2410c;
+  --dept-line: #fdba74;
 }
 .dept-card[data-soon] {
   border-style: dashed;
   border-inline-start-style: solid;
+}
+.dept-card .text-muted-foreground {
+  color: rgb(255 255 255 / 0.9);
+}
+.dept-card .icon-tile {
+  background: rgb(255 255 255 / 0.2);
+  color: #ffffff;
+}
+.dept-card .dept-soon {
+  background: var(--dept-line);
+  color: #0e223d;
+}
+.dept-card .dept-part {
+  background: rgb(255 255 255 / 0.18);
+  color: #ffffff;
 }
 .dept-soon {
   background: var(--hue-fg);

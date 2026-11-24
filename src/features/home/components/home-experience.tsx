@@ -149,7 +149,7 @@ export function HomeExperience({
           <Journey texts={texts} schools={schools} generalOpen={generalOpen} heading={heading} />
 
           <footer className="mt-auto flex flex-col items-center gap-3 pt-6 text-center text-sm text-[var(--z-soft)]">
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 py-1.5 ps-1.5 pe-5">
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-[#13284a] py-1.5 ps-1.5 pe-5 text-[#dbe4f5]">
               <Image
                 src="/brand/designer.webp"
                 alt=""

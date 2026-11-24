@@ -31,7 +31,7 @@ export function Splash({
       aria-label={texts.main.copy.brand}
       data-leaving={leaving}
       data-playing={playing}
-      className="z2h-splash fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 overflow-hidden px-6 text-center"
+      className="z2h-splash fixed inset-0 z-20 flex flex-col items-center justify-center gap-6 overflow-hidden px-6 text-center"
     >
       <BloomCanvas
         run={playing ? 1 : 0}

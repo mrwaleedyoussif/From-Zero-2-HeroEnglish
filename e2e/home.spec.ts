@@ -15,8 +15,8 @@ for (const c of [
     start: /Start/,
     school: /School user/,
     mine: /Riyadh Demo School/,
-    general: /General learner/,
-    student: /Student/,
+    general: /General learner /,
+    student: /^Student /,
     soon: "Soon",
   },
   {
@@ -101,9 +101,9 @@ test("the opening plays after Start and can be skipped", async ({ page }) => {
   await page.goto("/en");
   await page.getByRole("button", { name: /Start/ }).click();
   // The intro (the bloom, to music) is on: the choices wait behind it until it ends or is skipped.
-  await expect(page.getByRole("button", { name: /School user/ })).toBeHidden();
+  await expect(page.locator("main")).toHaveAttribute("inert", "");
   await page.getByRole("button", { name: /Skip/ }).click();
-  await expect(page.getByRole("button", { name: /School user/ })).toBeVisible();
+  await expect(page.locator("main")).not.toHaveAttribute("inert", "");
   // The public menu is beside the page.
   await expect(page.getByRole("link", { name: "Teachers and staff" })).toHaveAttribute(
     "href",

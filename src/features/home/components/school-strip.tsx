@@ -14,7 +14,7 @@ export function SchoolStrip({ texts }: { texts: HomeTexts }) {
       {SCHOOLS.map(([k, src]) => (
         <li
           key={k}
-          className="flex max-w-72 items-center gap-3 rounded-2xl border border-white/15 bg-white/5 p-2 pe-4 text-start text-sm text-[var(--z-soft)]"
+          className="flex max-w-72 items-center gap-3 rounded-2xl border border-white/15 bg-[#13284a] p-2 pe-4 text-start text-sm text-[var(--z-soft)]"
         >
           <Image
             src={src}

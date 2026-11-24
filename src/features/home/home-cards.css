@@ -128,3 +128,8 @@
     box-shadow: 0 0 0 24px rgb(246 220 156 / 0);
   }
 }
+/* Before Start the page's own buttons (language, sound) stay reachable above the opening
+   screen; once the intro plays it covers everything. */
+.z2h-splash[data-playing="true"] {
+  z-index: 50;
+}

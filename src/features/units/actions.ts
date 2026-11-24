@@ -6,7 +6,7 @@ import { getActor } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/db";
 import { type Answered, loadUnit } from "./queries";
-import { isCorrect, shownAnswer, triesAllowed, type Unit } from "./schema";
+import { isCorrect, questionsOf, shownAnswer, triesAllowed, type Unit } from "./schema";
 
 type Bi = { en: string; ar: string };
 export interface Feedback {
@@ -34,8 +34,9 @@ async function save(
   };
   if (patch.writing !== undefined) row.writing = patch.writing;
   if (patch.answers) {
-    const marked = unit.comprehension.filter((q) => q.type !== "short");
-    const settled = unit.comprehension.every((q) => {
+    const all = questionsOf(unit);
+    const marked = all.filter((q) => q.type !== "short");
+    const settled = all.every((q) => {
       const a = patch.answers?.[q.id];
       return a && (a.correct !== false || a.tries >= triesAllowed(q));
     });
@@ -61,7 +62,7 @@ export async function answerQuestion(
     const actor = await getActor();
     if (!actor) throw new ActionError("signedOut");
     const loaded = await loadUnit(actor, unitId);
-    const q = loaded?.unit.comprehension.find((x) => x.id === questionId);
+    const q = loaded && questionsOf(loaded.unit).find((x) => x.id === questionId);
     if (!loaded || !q) throw new ActionError("forbidden");
     const before = loaded.answers[q.id];
     // A settled question stays settled: its score cannot be improved by answering again.

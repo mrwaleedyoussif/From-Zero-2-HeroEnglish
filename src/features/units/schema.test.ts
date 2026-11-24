@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isCorrect, publicQuestion, unitSchema } from "./schema";
+import { isCorrect, publicQuestion, questionsOf, unitSchema } from "./schema";
 
 const bi = (en: string) => ({ en, ar: "نص" });
 export const sampleUnit = () => ({
@@ -69,7 +69,7 @@ describe("course unit files", () => {
     const out = unitSchema.safeParse(bad);
     expect(out.success).toBe(false);
     expect(unitSchema.safeParse({ ...sampleUnit(), level: "D1" }).success).toBe(false);
-    expect(unitSchema.safeParse({ ...sampleUnit(), comprehension: [] }).success).toBe(false);
+    expect(unitSchema.safeParse({ ...sampleUnit(), passage: undefined }).success).toBe(false);
   });
 
   it("marks answers, and never marks free-text ones", () => {
@@ -86,5 +86,49 @@ describe("course unit files", () => {
   it("never sends answers, hints or explanations to the browser", () => {
     const sent = JSON.stringify(unitSchema.parse(sampleUnit()).comprehension.map(publicQuestion));
     expect(sent).not.toMatch(/answer|hints|explanation|Line 1 says/);
+  });
+});
+
+describe("the other strands", () => {
+  const core = { id: "LU-A1-U01", strand: "LU", level: "A1", unit: 1, title: "My bag" };
+  const typed = (type: string, answer: string) => ({
+    id: `Q-${type}`,
+    type,
+    skill: "grammar",
+    stem: "There ____ a pen.",
+    answer,
+    explanation: bi("Because."),
+  });
+
+  it("reads listening, shadowing and language units without a reading passage", () => {
+    const script = { id: "T", title: "At the shop", lines: [{ speaker: "A", text: "Hello." }] };
+    expect(
+      unitSchema.safeParse({ ...core, script, listening: [typed("cloze", "is")] }).success,
+    ).toBe(true);
+    const model_text = { id: "T", title: "Hello", chunks: [{ id: "C1", text: "Hello!" }] };
+    expect(unitSchema.safeParse({ ...core, model_text }).success).toBe(true);
+    expect(unitSchema.safeParse(core).success).toBe(false); // nothing to read, hear or repeat
+  });
+
+  it("marks typed grammar answers, forgiving capitals and punctuation", () => {
+    const unit = unitSchema.parse({
+      ...core,
+      context_text: { id: "T", title: "Bag", paragraphs: ["There is a pen."] },
+      grammar_lesson: {
+        name: bi("There is"),
+        rule: bi("One thing."),
+        controlled: [typed("cloze", "is")],
+      },
+      practice: [
+        typed("error_correction", "There are two apples in the bag."),
+        typed("word_formation", "colour / color"),
+      ],
+    });
+    const [cloze, fix, form] = questionsOf(unit);
+    if (!cloze || !fix || !form) throw new Error("fixture");
+    expect(isCorrect(cloze, " IS ")).toBe(true);
+    expect(isCorrect(fix, "there are two apples in the bag")).toBe(true);
+    expect(isCorrect(fix, "There is two apples in the bag.")).toBe(false);
+    expect(isCorrect(form, "color")).toBe(true);
   });
 });

@@ -1667,6 +1667,16 @@
     "importDone": "{files} files read: {imported} saved, {unchanged} unchanged, {problems} with problems.",
     "loaded": "{n} units in the app",
     "open": "Open now",
-    "wordsCount": "{n} words"
+    "wordsCount": "{n} words",
+    "playAll": "Play it all",
+    "stop": "Stop",
+    "showScript": "Show the script",
+    "listenQuestions": "Listen and answer",
+    "speakingTask": "Your speaking task",
+    "speakingTime": "Prepare {prep} seconds · speak {speak} seconds",
+    "shadowHelp": "Listen to each piece, then say it at the same time as the voice. Stress the words in CAPITALS and follow the arrow with your voice.",
+    "rule": "The rule",
+    "tryIt": "Try it",
+    "practice": "Practice"
   }
 }

@@ -1,22 +1,20 @@
-import {
-  BookOpenText,
-  ChevronLeft,
-  HelpCircle,
-  Languages,
-  Lightbulb,
-  PenLine,
-  Target,
-} from "lucide-react";
+import { ChevronLeft, Languages, Lightbulb, PenLine, Target } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { SpeakButton } from "@/features/units/components/speak-button";
 import { Bi, UnitPanel } from "@/features/units/components/unit-panel";
-import { UnitQuestion } from "@/features/units/components/unit-question";
+import {
+  UnitGrammar,
+  UnitQuestions,
+  UnitScript,
+  UnitShadow,
+  UnitSpeaking,
+  UnitText,
+} from "@/features/units/components/unit-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
 import { UnitWriting } from "@/features/units/components/unit-writing";
 import { loadUnit } from "@/features/units/queries";
-import { publicQuestion, shownAnswer, triesAllowed } from "@/features/units/schema";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
 
@@ -33,6 +31,7 @@ export default async function UnitPage({
   const t = await getTranslations("Units");
   const skill = unit.writing_skill;
   const task = unit.writing_task;
+  const grammar = unit.grammar_lesson;
 
   return (
     <>
@@ -92,42 +91,48 @@ export default async function UnitPage({
           <Bi en={unit.hook.prediction.en} ar={unit.hook.prediction.ar} />
         </UnitPanel>
       )}
-      <UnitPanel hue="green" icon={BookOpenText} title={unit.passage.title} part="passage">
-        <div dir="ltr" className="unit-passage flex flex-col gap-3 text-start text-lg">
-          {unit.passage.paragraphs.map((p, i) => (
-            <div key={p} className="flex items-start gap-2">
-              <SpeakButton text={p} label={t("listenPara", { n: i + 1 })} />
-              <p>{p}</p>
-            </div>
-          ))}
-        </div>
-      </UnitPanel>
-      <UnitPanel hue="rose" icon={HelpCircle} title={t("questions")} part="questions">
-        <ol className="flex flex-col gap-6">
-          {unit.comprehension.map((q, i) => {
-            const a = answers[q.id];
-            const settled = a && (a.correct !== false || a.tries >= triesAllowed(q));
-            return (
-              <UnitQuestion
-                key={q.id}
-                unitId={unit.id}
-                number={i + 1}
-                q={publicQuestion(q)}
-                settled={
-                  settled
-                    ? {
-                        choice: a.choice,
-                        correct: a.correct,
-                        answer: shownAnswer(q),
-                        explanation: q.explanation,
-                      }
-                    : undefined
-                }
-              />
-            );
-          })}
-        </ol>
-      </UnitPanel>
+      {unit.script && <UnitScript script={unit.script} />}
+      <UnitQuestions
+        unitId={unit.id}
+        title={t("listenQuestions")}
+        part="listening"
+        questions={unit.listening}
+        answers={answers}
+      />
+      {unit.speaking_task && <UnitSpeaking task={unit.speaking_task} />}
+      {unit.model_text && <UnitShadow model={unit.model_text} />}
+      {unit.passage && <UnitText text={unit.passage} part="passage" />}
+      <UnitQuestions
+        unitId={unit.id}
+        title={t("questions")}
+        part="questions"
+        questions={unit.comprehension}
+        answers={answers}
+      />
+      {unit.context_text && <UnitText text={unit.context_text} part="context" />}
+      {grammar && <UnitGrammar lesson={grammar} />}
+      <UnitQuestions
+        unitId={unit.id}
+        title={t("tryIt")}
+        part="controlled"
+        hue="teal"
+        questions={grammar?.controlled ?? []}
+        answers={answers}
+      />
+      {grammar?.freer && (
+        <p className="unit-panel rounded-2xl p-5" data-hue="amber">
+          <Bi en={grammar.freer.en} ar={grammar.freer.ar} />
+        </p>
+      )}
+      <UnitQuestions
+        unitId={unit.id}
+        title={t("practice")}
+        part="practice"
+        hue="pink"
+        from={(grammar?.controlled.length ?? 0) + 1}
+        questions={unit.practice}
+        answers={answers}
+      />
       {skill && <UnitSkill skill={skill} title={skill.name.en} showAnswer={t("showAnswer")} />}
       {task && (
         <UnitPanel hue="orange" icon={PenLine} title={t("writingTask")} part="task">

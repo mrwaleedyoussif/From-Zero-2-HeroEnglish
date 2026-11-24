@@ -64,7 +64,11 @@ export async function importUnits(
     } catch {
       throw new ActionError("unitsFolderMissing");
     }
-    const files = listed.filter((f) => f.file.name.toLowerCase().endsWith(".json"));
+    const json = listed.filter((f) => f.file.name.toLowerCase().endsWith(".json"));
+    // A course folder also holds other JSON (an index, rubrics, a schema). When its unit files
+    // are named "unit…", only those are read; otherwise every JSON file is tried.
+    const named = json.filter((f) => /^unit[\w-]*\.json$/i.test(f.file.name));
+    const files = named.length > 0 ? named : json;
     if (files.length === 0) throw new ActionError("unitsNone");
     if (files.length > MAX_FILES) throw new ActionError("unitsTooMany");
 
@@ -84,9 +88,9 @@ export async function importUnits(
     };
 
     // A few files at a time: quick, and gentle on Drive's limits.
-    for (let i = 0; i < files.length; i += 6) {
+    for (let i = 0; i < files.length; i += 8) {
       const batch = await Promise.all(
-        files.slice(i, i + 6).map(async ({ path, file }) => {
+        files.slice(i, i + 8).map(async ({ path, file }) => {
           try {
             const body = (await drive.stream(file.id)).body;
             return { path, raw: await new Response(body).text() };

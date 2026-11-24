@@ -51,13 +51,21 @@ const EXAMS = [
   dept("gat", "fuchsia", PREP),
 ];
 
+/** The course-unit strand behind a department, where general learners have one. */
+const STRANDS: Partial<Record<string, string>> = {
+  readingWriting: "RW",
+  listeningSpeaking: "LS",
+  shadowing: "SH",
+  languageUsage: "LU",
+};
+
 export const AUDIENCES = ["general", "andalus-international"] as const;
 export type Audience = (typeof AUDIENCES)[number];
 
 export const CATALOG: Record<Audience, readonly Department[]> = {
-  // General learners' Reading and Writing is open: its units are loaded (strand RW).
+  // General learners' four skill departments are open: their units are loaded (see STRANDS).
   general: [
-    ...SKILLS.map((d) => (d.key === "readingWriting" ? { ...d, soon: false, strand: "RW" } : d)),
+    ...SKILLS.map((d) => (STRANDS[d.key] ? { ...d, soon: false, strand: STRANDS[d.key] } : d)),
     dept("handwriting", "cyan"),
     ...EXAMS,
   ],

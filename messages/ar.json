@@ -1667,6 +1667,16 @@
     "importDone": "قُرئ {files} ملفًا: حُفظ {imported}، بلا تغيير {unchanged}، بها مشاكل {problems}.",
     "loaded": "{n} وحدة في التطبيق",
     "open": "مفتوح الآن",
-    "wordsCount": "{n} كلمة"
+    "wordsCount": "{n} كلمة",
+    "playAll": "شغّل الكل",
+    "stop": "إيقاف",
+    "showScript": "أظهر النص",
+    "listenQuestions": "استمع وأجب",
+    "speakingTask": "مهمة التحدث",
+    "speakingTime": "حضّر {prep} ثانية · تحدّث {speak} ثانية",
+    "shadowHelp": "استمع إلى كل جزء ثم قله مع الصوت في الوقت نفسه. شدّد على الكلمات المكتوبة بحروف كبيرة واتبع السهم بصوتك.",
+    "rule": "القاعدة",
+    "tryIt": "جرّب",
+    "practice": "تدريب"
   }
 }

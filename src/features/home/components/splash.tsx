@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import type { HomeTexts } from "../copy";
-import { Bi } from "./bi";
 
 /** The opening screen: the logo and one big Start button (the tap that lets the sound play). */
 export function Splash({
@@ -50,14 +49,6 @@ export function Splash({
           {texts.other.copy.start}
         </span>
       </button>
-      <p className="z2h-rise" style={{ "--i": 3 } as React.CSSProperties}>
-        <Bi
-          texts={texts}
-          k="startHint"
-          className="text-[var(--z-soft)]"
-          otherClassName="text-sm text-[var(--z-soft)] !text-center"
-        />
-      </p>
     </div>
   );
 }

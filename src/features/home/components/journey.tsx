@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowRight,
   BookOpenCheck,
   Building2,
   ChevronLeft,
@@ -11,15 +10,14 @@ import {
   Users,
 } from "lucide-react";
 import { type RefObject, useState } from "react";
-import { Link } from "@/i18n/navigation";
 import { type HomeTexts, type Step, STEP_HEADING as HEADING } from "../copy";
 import type { SchoolChoice } from "../school-choices";
 import { schoolLogo } from "../school-logos";
-import { remember, useStored } from "../storage";
+import { remember } from "../storage";
 import { OptionCard, TONES } from "./option-card";
+import { DOOR, ResumeLink, SCHOOL } from "./resume-link";
+import { SchoolStrip } from "./school-strip";
 
-const DOOR = "z2h-door";
-const SCHOOL = "z2h-school";
 const big = "size-8";
 
 /** The choices, one step at a time: how you learn → school → branch → student or staff. */
@@ -39,8 +37,6 @@ export function Journey({
   const [step, setStep] = useState<Step>("who");
   const [school, setSchool] = useState<SchoolChoice | null>(null);
   const [code, setCode] = useState<string | null>(null);
-  const lastDoor = useStored("local", DOOR);
-  const lastSchool = useStored("local", SCHOOL);
 
   const go = (next: Step) => {
     setStep(next);
@@ -66,12 +62,6 @@ export function Journey({
           : "school",
     );
   const query = (c: string | null) => (c ? { school: c } : undefined);
-  const resume =
-    lastDoor === "student"
-      ? { pathname: "/student-login" as const, who: t.student }
-      : lastDoor === "staff"
-        ? { pathname: "/login" as const, who: t.staff }
-        : null;
 
   return (
     <section className="flex w-full flex-col gap-5" aria-labelledby="z2h-choose">
@@ -92,15 +82,7 @@ export function Journey({
         </span>
       </h2>
 
-      {step === "who" && resume && (
-        <Link
-          href={{ pathname: resume.pathname, query: query(lastSchool) }}
-          className="z2h-rise inline-flex min-h-11 items-center gap-2 self-center rounded-full border border-[var(--z-gold)] px-5 font-semibold text-[var(--z-gold-bright)] outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white"
-        >
-          {t.continueAs.replace("{who}", resume.who)}
-          <ArrowRight aria-hidden className="size-5 rtl:rotate-180" />
-        </Link>
-      )}
+      {step === "who" && <ResumeLink texts={texts} />}
 
       <div key={step} className="grid gap-4 sm:grid-cols-2">
         {step === "who" && (
@@ -193,6 +175,10 @@ export function Journey({
           <ChevronLeft aria-hidden className="size-5 rtl:rotate-180" />
           {t.back}
         </button>
+      )}
+      {/* Only on the school user's path; the school step already shows schools as its cards. */}
+      {(step === "branch" || step === "role" || (step === "school" && !schools.length)) && (
+        <SchoolStrip texts={texts} />
       )}
     </section>
   );

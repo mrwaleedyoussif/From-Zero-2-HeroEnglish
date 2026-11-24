@@ -3,7 +3,6 @@ export const HOME_KEYS = [
   "brand",
   "tagline",
   "start",
-  "startHint",
   "choose",
   "chooseSchool",
   "chooseBranch",

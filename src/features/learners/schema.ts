@@ -11,10 +11,9 @@ export const codeSchema = z
 export const inviteCodeSchema = z.string().regex(/^[A-Z0-9]{6,12}$/);
 
 const ticked = z.literal("on");
-/** First visit: who they are, that they are an adult, and that they accept the terms. */
+/** First visit: who they are, and that they accept the terms. */
 export const welcomeSchema = z.object({
   full_name: z.string().trim().min(2).max(80),
-  adult: ticked,
   terms: ticked,
   /** Invitation code from the Owner; without one the request waits for approval. */
   invite: z.preprocess(

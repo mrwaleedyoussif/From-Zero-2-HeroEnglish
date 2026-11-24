@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { completeProfile } from "../join";
 
-/** Asked once: name, that the learner is an adult, and agreement to how their data is used. */
+/** Asked once: name, an optional invitation code, and agreement to how their data is used. */
 export function WelcomeForm() {
   const t = useTranslations("Learner");
   const locale = useLocale();
@@ -20,12 +20,10 @@ export function WelcomeForm() {
         <Label htmlFor="learner-name">{t("fullName")}</Label>
         <Input id="learner-name" name="full_name" autoComplete="name" required maxLength={80} />
       </div>
-      {(["adult", "terms"] as const).map((k) => (
-        <label key={k} className="flex min-h-11 items-start gap-3 text-sm">
-          <input type="checkbox" name={k} required className="mt-0.5 size-5 shrink-0" />
-          <span>{t(k)}</span>
-        </label>
-      ))}
+      <label className="flex min-h-11 items-start gap-3 text-sm">
+        <input type="checkbox" name="terms" required className="mt-0.5 size-5 shrink-0" />
+        <span>{t("terms")}</span>
+      </label>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="learner-invite">{t("invite")}</Label>
         <Input

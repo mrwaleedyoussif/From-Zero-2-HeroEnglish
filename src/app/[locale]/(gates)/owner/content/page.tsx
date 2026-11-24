@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { UnitsImport } from "@/features/units/components/units-import";
 import { ContentSync } from "@/features/content/components/content-sync";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
@@ -32,6 +33,8 @@ export default async function ContentPage({ params }: PageProps<"/[locale]/owner
     ),
     googleConnection(),
   ]);
+  const tu = await getTranslations("Units");
+  const units = await db.from("course_units").select("id", { count: "exact", head: true });
   const ready = connection.connected || serverEnv().STORAGE_DRIVER === "fake";
 
   return (
@@ -55,6 +58,18 @@ export default async function ContentPage({ params }: PageProps<"/[locale]/owner
           ) : (
             <ContentSync />
           )}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>{tu("importTitle")}</CardTitle>
+          <CardDescription>{tu("importHelp")}</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <p className="text-sm font-medium" data-count="course_units">
+            {tu("loaded", { n: units.count ?? 0 })}
+          </p>
+          {ready && !actor.viewAs && <UnitsImport />}
         </CardContent>
       </Card>
       <div className="grid gap-4 md:grid-cols-2">

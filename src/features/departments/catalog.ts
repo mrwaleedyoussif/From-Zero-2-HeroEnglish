@@ -11,6 +11,8 @@ export interface Department {
   hue: Hue;
   inside?: readonly string[];
   soon: boolean;
+  /** The course units behind the department, once loaded (see features/units). */
+  strand?: string;
 }
 
 const dept = (key: string, hue: Hue, inside?: readonly string[]): Department => ({
@@ -39,7 +41,12 @@ export const AUDIENCES = ["general", "andalus-international"] as const;
 export type Audience = (typeof AUDIENCES)[number];
 
 export const CATALOG: Record<Audience, readonly Department[]> = {
-  general: [...SKILLS, dept("handwriting", "blue"), ...EXAMS],
+  // General learners' Reading and Writing is open: its units are loaded (strand RW).
+  general: [
+    ...SKILLS.map((d) => (d.key === "readingWriting" ? { ...d, soon: false, strand: "RW" } : d)),
+    dept("handwriting", "blue"),
+    ...EXAMS,
+  ],
   "andalus-international": [
     ...SKILLS,
     dept("ghars", "green", ["wordLine", "performingArts"]),

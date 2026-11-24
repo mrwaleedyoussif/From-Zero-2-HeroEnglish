@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { type Audience, CATALOG } from "../catalog";
 import { departmentIcon } from "../icons";
 import "./department-grid.css";
@@ -10,9 +11,12 @@ import "./department-grid.css";
 export async function DepartmentGrid({
   audience,
   locale,
+  linked = false,
 }: {
   audience: Audience;
   locale: "en" | "ar";
+  /** Inside the app an open department leads to its units; on public pages it only says "open". */
+  linked?: boolean;
 }) {
   const other = locale === "ar" ? "en" : "ar";
   const t = await getTranslations({ locale, namespace: "Departments" });
@@ -45,9 +49,20 @@ export async function DepartmentGrid({
                   {o(`names.${d.key}`)}
                 </span>
               </h3>
-              {d.soon && (
+              {d.soon ? (
                 <span className="dept-soon shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold">
                   {t("soon")}
+                </span>
+              ) : linked && d.strand ? (
+                <Link
+                  href={`/student/units/${d.strand}`}
+                  className="dept-soon inline-flex min-h-9 shrink-0 items-center rounded-full px-3 text-sm font-bold underline-offset-2 hover:underline"
+                >
+                  {t("open")} →
+                </Link>
+              ) : (
+                <span className="dept-soon shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                  {t("open")}
                 </span>
               )}
             </div>

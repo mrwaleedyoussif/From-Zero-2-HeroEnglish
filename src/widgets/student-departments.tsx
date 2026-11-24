@@ -25,7 +25,7 @@ export async function StudentDepartmentsWidget({ actor }: WidgetProps) {
       className="flex min-w-0 flex-col gap-3 md:col-span-2 xl:col-span-3"
     >
       <h2 className="text-base font-semibold">{t("mine")}</h2>
-      <DepartmentGrid audience={audience} locale={locale} />
+      <DepartmentGrid audience={audience} locale={locale} linked />
     </section>
   );
 }

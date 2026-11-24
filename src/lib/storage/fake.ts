@@ -30,6 +30,7 @@ const MIME: Record<string, string> = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".txt": "text/plain",
+  ".json": "application/json",
 };
 
 export function parseRange(

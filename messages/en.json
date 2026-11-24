@@ -128,7 +128,11 @@
     "kudosCap": "That's the most kudos this student can get today.",
     "confirmMismatch": "The username you typed does not match.",
     "protectedKey": "The Owner console and its Visibility page can't be hidden: they are where a wrong rule is undone.",
-    "gradeCode": "The grade code must be 1 to 4 letters or digits with no spaces, for example 4 or KG1. Put the full name (Grade 4) in the name boxes."
+    "gradeCode": "The grade code must be 1 to 4 letters or digits with no spaces, for example 4 or KG1. Put the full name (Grade 4) in the name boxes.",
+    "unitsFolderLink": "That does not look like a Drive folder link.",
+    "unitsFolderMissing": "The folder was not found. Paste the folder's link, or create LinguaPath / 01_Content / Units in Drive.",
+    "unitsNone": "No JSON files were found in that folder.",
+    "unitsTooMany": "Too many files in one go (400 at most). Import one level's folder at a time."
   },
   "Done": {
     "saved": "Saved",
@@ -469,7 +473,8 @@
         "placement": "Placement test",
         "lessons": "Lessons",
         "profile": "My profile",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "units": "Course units"
       }
     },
     "nav": {
@@ -517,7 +522,8 @@
         "placement": "Placement test",
         "lessons": "Lessons",
         "profile": "My profile",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "units": "Course units"
       }
     },
     "widget": {
@@ -1611,6 +1617,51 @@
       "wordLine": "Word-line",
       "performingArts": "Performing Arts",
       "grades3to12": "Grades 3–12"
-    }
+    },
+    "open": "Open now"
+  },
+  "Units": {
+    "listIntro": "{done} of {total} units finished. Work through them in order, or open any unit.",
+    "none": "No units are loaded yet.",
+    "level": "Level {level}",
+    "unitN": "Unit {n}",
+    "done": "Finished",
+    "allUnits": "All units",
+    "objectives": "In this unit you will",
+    "words": "Words to know",
+    "listen": "Listen",
+    "listenPara": "Listen to paragraph {n}",
+    "before": "Before you read",
+    "questions": "Check your understanding",
+    "tfng": {
+      "True": "True",
+      "False": "False",
+      "Not Given": "Not given"
+    },
+    "yourAnswer": "Your answer",
+    "orderHelp": "Type the letters in order, like: c, d, a, b",
+    "check": "Check",
+    "right": "Well done! That is right.",
+    "tryAgain": "Not yet. Try again, you are close!",
+    "answer": "Answer",
+    "model": "A good answer",
+    "showAnswer": "Show the answer",
+    "writingTask": "Your writing task",
+    "yourWriting": "Write here",
+    "wordsOf": "{n} words (aim for {min} to {max})",
+    "saveWriting": "Save my writing",
+    "saved": "Saved. Now compare with the model answer.",
+    "notSaved": "Could not save. Please try again.",
+    "modelAnswer": "Model answer",
+    "importTitle": "Course units (JSON files)",
+    "importHelp": "Whole units kept as you organised them: words, reading, questions with hints, writing lesson and task. One JSON file per unit, in any subfolders.",
+    "importFolder": "Drive folder link (optional)",
+    "importFolderHelp": "Paste the link of the Drive folder that holds the unit files. Leave empty to use LinguaPath / 01_Content / Units.",
+    "importButton": "Import units from Drive",
+    "importing": "Reading the files…",
+    "importDone": "{files} files read: {imported} saved, {unchanged} unchanged, {problems} with problems.",
+    "loaded": "{n} units in the app",
+    "open": "Open now",
+    "wordsCount": "{n} words"
   }
 }

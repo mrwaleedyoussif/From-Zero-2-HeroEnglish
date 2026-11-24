@@ -9,6 +9,7 @@ import { FreePeriodBanner } from "./free-period-banner";
 import { GateNav } from "./gate-nav";
 import { GateSwitcher } from "./gate-switcher";
 import { SchoolThemeStyle } from "./school-theme-style";
+import "./gate-shell.css";
 
 /** Shared layout for every gate: header, gate switcher, nav from config, theme. */
 export async function GateLayout({
@@ -45,7 +46,9 @@ export async function GateLayout({
       <FreePeriodBanner actor={actor} />
       <div className="flex flex-1 flex-col md:flex-row">
         <GateNav gate={gate} actor={actor} />
-        <main className="flex min-w-0 flex-1 flex-col gap-6 p-4 pb-24 md:p-6">{children}</main>
+        <main className="gate-main flex min-w-0 flex-1 flex-col gap-6 p-4 pb-24 md:p-6">
+          {children}
+        </main>
       </div>
       <Toaster />
     </div>

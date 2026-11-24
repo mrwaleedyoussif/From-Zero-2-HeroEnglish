@@ -1,9 +1,11 @@
 "use client";
 
 import { Ellipsis, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import Image from "next/image";
 import { Fragment, type ReactNode, useSyncExternalStore } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { type NavLink, NavItem, useCurrent } from "./gate-nav-links";
+import "./gate-shell.css";
 
 /** Whether the sidebar is folded to icons: remembered on this device, never required to work. */
 const KEY = "z2h-nav-collapsed";
@@ -51,7 +53,8 @@ export function GateSidebar({
 }: {
   items: readonly NavLink[];
   labels: SidebarLabels;
-  profile: { initials: string; name: string; line: string };
+  /** `image` (the app badge on public pages) replaces the initials. */
+  profile: { initials: string; name: string; line: string; image?: string };
   /** Extra blocks: `top` under the person (a student's "Continue"), `bottom` under the menu. */
   extra?: { top?: ReactNode; bottom?: ReactNode };
 }) {
@@ -70,12 +73,16 @@ export function GateSidebar({
         className="side dark group/side hidden w-64 shrink-0 flex-col gap-1 p-3 transition-[width] duration-300 data-[collapsed=true]:w-[4.5rem] data-[collapsed=true]:overflow-x-hidden md:sticky md:top-0 md:flex md:h-dvh md:self-start md:overflow-y-auto print:hidden"
       >
         <div className="side-profile mb-1 flex items-center gap-2.5 rounded-2xl p-2 group-data-[collapsed=true]/side:bg-transparent group-data-[collapsed=true]/side:p-1 group-data-[collapsed=true]/side:shadow-none">
-          <span
-            aria-hidden
-            className="side-avatar flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-          >
-            {profile.initials}
-          </span>
+          {profile.image ? (
+            <Image src={profile.image} alt="" width={40} height={40} className="size-10 shrink-0" />
+          ) : (
+            <span
+              aria-hidden
+              className="side-avatar flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+            >
+              {profile.initials}
+            </span>
+          )}
           <span className="flex min-w-0 flex-1 flex-col group-data-[collapsed=true]/side:hidden">
             <span className="truncate text-sm font-semibold">{profile.name}</span>
             <span className="truncate text-xs text-[#f6dc9c]">{profile.line}</span>

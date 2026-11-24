@@ -102,14 +102,18 @@
   transform: scale(1.06);
 }
 .z2h-splash {
-  background:
-    radial-gradient(45% 40% at 0% 0%, rgb(37 99 235 / 0.5), transparent 70%),
-    radial-gradient(40% 36% at 100% 10%, rgb(124 58 237 / 0.4), transparent 70%),
-    radial-gradient(45% 40% at 100% 100%, rgb(245 158 11 / 0.32), transparent 70%),
-    radial-gradient(40% 36% at 0% 100%, rgb(219 39 119 / 0.28), transparent 70%), var(--z-navy);
+  background: radial-gradient(70% 55% at 50% 50%, #1a0710 0%, #07060d 62%, #030308 100%);
   transition:
     opacity 0.45s ease,
     transform 0.45s ease;
+}
+/* Before Start the bloom is a quiet backdrop behind the logo; during the intro it is the show. */
+.z2h-bloom {
+  opacity: 0.4;
+  transition: opacity 0.6s ease;
+}
+.z2h-splash[data-playing="true"] .z2h-bloom {
+  opacity: 1;
 }
 .z2h-splash[data-leaving="true"] {
   opacity: 0;

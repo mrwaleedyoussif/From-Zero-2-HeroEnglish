@@ -29,7 +29,8 @@
     "chooseSchool": "اختر مدرستك",
     "chooseBranch": "اختر الفرع",
     "chooseRole": "من أنت؟",
-    "seeDepartments": "شاهد الأقسام"
+    "seeDepartments": "شاهد الأقسام",
+    "skip": "تخطي"
   },
   "LocaleSwitcher": {
     "label": "اللغة",
@@ -50,7 +51,13 @@
     "navRefresh": "تحديث هذه الصفحة",
     "navUpdate": "تحديث التطبيق إلى أحدث إصدار",
     "nav": "أزرار التطبيق",
-    "account": "قائمة الحساب:"
+    "account": "قائمة الحساب:",
+    "sideHome": "الرئيسية",
+    "sideLearner": "المتعلمون العامون",
+    "sideStudent": "الطلاب",
+    "sideStaff": "المعلمون والموظفون",
+    "sideDepartments": "الأقسام",
+    "sideLine": "تعلّم الإنجليزية خطوة بخطوة"
   },
   "Auth": {
     "staffTitle": "دخول الموظفين",

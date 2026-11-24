@@ -29,7 +29,8 @@
     "chooseSchool": "Choose your school",
     "chooseBranch": "Choose your branch",
     "chooseRole": "Who are you?",
-    "seeDepartments": "See the departments"
+    "seeDepartments": "See the departments",
+    "skip": "Skip"
   },
   "LocaleSwitcher": {
     "label": "Language",
@@ -50,7 +51,13 @@
     "navRefresh": "Refresh this page",
     "navUpdate": "Update the app to the newest version",
     "nav": "App buttons",
-    "account": "Account menu:"
+    "account": "Account menu:",
+    "sideHome": "Home",
+    "sideLearner": "General learners",
+    "sideStudent": "Students",
+    "sideStaff": "Teachers and staff",
+    "sideDepartments": "Departments",
+    "sideLine": "Learn English, step by step"
   },
   "Auth": {
     "staffTitle": "Staff sign in",

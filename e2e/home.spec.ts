@@ -96,3 +96,17 @@ for (const c of [
     await audit(page);
   });
 }
+
+test("the opening plays after Start and can be skipped", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByRole("button", { name: /Start/ }).click();
+  // The intro (the bloom, to music) is on: the choices wait behind it until it ends or is skipped.
+  await expect(page.getByRole("button", { name: /School user/ })).toBeHidden();
+  await page.getByRole("button", { name: /Skip/ }).click();
+  await expect(page.getByRole("button", { name: /School user/ })).toBeVisible();
+  // The public menu is beside the page.
+  await expect(page.getByRole("link", { name: "Teachers and staff" })).toHaveAttribute(
+    "href",
+    "/en/login",
+  );
+});

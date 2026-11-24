@@ -33,10 +33,12 @@ const round =
 export function HomeExperience({
   texts,
   schools,
+  generalOpen,
   controls,
 }: {
   texts: HomeTexts;
   schools: SchoolChoice[];
+  generalOpen: boolean;
   controls: ReactNode;
 }) {
   const t = texts.main.copy;
@@ -118,7 +120,7 @@ export function HomeExperience({
         </div>
         <p className="z2h-rise max-w-xl text-center text-lg text-[var(--z-soft)]">{t.tagline}</p>
 
-        <Journey texts={texts} schools={schools} heading={heading} />
+        <Journey texts={texts} schools={schools} generalOpen={generalOpen} heading={heading} />
 
         <footer className="mt-auto flex flex-col items-center gap-3 pt-6 text-center text-sm text-[var(--z-soft)]">
           <ul className="flex flex-wrap items-stretch justify-center gap-3">
@@ -143,8 +145,14 @@ export function HomeExperience({
               </li>
             ))}
           </ul>
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2">
-            <Image src="/brand/badge.png" alt="" width={28} height={28} className="rounded-full" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 py-1.5 ps-1.5 pe-5">
+            <Image
+              src="/brand/designer.webp"
+              alt=""
+              width={48}
+              height={48}
+              className="size-12 rounded-full border-2 border-[var(--z-gold)] object-cover"
+            />
             <span>
               {t.designedBy} <strong className="text-white">{t.designer}</strong>
               <span

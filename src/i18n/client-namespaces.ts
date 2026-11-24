@@ -13,6 +13,7 @@ export const CLIENT_NAMESPACES = [
   "Errors",
   "Import",
   "Integrations",
+  "Learner",
   "Learning",
   "LocaleSwitcher",
   "Placement",

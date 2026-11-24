@@ -26,10 +26,12 @@ const big = "size-8";
 export function Journey({
   texts,
   schools,
+  generalOpen,
   heading,
 }: {
   texts: HomeTexts;
   schools: SchoolChoice[];
+  generalOpen: boolean;
   heading: RefObject<HTMLHeadingElement | null>;
 }) {
   const t = texts.main.copy;
@@ -111,7 +113,8 @@ export function Journey({
               other={texts.other.copy.general}
               otherLang={other}
               hint={t.generalHint}
-              soon={t.soon}
+              soon={generalOpen ? undefined : t.soon}
+              href={generalOpen ? { pathname: "/learner" } : undefined}
             />
             <OptionCard
               tone="gold"

@@ -15,6 +15,7 @@ for (const c of [
     start: /Start/,
     school: /School user/,
     mine: /Riyadh Demo School/,
+    general: /General learner/,
     student: /Student/,
     soon: "Soon",
   },
@@ -23,6 +24,7 @@ for (const c of [
     start: /ابدأ/,
     school: /مستخدم مدرسة/,
     mine: /مدرسة الرياض التجريبية/,
+    general: /متعلّم عام/,
     student: /طالب/,
     soon: "قريبًا",
   },
@@ -32,8 +34,13 @@ for (const c of [
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(c.path);
     await page.getByRole("button", { name: c.start }).click();
-    // The choice: general learners are announced as coming soon and are not clickable.
-    await expect(page.getByText(c.soon)).toBeVisible();
+    // General learners: a way in when the Owner has opened sign-up, otherwise "Soon".
+    if (process.env.GENERAL_LEARNERS_ENABLED === "true")
+      await expect(page.getByRole("link", { name: c.general })).toHaveAttribute(
+        "href",
+        `${c.path}/learner`,
+      );
+    else await expect(page.getByText(c.soon)).toBeVisible();
     await expect(page.getByRole("button", { name: c.school })).toBeVisible();
     await audit(page);
 

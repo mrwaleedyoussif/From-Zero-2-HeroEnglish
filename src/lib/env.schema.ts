@@ -46,6 +46,12 @@ export const serverEnvSchema = publicEnvSchema
     MAIL_FROM: z.string().min(3).default("Zero-2-Hero English <reports@example.com>"),
     EMAIL_DAILY_BUDGET: z.coerce.number().int().min(0).max(100).default(90),
     CRON_SECRET: z.string().min(32, "CRON_SECRET must be at least 32 characters"),
+    /** Open sign-up for general learners (people outside a school). Off until the Owner is ready. */
+    GENERAL_LEARNERS_ENABLED: flag(false),
+    /** Where to email "a general learner is waiting for approval" (the Owner's address). */
+    OWNER_NOTIFY_EMAIL: optionalString.pipe(z.email().optional()),
+    /** New general learners allowed per day: protects the free database and email budget. */
+    GENERAL_DAILY_SIGNUPS: z.coerce.number().int().min(0).max(10000).default(50),
     BILLING_ENABLED: flag(false),
     AI_ENABLED: flag(false),
     DEFAULT_TIMEZONE: z.string().min(1).default("Asia/Riyadh"),

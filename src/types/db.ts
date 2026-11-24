@@ -687,6 +687,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"learner_invites": {
+                  Row: {
+                    "code": string,"created_at": string,"created_by": string | null,"expires_at": string | null,"id": string,"label": string,"max_uses": number,"status": string,"updated_at": string,"used": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "code": string,"created_at"?: string,"created_by"?: string | null,"expires_at"?: string | null,"id"?: string,"label": string,"max_uses": number,"status"?: string,"updated_at"?: string,"used"?: number
+                  }
+                  Update: {
+                    "code"?: string,"created_at"?: string,"created_by"?: string | null,"expires_at"?: string | null,"id"?: string,"label"?: string,"max_uses"?: number,"status"?: string,"updated_at"?: string,"used"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "learner_invites_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"learner_notes": {
                   Row: {
                     "author_id": string,"body": string,"created_at": string,"id": string,"school_id": string,"student_id": string,"updated_at": string
@@ -740,6 +760,38 @@ isOneToOne: false
     },{
       foreignKeyName: "learner_profiles_student_id_fkey"
       columns: ["student_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"learner_requests": {
+                  Row: {
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"invite_id": string | null,"status": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"invite_id"?: string | null,"status"?: string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"invite_id"?: string | null,"status"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "learner_requests_decided_by_fkey"
+      columns: ["decided_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "learner_requests_invite_id_fkey"
+      columns: ["invite_id"]
+isOneToOne: false
+      referencedRelation: "learner_invites"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "learner_requests_user_id_fkey"
+      columns: ["user_id"]
 isOneToOne: true
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -2114,6 +2166,9 @@ isOneToOne: false
                            },
 "redeem_item":
 { Args: { "p_item": string }; Returns: string
+                           },
+"redeem_learner_invite":
+{ Args: { "p_code": string }; Returns: string
                            },
 "refresh_insights":
 { Args: Record<PropertyKey, never>; Returns: string

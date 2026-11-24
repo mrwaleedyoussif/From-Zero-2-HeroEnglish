@@ -14,6 +14,9 @@ export const LIMITS = {
   /** Staff magic links: per IP and per email address (also protects the email budget). */
   linkIp: { max: 60, windowSec: 60 * 60 },
   linkEmail: { max: 5, windowSec: 60 * 60 },
+  /** General learners: codes requested per email, and guesses at a code per email. */
+  codeEmail: { max: 5, windowSec: 60 * 60 },
+  codeTry: { max: 8, windowSec: 15 * 60 },
 } as const;
 
 /** Client IP as set by the hosting proxy (Vercel); "unknown" in local development. */

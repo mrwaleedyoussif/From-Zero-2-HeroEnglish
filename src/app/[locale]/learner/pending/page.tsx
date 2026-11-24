@@ -1,3 +1,4 @@
+import { MailCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { Link } from "@/i18n/navigation";
@@ -11,7 +12,8 @@ export default async function LearnerPendingPage({
   const t = await getTranslations("Learner");
   return (
     <AuthShell
-      theme="student"
+      tone="mint"
+      icon={<MailCheck className="size-7" />}
       title={t("pendingTitle")}
       description={t("pendingIntro")}
       footer={

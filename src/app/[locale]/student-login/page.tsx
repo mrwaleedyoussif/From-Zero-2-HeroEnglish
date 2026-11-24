@@ -1,3 +1,5 @@
+import { GraduationCap } from "lucide-react";
+import { SchoolBadge } from "@/features/home/components/school-badge";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { StudentLoginForm } from "@/features/auth/components/student-login-form";
@@ -16,7 +18,9 @@ export default async function StudentLoginPage({
 
   return (
     <AuthShell
-      theme="student"
+      tone="violet"
+      icon={<GraduationCap className="size-7" />}
+      badge={school.success ? <SchoolBadge code={school.data} locale={locale} /> : undefined}
       title={t("studentTitle")}
       description={t("studentIntro")}
       footer={

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { completeProfile } from "../join";
 
-/** Asked once: name, that the learner is an adult, and agreement to how their data is used. */
+/** Asked once: name, an optional invitation code, and agreement to how their data is used. */
 export function WelcomeForm() {
   const t = useTranslations("Learner");
   const locale = useLocale();

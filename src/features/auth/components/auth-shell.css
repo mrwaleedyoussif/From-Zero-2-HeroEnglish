@@ -1,0 +1,44 @@
+/* Sign-in pages: a glass card on the home page's colours. The card's tone (data-tone) colours
+   its top edge, its icon, its button and its links. */
+.z2h-auth {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(9 23 48 / 0.82);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+  /* The form's own controls (button, links, focus ring) take the card's colour. */
+  --primary: var(--tone-flat);
+  --primary-hover: #ffffff;
+  --primary-foreground: #0e223d;
+  --ring: var(--tone-flat);
+  --input: rgb(255 255 255 / 0.28);
+  --muted-foreground: #d3deec;
+}
+.z2h-auth::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 6px;
+  background: var(--tone);
+}
+.z2h-auth-icon {
+  background: var(--tone);
+  color: var(--tone-ink);
+  animation: z2h-pop 0.7s var(--z-spring) both;
+}
+.z2h-auth button[type="submit"] {
+  min-height: 2.75rem;
+  font-weight: 700;
+  transition:
+    transform 0.2s var(--z-spring),
+    box-shadow 0.2s ease;
+}
+.z2h-auth button[type="submit"]:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -12px var(--tone-flat);
+}
+.z2h-auth input:not([type="checkbox"]):not([type="hidden"]) {
+  min-height: 2.75rem;
+  background: rgb(255 255 255 / 0.07);
+}

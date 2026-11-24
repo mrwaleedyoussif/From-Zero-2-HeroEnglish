@@ -7,7 +7,6 @@ import type { HomeTexts } from "../copy";
 import { remember, useStored } from "../storage";
 import { playWelcome } from "../welcome-sound";
 import type { SchoolChoice } from "../school-choices";
-import { Bi } from "./bi";
 import { Journey } from "./journey";
 import { Splash } from "./splash";
 import "../home.css";
@@ -123,28 +122,6 @@ export function HomeExperience({
         <Journey texts={texts} schools={schools} generalOpen={generalOpen} heading={heading} />
 
         <footer className="mt-auto flex flex-col items-center gap-3 pt-6 text-center text-sm text-[var(--z-soft)]">
-          <ul className="flex flex-wrap items-stretch justify-center gap-3">
-            {(
-              [
-                ["schoolLine", "/brand/schools/andalus-international.webp"],
-                ["schoolLine2", "/brand/schools/alandalus-private.webp"],
-              ] as const
-            ).map(([k, src]) => (
-              <li
-                key={k}
-                className="flex max-w-72 items-center gap-3 rounded-2xl border border-white/15 bg-white/5 p-2 pe-4 text-start"
-              >
-                <Image
-                  src={src}
-                  alt=""
-                  width={56}
-                  height={56}
-                  className="size-14 shrink-0 rounded-xl bg-white object-contain p-0.5"
-                />
-                <Bi texts={texts} k={k} className="font-semibold text-white" />
-              </li>
-            ))}
-          </ul>
           <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 py-1.5 ps-1.5 pe-5">
             <Image
               src="/brand/designer.webp"

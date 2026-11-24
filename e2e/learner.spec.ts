@@ -41,6 +41,7 @@ async function reachWelcome(page: Page, email: string) {
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/en\/learner\/welcome$/);
   await page.getByLabel("Your name").fill("Layla Learner");
+  await page.getByLabel("I am 18 or older.").check();
   await page.getByLabel(/I agree that/).check();
 }
 const tryCode = async (page: Page, email: string) => {
@@ -97,6 +98,7 @@ test("an invitation code lets a learner in at once, until its places run out", a
   await page.getByRole("button", { name: "Start learning" }).click();
   await expect(page.getByText("That invitation code is not valid")).toBeVisible();
   await page.getByLabel("Your name").fill("Layla Learner");
+  await page.getByLabel("I am 18 or older.").check();
   await page.getByLabel(/I agree that/).check();
   await page.getByLabel("Invitation code (optional)").fill(code.toLowerCase());
   await page.getByRole("button", { name: "Start learning" }).click();

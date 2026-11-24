@@ -121,7 +121,7 @@ Off until you turn it on.
    - *Invitation codes*: create a code for a group (what it is for, how many people, last day).
      Cancel a code at any time; people who already joined with it stay.
 5. To pause sign-ups, set `GENERAL_LEARNERS_ENABLED` back to `false` and redeploy; existing learners
-   keep their data. Each learner is also listed under
+   keep their data. Adults only (they confirm they are 18 or older). Each learner is also listed under
    Owner → Users in the school **General learners**, where any account can be switched off.
 
 ## 7. Check that it works (smoke test)

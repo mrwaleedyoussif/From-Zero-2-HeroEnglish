@@ -1,3 +1,4 @@
+import { Users } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { LinkSession } from "@/features/auth/components/link-session";
@@ -15,6 +16,8 @@ export default async function LoginPage({ params, searchParams }: PageProps<"/[l
 
   return (
     <AuthShell
+      tone="sky"
+      icon={<Users className="size-7" />}
       title={t("staffTitle")}
       description={t("staffIntro")}
       footer={

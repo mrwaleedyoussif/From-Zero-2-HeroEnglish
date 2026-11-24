@@ -1435,6 +1435,7 @@
     "welcomeTitle": "Welcome!",
     "welcomeIntro": "One step before you start.",
     "fullName": "Your name",
+    "adult": "I am 18 or older.",
     "terms": "I agree that Zero-2-Hero English stores my name, email and learning progress to run my account. I can ask for my data or its deletion at any time.",
     "finish": "Start learning",
     "errors": {
@@ -1444,7 +1445,7 @@
       "tooMany": "Too many attempts. Please wait a while and try again.",
       "wrongCode": "That code is not right or has expired. Check the newest email, or ask for a new code.",
       "disabled": "This account is switched off.",
-      "welcome": "Please enter your name and tick the box.",
+      "welcome": "Please enter your name and tick both boxes.",
       "signedOut": "Your sign-in has ended. Please start again.",
       "failed": "Something went wrong. Please try again.",
       "invite": "That invitation code is not valid, has expired or is used up. Check it, or leave the box empty to ask for approval.",

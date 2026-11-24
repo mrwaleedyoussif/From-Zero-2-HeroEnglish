@@ -20,3 +20,18 @@ export async function publicSchools(): Promise<SchoolChoice[]> {
     return [];
   }
 }
+
+/** One active school's names by its code (for the sign-in page's "your school" line). */
+export async function publicSchoolName(code: string) {
+  try {
+    const { data } = await createAdminClient()
+      .from("schools")
+      .select("name_en, name_ar")
+      .eq("code", code)
+      .eq("status", "active")
+      .maybeSingle();
+    return data;
+  } catch {
+    return null;
+  }
+}

@@ -1,3 +1,4 @@
+import { BookOpenCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { LearnerForm } from "@/features/learners/components/learner-form";
@@ -13,7 +14,8 @@ export default async function LearnerPage({ params }: PageProps<"/[locale]/learn
 
   return (
     <AuthShell
-      theme="student"
+      tone="mint"
+      icon={<BookOpenCheck className="size-7" />}
       title={t("title")}
       description={open ? t("intro") : t("errors.closed")}
       footer={

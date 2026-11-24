@@ -1,3 +1,4 @@
+import { Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { WelcomeForm } from "@/features/learners/components/welcome-form";
@@ -25,7 +26,12 @@ export default async function LearnerWelcomePage({
   const t = await getTranslations("Learner");
 
   return (
-    <AuthShell theme="student" title={t("welcomeTitle")} description={t("welcomeIntro")}>
+    <AuthShell
+      tone="mint"
+      icon={<Sparkles className="size-7" />}
+      title={t("welcomeTitle")}
+      description={t("welcomeIntro")}
+    >
       <WelcomeForm />
     </AuthShell>
   );

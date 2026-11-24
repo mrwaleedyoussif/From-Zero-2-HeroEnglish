@@ -47,7 +47,7 @@ export function AppNav({ home = "/" }: { home?: "/" | "/home" }) {
         title={t("navBack")}
         onClick={() => router.back()}
       >
-        <ArrowLeft aria-hidden className="rtl:rotate-180" />
+        <ArrowLeft aria-hidden className="text-sky-300 rtl:rotate-180" />
       </Button>
       <Button
         variant="ghost"
@@ -56,7 +56,7 @@ export function AppNav({ home = "/" }: { home?: "/" | "/home" }) {
         title={t("navRefresh")}
         onClick={() => startRefresh(() => router.refresh())}
       >
-        <RefreshCw aria-hidden className={refreshing ? "animate-spin" : undefined} />
+        <RefreshCw aria-hidden className={refreshing ? "animate-spin text-emerald-300" : "text-emerald-300"} />
       </Button>
       <Button
         variant="ghost"
@@ -65,7 +65,7 @@ export function AppNav({ home = "/" }: { home?: "/" | "/home" }) {
         title={t("navUpdate")}
         onClick={() => void updateApp()}
       >
-        <CloudDownload aria-hidden />
+        <CloudDownload aria-hidden className="text-violet-300" />
       </Button>
     </nav>
   );

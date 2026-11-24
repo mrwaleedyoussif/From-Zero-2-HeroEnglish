@@ -111,6 +111,7 @@ export const registry = [
   ...group("widget", 8, ["leadership.reportArchive"]),
   ...group("widget", 10, [
     "student.journey",
+    "student.departments",
     "owner.todo",
     "teacher.headline",
     "leadership.headline",

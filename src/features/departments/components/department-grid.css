@@ -1,0 +1,31 @@
+/* Department cards: each has its own colour (see the hue variables in globals.css). */
+.dept-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-inline-start: 6px solid var(--hue-fg);
+  animation: dept-in 0.4s ease both;
+}
+.dept-card[data-soon] {
+  border-style: dashed;
+  border-inline-start-style: solid;
+}
+.dept-soon {
+  background: var(--hue-fg);
+  color: var(--hue-on);
+}
+.dept-part {
+  background: var(--hue-bg);
+  color: var(--hue-fg);
+}
+@keyframes dept-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dept-card {
+    animation: none;
+  }
+}

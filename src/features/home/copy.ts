@@ -25,6 +25,7 @@ export const HOME_KEYS = [
   "schoolLine2",
   "designedBy",
   "designer",
+  "seeDepartments",
 ] as const;
 
 export type HomeKey = (typeof HOME_KEYS)[number];

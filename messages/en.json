@@ -28,7 +28,8 @@
     "designer": "Waleed Youssef",
     "chooseSchool": "Choose your school",
     "chooseBranch": "Choose your branch",
-    "chooseRole": "Who are you?"
+    "chooseRole": "Who are you?",
+    "seeDepartments": "See the departments"
   },
   "LocaleSwitcher": {
     "label": "Language",
@@ -521,7 +522,8 @@
         "badges": "My badges",
         "leaderboard": "Class leaderboard",
         "progress": "My progress",
-        "journey": "My journey"
+        "journey": "My journey",
+        "departments": "Departments"
       },
       "teacher": {
         "assignmentTracker": "Assignment tracker",
@@ -1556,5 +1558,42 @@
     "accuracy": "Practice accuracy (7 days)",
     "atRisk": "Need attention",
     "overdue": "Overdue assignments"
+  },
+  "Departments": {
+    "title": "Departments",
+    "intro": "Everything you will learn here. Each department opens as soon as its lessons are ready.",
+    "soon": "Soon",
+    "inside": "Inside",
+    "home": "Back to the start",
+    "mine": "Your departments",
+    "see": "See the departments",
+    "audience": {
+      "general": "General learners",
+      "andalus-international": "Andalus International Schools"
+    },
+    "names": {
+      "phonics": "Phonics",
+      "listeningSpeaking": "Listening and Speaking",
+      "shadowing": "Shadowing",
+      "readingWriting": "Reading and Writing",
+      "languageUsage": "Language Usage",
+      "handwriting": "Handwriting",
+      "ghars": "Ghars",
+      "mcgrawHill": "McGraw-Hill",
+      "mapTest": "MAP Test",
+      "step": "STEP Preparation",
+      "ielts": "IELTS Preparation",
+      "sat": "SAT Preparation",
+      "gat": "GAT Preparation"
+    },
+    "parts": {
+      "grammar": "Grammar",
+      "vocabulary": "Vocabulary",
+      "units": "Units",
+      "mockExams": "Mock Exams",
+      "wordLine": "Word-line",
+      "performingArts": "Performing Arts",
+      "grades3to12": "Grades 3–12"
+    }
   }
 }

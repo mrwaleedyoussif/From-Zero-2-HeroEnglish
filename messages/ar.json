@@ -28,7 +28,8 @@
     "designer": "وليد يوسف",
     "chooseSchool": "اختر مدرستك",
     "chooseBranch": "اختر الفرع",
-    "chooseRole": "من أنت؟"
+    "chooseRole": "من أنت؟",
+    "seeDepartments": "شاهد الأقسام"
   },
   "LocaleSwitcher": {
     "label": "اللغة",
@@ -521,7 +522,8 @@
         "badges": "شاراتي",
         "leaderboard": "لوحة صدارة الفصل",
         "progress": "تقدّمي",
-        "journey": "رحلتي"
+        "journey": "رحلتي",
+        "departments": "الأقسام"
       },
       "teacher": {
         "assignmentTracker": "متابعة الواجبات",
@@ -1556,5 +1558,42 @@
     "accuracy": "دقة التدريب (7 أيام)",
     "atRisk": "يحتاجون متابعة",
     "overdue": "واجبات متأخرة"
+  },
+  "Departments": {
+    "title": "الأقسام",
+    "intro": "كل ما ستتعلّمه هنا. يُفتح كل قسم فور جاهزية دروسه.",
+    "soon": "قريبًا",
+    "inside": "بداخله",
+    "home": "العودة إلى البداية",
+    "mine": "أقسامك",
+    "see": "شاهد الأقسام",
+    "audience": {
+      "general": "المتعلمون العامون",
+      "andalus-international": "مدارس الأندلس العالمية"
+    },
+    "names": {
+      "phonics": "الصوتيات",
+      "listeningSpeaking": "الاستماع والتحدث",
+      "shadowing": "المحاكاة",
+      "readingWriting": "القراءة والكتابة",
+      "languageUsage": "استخدام اللغة",
+      "handwriting": "الخط",
+      "ghars": "غرس",
+      "mcgrawHill": "ماجروهيل",
+      "mapTest": "اختبار MAP",
+      "step": "التحضير لاختبار STEP",
+      "ielts": "التحضير لاختبار IELTS",
+      "sat": "التحضير لاختبار SAT",
+      "gat": "التحضير لاختبار القدرات العامة"
+    },
+    "parts": {
+      "grammar": "القواعد",
+      "vocabulary": "المفردات",
+      "units": "الوحدات",
+      "mockExams": "الاختبارات التجريبية",
+      "wordLine": "وورد لاين",
+      "performingArts": "الفنون الأدائية",
+      "grades3to12": "الصفوف 3–12"
+    }
   }
 }

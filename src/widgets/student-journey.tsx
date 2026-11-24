@@ -64,16 +64,16 @@ export async function StudentJourneyWidget({ actor }: WidgetProps) {
           <h2 className="text-2xl font-extrabold md:text-3xl">{t(partOfDay(), { name: first })}</h2>
           <ul className="flex flex-wrap gap-2 text-sm font-semibold">
             <li className="journey-chip">
-              <Star aria-hidden className="size-4" />
+              <Star aria-hidden className="size-4 text-[#fcd34d]" />
               {current ? localName(current, locale) : t("level", { n: 1 })} ·{" "}
               {t("xp", { xp: summary.xp })}
             </li>
             <li className="journey-chip">
-              <Flame aria-hidden className="size-4" />
+              <Flame aria-hidden className="size-4 text-[#fdba74]" />
               {t("streak", { days: summary.streak.days })}
             </li>
             <li className="journey-chip">
-              <Coins aria-hidden className="size-4" />
+              <Coins aria-hidden className="size-4 text-[#fde68a]" />
               {t("coins", { n: summary.coins })}
             </li>
           </ul>

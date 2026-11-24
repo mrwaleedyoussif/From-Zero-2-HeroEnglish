@@ -18,8 +18,8 @@ export function ThemeToggle() {
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       {/* Both icons render; CSS picks one, so server and client markup match. */}
-      <Sun className="dark:hidden" aria-hidden />
-      <Moon className="hidden dark:block" aria-hidden />
+      <Sun className="text-amber-600 dark:hidden" aria-hidden />
+      <Moon className="hidden text-indigo-300 dark:block" aria-hidden />
     </Button>
   );
 }

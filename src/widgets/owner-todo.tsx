@@ -35,10 +35,11 @@ export async function OwnerTodoWidget(_: WidgetProps) {
     db.from("report_jobs").select("id", head).eq("status", "failed"),
     googleConnection().catch(() => null),
   ]);
-  const todo: { key: string; icon: ReactNode; text: string; href: string }[] = [];
+  const todo: { key: string; hue: string; icon: ReactNode; text: string; href: string }[] = [];
   if (count(learners))
     todo.push({
       key: "learners",
+      hue: "violet",
       icon: <UserRoundCheck aria-hidden />,
       text: t("learners", { n: count(learners) }),
       href: "/owner/learners",
@@ -46,6 +47,7 @@ export async function OwnerTodoWidget(_: WidgetProps) {
   if (drive && !drive.connected)
     todo.push({
       key: "drive",
+      hue: "blue",
       icon: <CloudOff aria-hidden />,
       text: t("drive"),
       href: "/owner/integrations",
@@ -53,6 +55,7 @@ export async function OwnerTodoWidget(_: WidgetProps) {
   if (count(media))
     todo.push({
       key: "media",
+      hue: "pink",
       icon: <Music aria-hidden />,
       text: t("media", { n: count(media) }),
       href: "/owner/content",
@@ -60,6 +63,7 @@ export async function OwnerTodoWidget(_: WidgetProps) {
   if (count(jobs))
     todo.push({
       key: "jobs",
+      hue: "rose",
       icon: <FileWarning aria-hidden />,
       text: t("jobs", { n: count(jobs) }),
       href: "/owner/reports",
@@ -85,7 +89,9 @@ export async function OwnerTodoWidget(_: WidgetProps) {
                 data-todo={item.key}
                 className="flex min-h-12 items-center gap-3 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-sm font-medium hover:bg-warning/20"
               >
-                <span className="text-warning [&_svg]:size-5">{item.icon}</span>
+                <span data-hue={item.hue} className="icon-tile size-8 rounded-lg [&_svg]:size-5">
+                  {item.icon}
+                </span>
                 <span className="flex-1">{item.text}</span>
                 <span className="sr-only">{t("open")}</span>
                 <ArrowRight aria-hidden className="size-4 rtl:rotate-180" />

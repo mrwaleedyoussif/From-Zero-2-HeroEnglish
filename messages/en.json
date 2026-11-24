@@ -471,7 +471,8 @@
         "placement": "Placement results",
         "rewards": "Rewards",
         "insights": "Insights",
-        "reports": "Reports"
+        "reports": "Reports",
+        "units": "Course units"
       },
       "student": {
         "home": "Home",
@@ -520,7 +521,8 @@
         "placement": "Placement results",
         "rewards": "Rewards",
         "insights": "Insights",
-        "reports": "Reports"
+        "reports": "Reports",
+        "units": "Course units"
       },
       "student": {
         "home": "Home",
@@ -1677,6 +1679,24 @@
     "shadowHelp": "Listen to each piece, then say it at the same time as the voice. Stress the words in CAPITALS and follow the arrow with your voice.",
     "rule": "The rule",
     "tryIt": "Try it",
-    "practice": "Practice"
+    "practice": "Practice",
+    "importProgress": "{done} of {total} files",
+    "importAudio": "{n, plural, =0 {No recorded audio found in Drive 02_Media yet: the device voice is used.} other {# media files in Drive 02_Media are linked; units play any named after their items.}}",
+    "speechStart": "Say it",
+    "speechStop": "Stop",
+    "speechListening": "Listening… speak now.",
+    "speechHeard": "We heard:",
+    "speechGood": "Great! {n}% matched.",
+    "speechAgain": "{n}% matched. Listen once more and try again, you are close!",
+    "speechBest": "Best: {n}%",
+    "speechUsed": "You used:",
+    "speechUnsupported": "Speech checking needs Chrome, Edge or Safari. You can still practise aloud.",
+    "teacherTitle": "Course units",
+    "teacherIntro": "What each learner has done in the course units: score on first tries, speech practice and their saved writing.",
+    "teacherNone": "No learner has started a unit yet.",
+    "teacherScore": "First-try score",
+    "teacherSummary": "{started} units started, {finished} finished",
+    "teacherFirstTry": "{correct} of {total} right first time",
+    "teacherSpeech": "speech practice {n}%"
   }
 }

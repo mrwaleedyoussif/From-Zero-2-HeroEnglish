@@ -3,9 +3,11 @@
 import { z } from "zod";
 import { ActionError, type ActionResult, runAction } from "@/lib/action-result";
 import { getActor } from "@/lib/auth/session";
+import { award } from "@/features/rewards/award";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/db";
 import { type Answered, loadUnit } from "./queries";
+import { scoreRepeat, scoreTargets } from "./speech";
 import { isCorrect, questionsOf, shownAnswer, triesAllowed, type Unit } from "./schema";
 
 type Bi = { en: string; ar: string };
@@ -43,7 +45,18 @@ async function save(
     row.answers = patch.answers as unknown as Json;
     row.correct = marked.filter((q) => patch.answers?.[q.id]?.first).length;
     row.total = marked.length;
-    if (settled) row.completed_at = new Date().toISOString();
+    if (settled) {
+      row.completed_at = new Date().toISOString();
+      // Points for finishing a unit, once per unit (the rewards rules decide how many).
+      await award(admin, {
+        studentId,
+        type: "lesson_completed",
+        sourceKey: `unit:${unit.id}`,
+        seconds: 900,
+        accuracy: marked.length ? Math.round((Number(row.correct) / marked.length) * 100) : null,
+        meta: { unit: unit.id, cefr: unit.level.replace("+", "") },
+      }).catch(() => undefined); // a rewards hiccup must not lose the learner's answers
+    }
   }
   const { error } = await admin
     .from("course_unit_progress")
@@ -96,5 +109,59 @@ export async function saveWriting(
     if (!actor.viewAs)
       await save(actor.effective.id, actor.effective.school_id, loaded.unit, { writing });
     return { model: loaded.unit.writing_task?.model_answer_4 ?? null };
+  });
+}
+
+export interface SpeechFeedback {
+  score: number;
+  best: number;
+  usedWords?: string[];
+  usedStructures?: string[];
+}
+
+/**
+ * Mark what the learner said (the words their browser heard): a shadowing chunk against its
+ * model, or a speaking task against its target words and structures. Keeps the best score.
+ */
+export async function checkSpeech(
+  unitId: string,
+  targetId: string,
+  heard: string,
+): Promise<ActionResult<SpeechFeedback>> {
+  return runAction(async () => {
+    const said = z.string().trim().max(4000).parse(heard);
+    const actor = await getActor();
+    if (!actor) throw new ActionError("signedOut");
+    const loaded = await loadUnit(actor, unitId);
+    if (!loaded) throw new ActionError("forbidden");
+    const { unit } = loaded;
+    const chunk = unit.model_text?.chunks.find((c) => c.id === targetId);
+    const task =
+      targetId === "speaking"
+        ? unit.speaking_task?.targets
+        : targetId === "shadow"
+          ? unit.shadow_targets
+          : null;
+    if (!chunk && !task) throw new ActionError("forbidden");
+    const result = chunk
+      ? { score: scoreRepeat(chunk.text, said) }
+      : scoreTargets(task ?? { words: [], structures: [] }, said);
+    const key = `speech:${targetId}`;
+    const before = loaded.answers[key];
+    const best = Math.max(result.score, before?.score ?? 0);
+    if (!actor.viewAs)
+      await save(actor.effective.id, actor.effective.school_id, unit, {
+        answers: {
+          ...loaded.answers,
+          [key]: {
+            choice: said.slice(0, 300),
+            correct: best >= 60,
+            tries: (before?.tries ?? 0) + 1,
+            first: false,
+            score: best,
+          },
+        },
+      });
+    return { ...result, best };
   });
 }

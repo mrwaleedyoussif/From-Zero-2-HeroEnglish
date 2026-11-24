@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+const targets = z
+  .object({
+    words: z.array(z.string()).default([]),
+    structures: z
+      .array(z.object({ label: z.string(), patterns: z.array(z.string()).default([]) }))
+      .default([]),
+  })
+  .optional();
+
 /**
  * A course unit as its author wrote it (one JSON file per unit): objectives, words, a reading
  * text, questions with hints, a writing lesson and a writing task. Parsing is strict about what
@@ -21,7 +30,7 @@ const base = {
   skill: text,
   stem: text,
   difficulty: z.number().int().min(1).max(5).optional(),
-  explanation: bi,
+  explanation: bi.optional(),
 };
 const question = z.discriminatedUnion("type", [
   z.object({
@@ -36,7 +45,7 @@ const question = z.discriminatedUnion("type", [
   // Typed answers the app can mark: a missing word, a word to form, a sentence to rewrite.
   z.object({
     ...base,
-    type: z.enum(["cloze", "word_formation", "error_correction", "transformation"]),
+    type: z.enum(["cloze", "note", "word_formation", "error_correction", "transformation"]),
     answer: text,
   }),
   z.object({
@@ -44,7 +53,7 @@ const question = z.discriminatedUnion("type", [
     type: z.literal("sequence"),
     events: z.array(text).min(2).max(8),
     /** The right order as letters of the listed events, e.g. "c, d, a, b". */
-    answer: z.string().regex(/^[a-h](\s*,\s*[a-h])+$/),
+    answer: text,
   }),
 ]);
 export type Question = z.infer<typeof question>;
@@ -94,6 +103,7 @@ export const unitSchema = z
         frames: z.array(text).default([]),
         prep_time_s: z.number().int().optional(),
         speak_time_s: z.number().int().optional(),
+        targets,
       })
       .optional(),
     // Shadowing: a model text in short chunks to hear and repeat.
@@ -114,6 +124,7 @@ export const unitSchema = z
           .min(1),
       })
       .optional(),
+    shadow_targets: targets,
     // Language Usage: a text in context, a grammar lesson and practice.
     context_text: z
       .looseObject({ id: text, title: text, paragraphs: z.array(text).min(1) })
@@ -134,7 +145,9 @@ export const unitSchema = z
         name: bi,
         lesson: z.array(text).default([]),
         lesson_ar: z.string().optional(),
-        examples: z.array(z.object({ wrong: text, right: text, note: z.string() })).default([]),
+        examples: z
+          .array(z.object({ wrong: text, right: text, note: z.string().optional() }))
+          .default([]),
         model: z.string().optional(),
         practice: z
           .array(z.object({ id: text, instruction: bi, stem: text, answer: text }))
@@ -197,8 +210,10 @@ const plain = (v: string) =>
 export function isCorrect(q: Question, choice: string): boolean | null {
   const said = choice.trim().toLowerCase();
   if (q.type === "short") return null;
-  if (q.type === "sequence")
-    return said.replace(/[\s,]/g, "") === q.answer.toLowerCase().replace(/[\s,]/g, "");
+  if (q.type === "sequence") {
+    const letters = (v: string) => v.toLowerCase().replace(/[^a-h]/g, "");
+    return letters(choice) === letters(q.answer);
+  }
   if (q.type === "mcq" || q.type === "tfng") return said === q.answer.toLowerCase();
   // Typed answers: capitals, punctuation and spacing are forgiven; "a / b" lists alternatives.
   return q.answer.split(" / ").some((accepted) => plain(accepted) === plain(choice));

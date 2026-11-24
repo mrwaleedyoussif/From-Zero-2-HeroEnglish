@@ -471,7 +471,8 @@
         "placement": "نتائج تحديد المستوى",
         "rewards": "المكافآت",
         "insights": "التحليلات",
-        "reports": "التقارير"
+        "reports": "التقارير",
+        "units": "وحدات المقرر"
       },
       "student": {
         "home": "الرئيسية",
@@ -520,7 +521,8 @@
         "placement": "نتائج تحديد المستوى",
         "rewards": "المكافآت",
         "insights": "التحليلات",
-        "reports": "التقارير"
+        "reports": "التقارير",
+        "units": "وحدات المقرر"
       },
       "student": {
         "home": "الرئيسية",
@@ -1677,6 +1679,24 @@
     "shadowHelp": "استمع إلى كل جزء ثم قله مع الصوت في الوقت نفسه. شدّد على الكلمات المكتوبة بحروف كبيرة واتبع السهم بصوتك.",
     "rule": "القاعدة",
     "tryIt": "جرّب",
-    "practice": "تدريب"
+    "practice": "تدريب",
+    "importProgress": "{done} من {total} ملفًا",
+    "importAudio": "{n, plural, =0 {لا يوجد صوت مسجّل في Drive 02_Media بعد: يُستخدم صوت الجهاز.} other {تم ربط # ملف وسائط في Drive 02_Media؛ تشغّل الوحدات ما يحمل اسم عناصرها.}}",
+    "speechStart": "قلها",
+    "speechStop": "إيقاف",
+    "speechListening": "نستمع… تحدّث الآن.",
+    "speechHeard": "سمعنا:",
+    "speechGood": "رائع! تطابق {n}%.",
+    "speechAgain": "تطابق {n}%. استمع مرة أخرى وحاول، أنت قريب!",
+    "speechBest": "الأفضل: {n}%",
+    "speechUsed": "استخدمت:",
+    "speechUnsupported": "التحقق من النطق يحتاج Chrome أو Edge أو Safari. يمكنك التدرب بصوت عالٍ.",
+    "teacherTitle": "وحدات المقرر",
+    "teacherIntro": "ما أنجزه كل متعلم في وحدات المقرر: نتيجة المحاولة الأولى، تدريب النطق، وكتابته المحفوظة.",
+    "teacherNone": "لم يبدأ أي متعلم وحدة بعد.",
+    "teacherScore": "نتيجة المحاولة الأولى",
+    "teacherSummary": "بدأ {started} وحدة وأنهى {finished}",
+    "teacherFirstTry": "{correct} من {total} صحيحة من أول مرة",
+    "teacherSpeech": "تدريب النطق {n}%"
   }
 }

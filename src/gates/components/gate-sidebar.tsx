@@ -67,18 +67,18 @@ export function GateSidebar({
       <nav
         aria-label={labels.nav}
         data-collapsed={collapsed}
-        className="group/side hidden w-64 shrink-0 flex-col gap-1 border-e border-border bg-card p-3 transition-[width] data-[collapsed=true]:w-[4.5rem] data-[collapsed=true]:overflow-hidden md:flex print:hidden"
+        className="side dark group/side hidden w-64 shrink-0 flex-col gap-1 p-3 transition-[width] duration-300 data-[collapsed=true]:w-[4.5rem] data-[collapsed=true]:overflow-x-hidden md:sticky md:top-0 md:flex md:h-dvh md:self-start md:overflow-y-auto print:hidden"
       >
-        <div className="flex items-center gap-2.5 pb-2">
+        <div className="side-profile mb-1 flex items-center gap-2.5 rounded-2xl p-2 group-data-[collapsed=true]/side:bg-transparent group-data-[collapsed=true]/side:p-1 group-data-[collapsed=true]/side:shadow-none">
           <span
             aria-hidden
-            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#7c3aed,#1d4ed8)] text-sm font-bold text-white"
+            className="side-avatar flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
           >
             {profile.initials}
           </span>
           <span className="flex min-w-0 flex-1 flex-col group-data-[collapsed=true]/side:hidden">
             <span className="truncate text-sm font-semibold">{profile.name}</span>
-            <span className="truncate text-xs text-muted-foreground">{profile.line}</span>
+            <span className="truncate text-xs text-[#f6dc9c]">{profile.line}</span>
           </span>
         </div>
         <button
@@ -86,7 +86,7 @@ export function GateSidebar({
           onClick={() => setCollapsed(!collapsed)}
           aria-expanded={!collapsed}
           title={collapsed ? labels.expand : labels.collapse}
-          className="flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm text-muted-foreground hover:bg-accent"
+          className="side-item flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 text-sm"
         >
           <span
             aria-hidden
@@ -109,7 +109,7 @@ export function GateSidebar({
         {items.map((item, i) => (
           <Fragment key={item.href}>
             {item.group && item.group !== items[i - 1]?.group && (
-              <p className="px-2.5 pt-3 pb-0.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase group-data-[collapsed=true]/side:invisible group-data-[collapsed=true]/side:h-2 group-data-[collapsed=true]/side:p-0">
+              <p className="side-group px-2.5 pt-3 pb-0.5 text-xs font-semibold tracking-wide uppercase group-data-[collapsed=true]/side:invisible group-data-[collapsed=true]/side:h-2 group-data-[collapsed=true]/side:p-0">
                 {item.group}
               </p>
             )}
@@ -123,7 +123,7 @@ export function GateSidebar({
 
       <nav
         aria-label={labels.nav}
-        className="fixed inset-x-0 bottom-0 z-40 grid auto-cols-fr grid-flow-col gap-1 border-t border-border bg-card px-2 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] md:hidden print:hidden"
+        className="side-bar dark fixed inset-x-0 bottom-0 z-40 grid auto-cols-fr grid-flow-col gap-1 px-2 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] md:hidden print:hidden"
       >
         {inBar.map((item) => (
           <NavItem key={item.href} item={item} current={item.href === current} shape="bar" />

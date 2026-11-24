@@ -1,0 +1,106 @@
+/* The banner on top of every page: brand colours, soft moving shapes, a gold line. */
+.page-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  color: #ffffff;
+  background: linear-gradient(110deg, #0e223d 0%, #1e3a8a 50%, #5b21b6 100%);
+  box-shadow: 0 18px 34px -22px rgb(30 58 138 / 0.8);
+  animation: hero-in 0.45s ease both;
+}
+[data-theme="student"] .page-hero {
+  background: linear-gradient(110deg, #4c1d95 0%, #6d28d9 50%, #9d174d 100%);
+}
+.page-hero::before,
+.page-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+.page-hero::before {
+  inset-inline-end: -3rem;
+  top: -4rem;
+  width: 14rem;
+  height: 14rem;
+  background: radial-gradient(circle, rgb(246 220 156 / 0.35), transparent 65%);
+  animation: hero-drift 9s ease-in-out infinite alternate;
+}
+.page-hero::after {
+  inset-inline-end: 9rem;
+  bottom: -5rem;
+  width: 11rem;
+  height: 11rem;
+  background: radial-gradient(circle, rgb(125 211 252 / 0.3), transparent 65%);
+  animation: hero-drift 11s ease-in-out infinite alternate-reverse;
+}
+.page-hero-line {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #e2bd72, #f6dc9c, #9fd0f2, #e2bd72);
+  background-size: 200% 100%;
+  animation: hero-slide 6s linear infinite;
+}
+.page-hero-glyph {
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+  color: #f6dc9c;
+  animation: hero-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+.page-hero p {
+  color: #dbe4f5;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes hero-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-12deg);
+  }
+}
+@keyframes hero-drift {
+  to {
+    transform: translate(-1.5rem, 1rem) scale(1.12);
+  }
+}
+@keyframes hero-slide {
+  to {
+    background-position: 200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-hero,
+  .page-hero::before,
+  .page-hero::after,
+  .page-hero-line,
+  .page-hero-glyph {
+    animation: none;
+  }
+}
+@media print {
+  .page-hero {
+    background: none;
+    color: inherit;
+    box-shadow: none;
+    padding: 0;
+  }
+  .page-hero p {
+    color: inherit;
+  }
+  .page-hero::before,
+  .page-hero::after,
+  .page-hero-line,
+  .page-hero-glyph {
+    display: none;
+  }
+}

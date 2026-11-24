@@ -47,22 +47,18 @@ export function NavItem({
       data-nav={item.icon}
       className={
         bar
-          ? "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] leading-tight text-foreground aria-[current=page]:font-bold aria-[current=page]:text-primary"
-          : "group relative flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-sm text-foreground transition-colors hover:bg-accent aria-[current=page]:bg-primary aria-[current=page]:font-semibold aria-[current=page]:text-primary-foreground"
+          ? "side-bar-item group flex min-h-14 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] leading-tight"
+          : "side-item group flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-sm"
       }
     >
       <span className="relative shrink-0">
-        <span
-          aria-hidden
-          data-hue={hueOf(item.icon)}
-          className="icon-tile size-8 rounded-lg group-aria-[current=page]:bg-white"
-        >
+        <span aria-hidden data-hue={hueOf(item.icon)} className="icon-tile size-8 rounded-lg">
           <Icon className="size-[18px]" />
         </span>
         {item.badge && (
           <span
             data-badge={item.badge.n}
-            className={`absolute -end-1.5 -top-1.5 min-w-5 rounded-full px-1 text-center text-xs leading-5 font-bold ${BADGE[item.badge.tone]}`}
+            className={`side-badge absolute -end-1.5 -top-1.5 min-w-5 rounded-full px-1 text-center text-xs leading-5 font-bold ${BADGE[item.badge.tone]}`}
           >
             {item.badge.n > 99 ? "99+" : item.badge.n}
           </span>

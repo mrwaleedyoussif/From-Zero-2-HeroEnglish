@@ -113,6 +113,8 @@ Off until you turn it on.
    `MAIL_FROM` on a domain verified in Resend) or to `gmail`. With `console` the feature stays closed.
 3. In Vercel add `GENERAL_LEARNERS_ENABLED` = `true`, and optionally `GENERAL_DAILY_SIGNUPS`
    (new learners allowed per day; 50 if not set). Redeploy.
+   Add `OWNER_NOTIFY_EMAIL` = your own email address to get an email each time someone is waiting
+   for approval.
 4. Owner → **General learners**:
    - *Waiting for your approval*: **Approve** (they get an email and can sign in) or **Reject**
      (the request and the account are deleted).

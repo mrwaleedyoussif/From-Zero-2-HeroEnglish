@@ -3,8 +3,10 @@
 import { redirect } from "@/i18n/navigation";
 import { isStudentEmail } from "@/lib/auth/student-identity";
 import { serverEnv } from "@/lib/env";
+import { getMailer } from "@/lib/mail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { requestEmail } from "./code-email";
 import { generalSchoolId, learnersOpen, randomUsername, signupsToday } from "./general";
 import { welcomeSchema } from "./schema";
 
@@ -84,6 +86,20 @@ export async function completeProfile(
       p_school: schoolId,
       p_details: { invite_id: inviteId },
     });
+    // Let the Owner know someone is waiting (never a reason for the sign-up to fail).
+    const ownerEmail = serverEnv().OWNER_NOTIFY_EMAIL;
+    if (!open && ownerEmail)
+      await getMailer()
+        .then((mailer) =>
+          mailer.send(
+            requestEmail(
+              ownerEmail,
+              { name: input.data.full_name, email: user.email ?? "" },
+              `${serverEnv().NEXT_PUBLIC_APP_URL}/en/owner/learners`,
+            ),
+          ),
+        )
+        .catch(() => undefined);
   }
   if (!open) await supabase.auth.signOut();
   redirect({ href: open ? "/home" : "/learner/pending", locale: input.data.locale });

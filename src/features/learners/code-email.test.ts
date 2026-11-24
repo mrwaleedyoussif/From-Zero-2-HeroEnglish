@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { approvedEmail, codeEmail } from "./code-email";
+import { approvedEmail, codeEmail, requestEmail } from "./code-email";
 import { inviteState } from "./invite-state";
 
 describe("one-time code email", () => {
@@ -20,6 +20,21 @@ describe("one-time code email", () => {
     expect(m.subject).toContain("تمت الموافقة");
     expect(m.html).toContain('href="https://x.test/ar/learner"');
     expect(m.text).toContain("You're in!");
+  });
+});
+
+describe("email to the Owner about a waiting learner", () => {
+  it("names the learner safely and links to the approval page", () => {
+    const m = requestEmail(
+      "owner@x.test",
+      { name: "Sam <b>", email: "sam@x.test" },
+      "https://x.test/en/owner/learners",
+    );
+    expect(m.to).toBe("owner@x.test");
+    expect(m.subject).toContain("Sam");
+    expect(m.html).toContain("Sam &lt;b&gt; (sam@x.test)");
+    expect(m.html).toContain('href="https://x.test/en/owner/learners"');
+    expect(m.text).toContain("https://x.test/en/owner/learners");
   });
 });
 

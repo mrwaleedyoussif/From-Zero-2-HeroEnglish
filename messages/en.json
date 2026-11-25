@@ -1814,6 +1814,7 @@
       "busy": "The AI service is busy or limited right now (error {status}). Try again in a minute.",
       "unreachable": "The site could not reach the AI service. Try again in a minute.",
       "failed": "The AI reader did not work (error {status}). Tell Claude Code this number."
-    }
+    },
+    "aiCheckDetail": "Anthropic says:"
   }
 }

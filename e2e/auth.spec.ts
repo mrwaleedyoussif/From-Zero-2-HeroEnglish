@@ -73,17 +73,19 @@ test("staff can set a password and then sign in with it, without an email", asyn
   await page.getByLabel("Type it again").fill("short");
   await page.locator("#new-password").evaluate((el) => el.removeAttribute("minlength"));
   await page.getByRole("button", { name: "Save password" }).click();
-  await expect(page.getByRole("alert")).toContainText("at least 10 characters");
+  await expect(page.locator("main form").getByRole("alert")).toContainText(
+    "at least 10 characters",
+  );
   await page.getByLabel("New password").fill("a-long-school-password");
   await page.getByLabel("Type it again").fill("a-long-school-password");
   await page.getByRole("button", { name: "Save password" }).click();
-  await expect(page.getByRole("status")).toContainText("Password saved");
+  await expect(page.locator("main form").getByRole("status")).toContainText("Password saved");
 
   await page.context().clearCookies();
   await page.goto("/en/login");
   await page.getByText("Sign in with a password instead").click();
   const form = page.locator("[data-password-signin]");
-  await form.getByLabel("Work email").fill("principal@demo.linguapath.test");
+  await form.getByLabel("Your email").fill("principal@demo.linguapath.test");
   await form.getByLabel("Password").fill("not-the-password");
   await form.getByRole("button", { name: "Sign in" }).click();
   await expect(form.getByRole("alert")).toContainText("don't match");

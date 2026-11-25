@@ -106,7 +106,8 @@
     "passwordSaved": "Password saved. Next time, choose “Sign in with a password instead” on the sign-in page.",
     "accountTitle": "Your password",
     "accountIntro": "Set a password for {email} so you can sign in without waiting for an email.",
-    "accountBack": "Back to the app"
+    "accountBack": "Back to the app",
+    "passwordEmail": "Your email"
   },
   "Landing": {
     "welcome": "Welcome, {name}",

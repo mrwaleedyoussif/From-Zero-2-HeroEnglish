@@ -28,7 +28,7 @@ export function PasswordSignIn() {
     >
       <input type="hidden" name="locale" value={locale} />
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="pw-email">{t("email")}</Label>
+        <Label htmlFor="pw-email">{t("passwordEmail")}</Label>
         <Input
           id="pw-email"
           name="email"

@@ -56,3 +56,9 @@ For courses written as whole units (Reading and Writing): put the files in Drive
 
 ## Tip
 You can ask Claude (with the Google Drive connector on) to draft question banks straight into these sheets, e.g. "Write 40 A2 past-simple items for grade 3-5 in the Questions template, difficulty 2–5, with explanations."
+
+### Pictures and audio for course units
+Put files in Drive `LinguaPath/02_Media` (any subfolder), named after the item's `id`, then press Import units again:
+- Word picture: `<word id>.jpg` (or `.png`, `.webp`), e.g. `RW-A1-U01-VOC01.jpg`. Shown beside the definition. With AI switched on, Owner → Content → "Draw the missing word pictures" saves `<word id>.svg` files in `02_Media/pictures` (or `<word id>.none.txt` when no picture fits); delete a file there to have it drawn again, or replace it with your own.
+- Word, chunk or line audio: `<id>.mp3`. Whole passage or script: `<passage id>.mp3`. Without a file the device voice reads it.
+- Optional fields used for speaking feedback: vocabulary `syllables` ("re·fute") and `stress` ("oO"); chunk `display` (CAPITALS = stressed), `intonation` (↗ or ↘) and `word_stress`.

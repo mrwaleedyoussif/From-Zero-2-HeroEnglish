@@ -76,6 +76,9 @@ export const unitSchema = z
           word: text,
           pos: z.string().optional(),
           ipa: z.string().optional(),
+          /** Syllables ("re·fute") and their stress ("oO": the big O is the strong one). */
+          syllables: z.string().optional(),
+          stress: z.string().optional(),
           definition: text,
           arabic: z.string().optional(),
           example: z.string().optional(),
@@ -119,6 +122,7 @@ export const unitSchema = z
               display: z.string().optional(),
               intonation: z.string().optional(),
               linking: z.string().optional(),
+              word_stress: z.array(z.object({ word: text, pattern: text })).optional(),
             }),
           )
           .min(1),

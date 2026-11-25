@@ -72,6 +72,11 @@ export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: R
               <LocaleSwitcher />
               <ThemeToggle />
             </div>
+            {actor.real.kind === "staff" && (
+              <Button asChild variant="outline" size="sm" className="w-full">
+                <Link href="/account">{t("password")}</Link>
+              </Button>
+            )}
             <InstallApp />
             <form action={signOut}>
               <input type="hidden" name="locale" value={locale} />

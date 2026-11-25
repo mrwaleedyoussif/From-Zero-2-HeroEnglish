@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type FormState, sendMagicLink, signInWithGoogle } from "../actions";
+import { PasswordSignIn } from "./password-forms";
 
 const initial: FormState = { status: "idle" };
 
@@ -68,6 +69,13 @@ export function StaffLoginForm() {
           {t("google")}
         </Button>
       </form>
+      {/* For people who sign in often: no email to wait for. */}
+      <details className="rounded-xl border border-white/20 p-3" data-password-signin>
+        <summary className="cursor-pointer font-semibold">{t("passwordInstead")}</summary>
+        <div className="mt-3">
+          <PasswordSignIn />
+        </div>
+      </details>
     </div>
   );
 }

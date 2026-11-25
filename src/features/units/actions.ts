@@ -3,12 +3,12 @@
 import { z } from "zod";
 import { ActionError, type ActionResult, runAction } from "@/lib/action-result";
 import { getActor } from "@/lib/auth/session";
-import { award } from "@/features/rewards/award";
-import { createAdminClient } from "@/lib/supabase/admin";
-import type { Json } from "@/types/db";
+import { markAnswer, setOf, SETS } from "./marking";
+import { isSettled, saveProgress } from "./progress";
 import { type Answered, loadUnit } from "./queries";
-import { scoreRepeat, scoreTargets } from "./speech";
-import { isCorrect, questionsOf, shownAnswer, triesAllowed, type Unit } from "./schema";
+import { shownAnswer, triesAllowed } from "./schema";
+import { aiWritingFeedback } from "./writing-ai";
+import { ruleFeedback, type WritingFeedback } from "./writing-feedback";
 
 type Bi = { en: string; ar: string };
 export interface Feedback {
@@ -21,147 +21,96 @@ export interface Feedback {
   explanation?: Bi;
 }
 
-async function save(
-  studentId: string,
-  schoolId: string | null,
-  unit: Unit,
-  patch: { answers?: Record<string, Answered>; writing?: string },
-) {
-  if (!schoolId) return; // staff previewing a unit leave no progress behind
-  const admin = createAdminClient();
-  const row: Record<string, unknown> = {
-    student_id: studentId,
-    unit_id: unit.id,
-    school_id: schoolId,
-  };
-  if (patch.writing !== undefined) row.writing = patch.writing;
-  if (patch.answers) {
-    const all = questionsOf(unit);
-    const marked = all.filter((q) => q.type !== "short");
-    const settled = all.every((q) => {
-      const a = patch.answers?.[q.id];
-      return a && (a.correct !== false || a.tries >= triesAllowed(q));
-    });
-    row.answers = patch.answers as unknown as Json;
-    row.correct = marked.filter((q) => patch.answers?.[q.id]?.first).length;
-    row.total = marked.length;
-    if (settled) {
-      row.completed_at = new Date().toISOString();
-      // Points for finishing a unit, once per unit (the rewards rules decide how many).
-      await award(admin, {
-        studentId,
-        type: "lesson_completed",
-        sourceKey: `unit:${unit.id}`,
-        seconds: 900,
-        accuracy: marked.length ? Math.round((Number(row.correct) / marked.length) * 100) : null,
-        meta: { unit: unit.id, cefr: unit.level.replace("+", "") },
-      }).catch(() => undefined); // a rewards hiccup must not lose the learner's answers
-    }
-  }
-  const { error } = await admin
-    .from("course_unit_progress")
-    .upsert(row as never, { onConflict: "student_id,unit_id" });
-  if (error) throw new ActionError("failed");
-}
-
-/** Check one answer on the server (the browser never has the key) and keep the progress. */
-export async function answerQuestion(
+/**
+ * Submit one exercise: every open question of the set must be answered. Each answer is checked
+ * on the server (the browser never has the key). A wrong one gets its next hint and can be
+ * tried again; a settled one shows the answer and why, and its score cannot be improved.
+ */
+export async function submitAnswers(
   unitId: string,
-  questionId: string,
-  choice: string,
-): Promise<ActionResult<Feedback>> {
+  set: string,
+  choices: Record<string, string>,
+): Promise<ActionResult<Record<string, Feedback>>> {
   return runAction(async () => {
-    const said = z.string().trim().min(1).max(400).parse(choice);
+    const name = z.enum(SETS).parse(set);
+    const said = z.record(z.string().max(80), z.string().trim().max(400)).parse(choices);
     const actor = await getActor();
     if (!actor) throw new ActionError("signedOut");
     const loaded = await loadUnit(actor, unitId);
-    const q = loaded && questionsOf(loaded.unit).find((x) => x.id === questionId);
-    if (!loaded || !q) throw new ActionError("forbidden");
-    const before = loaded.answers[q.id];
-    // A settled question stays settled: its score cannot be improved by answering again.
-    if (before && (before.correct !== false || before.tries >= triesAllowed(q)))
-      return { correct: before.correct, answer: shownAnswer(q), explanation: q.explanation };
+    if (!loaded) throw new ActionError("forbidden");
+    // Staff previewing keep no progress, so only what they send can be checked.
+    const kept = !!actor.effective.school_id && !actor.viewAs;
+    const open = setOf(loaded.unit, name).filter(
+      (q) => !isSettled(q, loaded.answers[q.id]) && (kept || said[q.id]),
+    );
+    if (open.length === 0 || open.some((q) => !said[q.id])) throw new ActionError("incomplete");
 
-    const correct = isCorrect(q, said);
-    const tries = (before?.tries ?? 0) + 1;
-    const now: Answered = { choice: said, correct, tries, first: tries === 1 && correct === true };
-    if (!actor.viewAs)
-      await save(actor.effective.id, actor.effective.school_id, loaded.unit, {
-        answers: { ...loaded.answers, [q.id]: now },
-      });
-    if (correct === false && tries < triesAllowed(q))
-      return { correct, hint: q.type === "mcq" ? q.hints[tries - 1] : undefined };
-    return { correct, answer: shownAnswer(q), explanation: q.explanation };
+    const answers = { ...loaded.answers };
+    const out: Record<string, Feedback> = {};
+    for (const q of open) {
+      const choice = said[q.id] ?? "";
+      const correct = markAnswer(q, choice, name);
+      const tries = (answers[q.id]?.tries ?? 0) + 1;
+      answers[q.id] = { choice, correct, tries, first: tries === 1 && correct === true };
+      out[q.id] =
+        correct === false && tries < triesAllowed(q)
+          ? { correct, hint: q.type === "mcq" ? q.hints[tries - 1] : undefined }
+          : { correct, answer: shownAnswer(q), explanation: q.explanation };
+    }
+    if (kept)
+      await saveProgress(actor.effective.id, actor.effective.school_id, loaded.unit, { answers });
+    return out;
   });
 }
 
-/** Keep the learner's writing; the model answer is shown only after they have written. */
-export async function saveWriting(
+/** AI feedback on one unit's writing is given this many times; later tries use the rules. */
+const AI_TRIES = 3;
+
+/**
+ * Submit the writing task: it is kept, marked against the seven criteria (by the AI reader when
+ * it is on, by the rules otherwise) and the model answer is shown.
+ */
+export async function submitWriting(
   unitId: string,
   text: string,
-): Promise<ActionResult<{ model: string | null }>> {
+): Promise<ActionResult<{ model: string | null; feedback: WritingFeedback }>> {
   return runAction(async () => {
     const writing = z.string().trim().min(1).max(6000).parse(text);
     const actor = await getActor();
     if (!actor) throw new ActionError("signedOut");
     const loaded = await loadUnit(actor, unitId);
-    if (!loaded) throw new ActionError("forbidden");
-    if (!actor.viewAs)
-      await save(actor.effective.id, actor.effective.school_id, loaded.unit, { writing });
-    return { model: loaded.unit.writing_task?.model_answer_4 ?? null };
-  });
-}
-
-export interface SpeechFeedback {
-  score: number;
-  best: number;
-  usedWords?: string[];
-  usedStructures?: string[];
-}
-
-/**
- * Mark what the learner said (the words their browser heard): a shadowing chunk against its
- * model, or a speaking task against its target words and structures. Keeps the best score.
- */
-export async function checkSpeech(
-  unitId: string,
-  targetId: string,
-  heard: string,
-): Promise<ActionResult<SpeechFeedback>> {
-  return runAction(async () => {
-    const said = z.string().trim().max(4000).parse(heard);
-    const actor = await getActor();
-    if (!actor) throw new ActionError("signedOut");
-    const loaded = await loadUnit(actor, unitId);
-    if (!loaded) throw new ActionError("forbidden");
+    const task = loaded?.unit.writing_task;
+    if (!loaded || !task) throw new ActionError("forbidden");
     const { unit } = loaded;
-    const chunk = unit.model_text?.chunks.find((c) => c.id === targetId);
-    const task =
-      targetId === "speaking"
-        ? unit.speaking_task?.targets
-        : targetId === "shadow"
-          ? unit.shadow_targets
-          : null;
-    if (!chunk && !task) throw new ActionError("forbidden");
-    const result = chunk
-      ? { score: scoreRepeat(chunk.text, said) }
-      : scoreTargets(task ?? { words: [], structures: [] }, said);
-    const key = `speech:${targetId}`;
-    const before = loaded.answers[key];
-    const best = Math.max(result.score, before?.score ?? 0);
+    const ctx = {
+      range: task.word_count,
+      words: unit.vocabulary.map((w) => w.word),
+      topic: `${task.prompt.en} ${unit.title} ${unit.topic ?? ""}`,
+    };
+    const before = loaded.answers["writing:feedback"];
+    const tries = (before?.tries ?? 0) + 1;
+    const feedback: WritingFeedback = (tries <= AI_TRIES &&
+      (await aiWritingFeedback(writing, unit.level, task.prompt.en, ctx))) || {
+      source: "rules",
+      notes: ruleFeedback(writing, ctx),
+    };
+    const scores = feedback.notes.flatMap((n) => (n.score === null ? [] : [n.score]));
+    const score = scores.length
+      ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 25)
+      : 0;
+    const kept: Answered = {
+      choice: "",
+      correct: null,
+      tries,
+      first: false,
+      score,
+      detail: feedback,
+    };
     if (!actor.viewAs)
-      await save(actor.effective.id, actor.effective.school_id, unit, {
-        answers: {
-          ...loaded.answers,
-          [key]: {
-            choice: said.slice(0, 300),
-            correct: best >= 60,
-            tries: (before?.tries ?? 0) + 1,
-            first: false,
-            score: best,
-          },
-        },
+      await saveProgress(actor.effective.id, actor.effective.school_id, unit, {
+        writing,
+        answers: { ...loaded.answers, "writing:feedback": kept },
       });
-    return { ...result, best };
+    return { model: task.model_answer_4 ?? null, feedback };
   });
 }

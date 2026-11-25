@@ -1,12 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { playCheer } from "@/features/rewards/sounds";
-import { answerQuestion, type Feedback } from "../actions";
+import type { Feedback } from "../actions";
 import type { PublicQuestion } from "../schema";
+import { OrderPicker } from "./order-picker";
 
 const TFNG = ["True", "False", "Not Given"] as const;
 
@@ -19,45 +17,38 @@ function Ar({ children }: { children: string }) {
   );
 }
 
+/** What a question shows after a submit: the feedback, and the answer it was given for. */
+export type Checked = Feedback & { choice: string };
+
 /**
- * One question. The answer is checked on the server; a wrong try gets a gentle nudge and the
- * next hint, a right one a small celebration, and a settled question shows the answer and why.
+ * One question of an exercise. The learner chooses or types; nothing is checked until the whole
+ * exercise is submitted. After that a wrong try shows its hint and stays open, and a settled
+ * question shows the answer and why.
  */
 export function UnitQuestion({
-  unitId,
   number,
   q,
-  settled,
+  value,
+  onChange,
+  checked,
+  busy,
 }: {
-  unitId: string;
   number: number;
   q: PublicQuestion;
-  /** What the learner already finished earlier (the page was reloaded). */
-  settled?: Feedback & { choice: string };
+  value: string;
+  onChange: (value: string) => void;
+  checked?: Checked;
+  busy: boolean;
 }) {
   const t = useTranslations("Units");
-  const [feedback, setFeedback] = useState<Feedback | null>(settled ?? null);
-  const [picked, setPicked] = useState(settled?.choice ?? "");
-  const [typed, setTyped] = useState(settled?.choice ?? "");
-  const [pending, start] = useTransition();
-  const done = !!feedback?.answer;
-
-  const send = (choice: string) => {
-    if (!choice.trim() || done) return;
-    setPicked(choice);
-    start(async () => {
-      const r = await answerQuestion(unitId, q.id, choice);
-      if (!r.ok || !r.data) return;
-      setFeedback(r.data);
-      playCheer(r.data.correct === false ? "tryAgain" : "good");
-    });
-  };
-  const mark = (value: string) =>
-    picked.toLowerCase() !== value.toLowerCase() || !feedback
+  const done = !!checked?.answer;
+  const off = busy || done;
+  const mark = (option: string) =>
+    !checked || checked.choice !== option || value !== option
       ? undefined
-      : feedback.correct === false
+      : checked.correct === false
         ? "wrong"
-        : feedback.correct
+        : checked.correct
           ? "right"
           : undefined;
   const choices =
@@ -72,71 +63,61 @@ export function UnitQuestion({
 
   return (
     <li data-question={q.id} data-done={done} className="flex flex-col gap-3">
-      <p className="font-semibold">
+      <p dir="auto" className="text-start font-semibold">
         <span className="unit-chip me-2 inline-flex size-7 items-center justify-center rounded-full text-sm">
           {number}
         </span>
         {q.stem}
       </p>
-      {q.events && (
-        <ol className="flex flex-col gap-1 ps-2 text-sm">
-          {q.events.map((e, i) => (
-            <li key={e}>
-              <strong>{String.fromCharCode(97 + i)}.</strong> {e}
-            </li>
-          ))}
-        </ol>
-      )}
       {choices ? (
         <div className="grid gap-2 sm:grid-cols-2">
           {choices.map((c) => (
             <button
               key={c.value}
               type="button"
-              disabled={pending || done}
-              data-picked={mark(c.value)}
-              onClick={() => send(c.value)}
+              dir="auto"
+              disabled={off}
+              aria-pressed={value === c.value}
+              data-picked={mark(c.value) ?? (value === c.value ? "chosen" : undefined)}
+              onClick={() => onChange(c.value)}
               className="unit-option min-h-11 rounded-xl px-3 py-2 text-start text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default"
             >
               {c.text}
             </button>
           ))}
         </div>
+      ) : q.events ? (
+        <OrderPicker
+          events={q.events}
+          value={value}
+          onChange={onChange}
+          disabled={off}
+          label={t("orderHelp")}
+        />
       ) : (
-        <form
-          className="flex flex-wrap gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            send(typed);
-          }}
-        >
-          <Input
-            value={typed}
-            onChange={(e) => setTyped(e.target.value)}
-            disabled={pending || done}
-            aria-label={q.type === "sequence" ? t("orderHelp") : t("yourAnswer")}
-            placeholder={q.type === "sequence" ? t("orderHelp") : t("yourAnswer")}
-            dir="ltr"
-            className="max-w-md flex-1"
-          />
-          <Button type="submit" disabled={pending || done || !typed.trim()}>
-            {t("check")}
-          </Button>
-        </form>
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={off}
+          aria-label={`${t("yourAnswer")} ${number}`}
+          placeholder={t("yourAnswer")}
+          dir="ltr"
+          className="max-w-md"
+        />
       )}
       <div aria-live="polite">
-        {feedback?.correct && (
+        {checked?.correct && (
           <p className="unit-feedback rounded-xl px-3 py-2 font-semibold" data-kind="right">
             ⭐ {t("right")}
           </p>
         )}
-        {feedback?.correct === false && !done && (
+        {checked?.correct === false && !done && (
           <div className="unit-feedback rounded-xl px-3 py-2" data-kind="hint">
             <p className="font-semibold">{t("tryAgain")}</p>
-            {feedback.hint && (
+            {checked.hint && (
               <p>
-                💡 {feedback.hint.en}
-                <Ar>{feedback.hint.ar}</Ar>
+                💡 {checked.hint.en}
+                <Ar>{checked.hint.ar}</Ar>
               </p>
             )}
           </div>
@@ -144,13 +125,13 @@ export function UnitQuestion({
         {done && (
           <div className="unit-feedback mt-2 rounded-xl px-3 py-2" data-kind="answer">
             <p>
-              <strong>{feedback.correct === null ? t("model") : t("answer")}:</strong>{" "}
-              {feedback.answer}
+              <strong>{checked.correct === null ? t("model") : t("answer")}:</strong>{" "}
+              {checked.answer}
             </p>
-            {feedback.explanation && (
+            {checked.explanation && (
               <p className="mt-1 text-sm">
-                {feedback.explanation.en}
-                <Ar>{feedback.explanation.ar}</Ar>
+                {checked.explanation.en}
+                <Ar>{checked.explanation.ar}</Ar>
               </p>
             )}
           </div>

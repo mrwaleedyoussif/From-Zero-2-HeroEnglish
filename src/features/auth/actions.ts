@@ -5,6 +5,7 @@ import { redirect as externalRedirect } from "next/navigation";
 import { z } from "zod";
 import { redirect } from "@/i18n/navigation";
 import { type Locale, locales } from "@/i18n/routing";
+import { authEmail, ownAuthMail, sendAuthMail } from "@/lib/auth/auth-mail";
 import { pinPassword } from "@/lib/auth/pin-password";
 import { VIEW_AS_COOKIE, getActor } from "@/lib/auth/session";
 import { studentEmail, studentLoginSchema } from "@/lib/auth/student-identity";
@@ -42,6 +43,33 @@ export async function sendMagicLink(_prev: FormState, form: FormData): Promise<F
   )
     return { status: "error", message: "tooManyAttempts", values };
 
+  if (ownAuthMail()) {
+    // The app's own mail service sends the link. Invite-only: nothing is sent, and the reply
+    // is the same, when the address has no active staff account.
+    try {
+      const admin = createAdminClient();
+      const { data: staff } = await admin
+        .from("profiles")
+        .select("id")
+        .eq("email", parsed.data.email)
+        .eq("kind", "staff")
+        .eq("status", "active")
+        .maybeSingle();
+      if (staff) {
+        const { data: made } = await admin.auth.admin.generateLink({
+          type: "magiclink",
+          email: parsed.data.email,
+          options: { redirectTo: callbackUrl(parsed.data.locale) },
+        });
+        const link = made.properties?.action_link;
+        if (link)
+          await sendAuthMail(authEmail("magiclink", parsed.data.email, link, parsed.data.locale));
+      }
+    } catch (e) {
+      console.error("sign-in email failed", e);
+    }
+    return { status: "sent" };
+  }
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,

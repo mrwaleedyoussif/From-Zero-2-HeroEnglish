@@ -4,6 +4,7 @@ import { canSomewhere } from "@/lib/auth/can";
 import type { Actor } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import type { WritingFeedback } from "./writing-feedback";
 import { type Level, LEVELS, type Unit, unitSchema } from "./schema";
 
 /**
@@ -77,6 +78,8 @@ export interface Answered {
   first: boolean;
   /** Speech checks only: the best score so far (0–100). */
   score?: number;
+  /** The writing task only: the feedback last given. */
+  detail?: WritingFeedback;
 }
 
 export async function loadUnit(
@@ -88,6 +91,8 @@ export async function loadUnit(
   writing: string;
   /** Recorded audio by item id, where the Owner has put "<id>.mp3" in Drive 02_Media. */
   audio: Record<string, string>;
+  /** Pictures by item id, from "<id>.jpg" (or png, webp) in the same Drive folder. */
+  images: Record<string, string>;
 } | null> {
   if (!/^[A-Z0-9-]{3,40}$/.test(unitId)) return null;
   const admin = createAdminClient();
@@ -107,15 +112,21 @@ export async function loadUnit(
     .maybeSingle();
   const { data: media } = await admin
     .from("media_assets")
-    .select("id, file_name")
+    .select("id, file_name, mime_type")
     .like("file_name", `${unitId}-%`)
     .eq("status", "active")
     .limit(400);
+  const named = (picture: boolean) =>
+    Object.fromEntries(
+      (media ?? [])
+        .filter((m) => !m.file_name.endsWith(".none.txt"))
+        .filter((m) => (m.mime_type ?? "").startsWith("image/") === picture)
+        .map((m) => [m.file_name.replace(/\.[a-z0-9]+$/i, ""), `/api/media/${m.id}`]),
+    );
   return {
     unit: unit.data,
-    audio: Object.fromEntries(
-      (media ?? []).map((m) => [m.file_name.replace(/\.[a-z0-9]+$/i, ""), `/api/media/${m.id}`]),
-    ),
+    audio: named(false),
+    images: named(true),
     answers: (progress?.answers ?? {}) as unknown as Record<string, Answered>,
     writing: progress?.writing ?? "",
   };

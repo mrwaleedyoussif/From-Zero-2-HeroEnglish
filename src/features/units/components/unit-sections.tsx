@@ -2,11 +2,13 @@ import { BookOpenText, HelpCircle, type LucideIcon, Sigma } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import type { Hue } from "@/features/departments/catalog";
 import type { Answered } from "../queries";
+import type { SetName } from "../marking";
 import { publicQuestion, type Question, shownAnswer, triesAllowed, type Unit } from "../schema";
 import { PlayScript } from "./play-script";
 import { SpeakButton } from "./speak-button";
 import { Bi, UnitPanel } from "./unit-panel";
-import { UnitQuestion } from "./unit-question";
+import { QuestionSet } from "./question-set";
+import type { Checked } from "./unit-question";
 
 /** Recorded audio by item id (see loadUnit). */
 export type Audio = Record<string, string>;
@@ -31,13 +33,11 @@ export async function UnitText({
   const t = await getTranslations("Units");
   return (
     <UnitPanel hue="green" icon={BookOpenText} title={text.title} part={part}>
-      {audio[text.id] && (
-        <PlayScript
-          src={audio[text.id]}
-          lines={[]}
-          labels={{ play: t("playAll"), stop: t("stop") }}
-        />
-      )}
+      <PlayScript
+        src={audio[text.id]}
+        lines={text.paragraphs.map((p) => ({ text: p.replaceAll("**", "") }))}
+        labels={{ play: t("playPassage"), stop: t("stop") }}
+      />
       <div dir="ltr" className="unit-passage flex flex-col gap-3 text-start text-lg">
         {text.paragraphs.map((p, i) => (
           <div key={p} className="flex items-start gap-2">
@@ -52,9 +52,10 @@ export async function UnitText({
   );
 }
 
-/** A set of questions, each checked on the server; finished ones show their answer again. */
+/** One exercise: its questions, submitted together; what was done earlier is shown again. */
 export function UnitQuestions({
   unitId,
+  set,
   title,
   part,
   questions,
@@ -64,6 +65,7 @@ export function UnitQuestions({
   icon = HelpCircle,
 }: {
   unitId: string;
+  set: SetName;
   title: string;
   part: string;
   questions: Question[];
@@ -74,32 +76,33 @@ export function UnitQuestions({
   icon?: LucideIcon;
 }) {
   if (questions.length === 0) return null;
+  const initial: Record<string, Checked> = {};
+  for (const q of questions) {
+    const a = answers[q.id];
+    if (!a) continue;
+    initial[q.id] =
+      a.correct !== false || a.tries >= triesAllowed(q)
+        ? {
+            choice: a.choice,
+            correct: a.correct,
+            answer: shownAnswer(q),
+            explanation: q.explanation,
+          }
+        : {
+            choice: a.choice,
+            correct: false,
+            hint: q.type === "mcq" ? q.hints[a.tries - 1] : undefined,
+          };
+  }
   return (
     <UnitPanel hue={hue} icon={icon} title={title} part={part}>
-      <ol className="flex flex-col gap-6">
-        {questions.map((q, i) => {
-          const a = answers[q.id];
-          const settled = a && (a.correct !== false || a.tries >= triesAllowed(q));
-          return (
-            <UnitQuestion
-              key={q.id}
-              unitId={unitId}
-              number={from + i}
-              q={publicQuestion(q)}
-              settled={
-                settled
-                  ? {
-                      choice: a.choice,
-                      correct: a.correct,
-                      answer: shownAnswer(q),
-                      explanation: q.explanation,
-                    }
-                  : undefined
-              }
-            />
-          );
-        })}
-      </ol>
+      <QuestionSet
+        unitId={unitId}
+        set={set}
+        questions={questions.map(publicQuestion)}
+        from={from}
+        initial={initial}
+      />
     </UnitPanel>
   );
 }

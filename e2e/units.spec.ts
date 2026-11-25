@@ -52,6 +52,14 @@ const unit = {
       answer: "True",
       explanation: bi("It says so."),
     },
+    {
+      id: "Q3",
+      type: "sequence",
+      skill: "sequence",
+      stem: "Put the events in order.",
+      events: ["Reem takes a photo.", "Reem buys a phone."],
+      answer: "b, a",
+    },
   ],
   writing_task: {
     prompt: bi("Write about your phone."),
@@ -74,17 +82,21 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     join(folder, "unit_02.json"),
     JSON.stringify({ ...unit, id: "RW-A1P-U02", unit: 2, level: "Z9" }),
   );
+  writeFileSync(
+    join(folder, "unit_03.json"),
+    JSON.stringify({ ...unit, id: "RW-A1P-U03", unit: 3, title: "A new bag" }),
+  );
   try {
     await signInByEmail(page, "owner@demo.linguapath.test");
     await page.goto("/en/owner/content");
     await page.getByRole("button", { name: "Import units from Drive" }).click();
-    await expect(page.locator("[data-units-imported='1']")).toContainText("1 saved");
+    await expect(page.locator("[data-units-imported='2']")).toContainText("2 saved");
     await expect(page.locator("[data-unit-issue]")).toHaveCount(1);
     await expect(page.locator("[data-unit-issue]")).toContainText("unit_02.json");
     await expect(page.locator("[data-units-audio]")).not.toHaveAttribute("data-units-audio", "0");
     // A second import changes nothing.
     await page.getByRole("button", { name: "Import units from Drive" }).click();
-    await expect(page.locator("[data-units-imported='0']")).toContainText("1 unchanged");
+    await expect(page.locator("[data-units-imported='0']")).toContainText("2 unchanged");
 
     await page.goto("/en/student/units/RW");
     await expect(page.locator("[data-level='A1+']")).toBeVisible();
@@ -96,17 +108,51 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     // The page never carries the key or the explanation before the learner answers.
     expect(await page.content()).not.toContain("The first sentence says");
 
-    const q1 = page.locator("[data-question='Q1']");
-    await q1.getByRole("button", { name: /a bike/ }).click();
-    await expect(q1).toContainText("Read the first sentence again.");
-    await q1.getByRole("button", { name: /a phone/ }).click();
-    await expect(q1).toContainText("Well done!");
-    await expect(q1).toContainText("The first sentence says Reem has a new phone.");
+    // Words can be repeated after the speaker.
+    await expect(page.locator("[data-word] [data-speech]")).toHaveCount(1);
+    await expect(page.getByRole("button", { name: "Listen to the whole text" })).toBeVisible();
 
-    await page.getByLabel("Write here").fill("I have a phone.");
+    // Nothing is checked until the whole exercise is answered and submitted.
+    const q1 = page.locator("[data-question='Q1']");
+    const submit = page.getByRole("button", { name: "Submit my answers" });
+    await expect(submit).toBeDisabled();
+    await q1.getByRole("button", { name: /a bike/ }).click();
+    await expect(q1).not.toContainText("Read the first sentence again.");
+    await page.locator("[data-question='Q2']").getByRole("button", { name: "True" }).click();
+    await expect(submit).toBeDisabled();
+    // Ordering: click the sentences; the first click is number 1.
+    const q3 = page.locator("[data-question='Q3']");
+    await q3.getByRole("button", { name: /Reem buys a phone/ }).click();
+    await q3.getByRole("button", { name: /Reem takes a photo/ }).click();
+    await expect(q3.locator("[data-order='1']")).toContainText("Reem buys a phone.");
+    await expect(q3.locator("[data-order='2']")).toContainText("Reem takes a photo.");
+    await submit.click();
+    await expect(q1).toContainText("Read the first sentence again.");
+    await expect(page.locator("[data-question='Q2']")).toContainText("Well done!");
+    await expect(q3).toContainText("Well done!");
+    await q1.getByRole("button", { name: /a phone/ }).click();
+    await page.getByRole("button", { name: "Submit again" }).click();
+    await expect(q1).toContainText("The first sentence says Reem has a new phone.");
+    await expect(page.locator("[data-submit='comprehension']")).toContainText("Exercise finished");
+
+    await page.getByLabel("Write here").fill("i have a phone");
     await expect(page.locator("[data-words='4']")).toBeVisible();
-    await page.getByRole("button", { name: "Save my writing" }).click();
+    await page.getByRole("button", { name: "Submit my writing" }).click();
     await expect(page.getByText("It is black.")).toBeVisible();
+    const feedback = page.locator("[data-writing-feedback='rules']");
+    await expect(feedback.locator("[data-criterion='wordCount']")).toContainText("just right");
+    await expect(feedback.locator("[data-criterion='punctuation']")).toContainText(
+      "Write I with a capital letter.",
+    );
+    await expect(feedback.locator("[data-criterion]")).toHaveCount(7);
+
+    const { violations: onUnit } = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+    expect(onUnit.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(" | ")}`)).toEqual([]);
+
+    await page.locator("[data-next-unit='RW-A1P-U03']").click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("A new bag");
 
     // Staff see what learners did (the Owner previewing leaves no progress behind).
     await page.goto("/en/teacher/units");

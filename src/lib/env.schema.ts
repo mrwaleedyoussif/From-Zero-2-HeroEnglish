@@ -53,7 +53,10 @@ export const serverEnvSchema = publicEnvSchema
     /** New general learners allowed per day: protects the free database and email budget. */
     GENERAL_DAILY_SIGNUPS: z.coerce.number().int().min(0).max(10000).default(50),
     BILLING_ENABLED: flag(false),
+    /** AI feedback on writing and answers (lib/ai). Needs ANTHROPIC_API_KEY; off = rules only. */
     AI_ENABLED: flag(false),
+    ANTHROPIC_API_KEY: optionalString,
+    AI_MODEL: z.string().min(3).default("claude-opus-5-5"),
     DEFAULT_TIMEZONE: z.string().min(1).default("Asia/Riyadh"),
     /** Multiplies sign-in rate limits; raise only for automated test runs (default 1). */
     RATE_LIMIT_MULTIPLIER: z.coerce.number().int().min(1).max(1000).default(1),

@@ -4,23 +4,29 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { saveWriting } from "../actions";
+import { submitWriting } from "../actions";
+import { countWords, type WritingFeedback } from "../writing-feedback";
+import { WritingResult } from "./writing-result";
 
-/** The writing task: a box that counts words against the target, saved for the learner. */
+/** The writing task: a box that counts words; submitting keeps it and brings detailed feedback. */
 export function UnitWriting({
   unitId,
   initial,
   range,
+  earlier,
 }: {
   unitId: string;
   initial: string;
   range?: [number, number];
+  /** The feedback given last time. */
+  earlier?: WritingFeedback;
 }) {
   const t = useTranslations("Units");
   const [text, setText] = useState(initial);
   const [model, setModel] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState(earlier ?? null);
   const [pending, start] = useTransition();
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const words = countWords(text);
   const inRange = !range || (words >= range[0] && words <= range[1]);
 
   return (
@@ -48,16 +54,18 @@ export function UnitWriting({
           disabled={pending || !text.trim()}
           onClick={() =>
             start(async () => {
-              const r = await saveWriting(unitId, text);
+              const r = await submitWriting(unitId, text);
               if (!r.ok) return void toast.error(t("notSaved"));
               toast.success(t("saved"));
               setModel(r.data?.model ?? null);
+              setFeedback(r.data?.feedback ?? null);
             })
           }
         >
           {t("saveWriting")}
         </Button>
       </div>
+      {feedback && <WritingResult feedback={feedback} />}
       {model && (
         <details open className="unit-feedback rounded-xl px-3 py-2" data-kind="answer">
           <summary className="cursor-pointer font-semibold">{t("modelAnswer")}</summary>

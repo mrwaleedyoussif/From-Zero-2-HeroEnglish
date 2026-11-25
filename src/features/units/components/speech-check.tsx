@@ -4,13 +4,18 @@ import { Mic, Square } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useSyncExternalStore } from "react";
 import { playCheer } from "@/features/rewards/sounds";
-import { checkSpeech, type SpeechFeedback } from "../actions";
+import { analyse } from "../prosody";
+import { checkSpeech, type SpeechFeedback } from "../speech-actions";
+import { SpeechResult } from "./speech-result";
+import { type Capture, startCapture } from "./voice-capture";
 
 interface Recognition {
   lang: string;
   continuous: boolean;
   interimResults: boolean;
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  onresult:
+    | ((e: { results: ArrayLike<ArrayLike<{ transcript: string; confidence?: number }>> }) => void)
+    | null;
   onend: (() => void) | null;
   onerror: (() => void) | null;
   start: () => void;
@@ -24,22 +29,26 @@ const engine = (): Ctor | null => {
 const never = () => () => {};
 
 /**
- * "Say it": the browser listens, writes down the words it heard, and the server marks them
- * against the model (a shadowing chunk) or the task's targets. A practice guide, not a grade;
- * browsers without speech recognition get a note instead of a button.
+ * "Say it": the browser listens, writes down the words it heard and (on computers) records the
+ * voice to measure stress and tune. The server marks it against the model: a shadowing chunk,
+ * a word, or a task's targets. A practice guide, not a grade; browsers without speech
+ * recognition get a note instead of a button.
  */
 export function SpeechCheck({
   unitId,
   target,
   long = false,
   best,
+  quiet,
 }: {
   unitId: string;
-  /** A chunk id, or "speaking" / "shadow" for a task's targets. */
+  /** A chunk or word id, or "speaking" / "shadow" for a task's targets. */
   target: string;
   /** A task: keep listening until the learner presses Stop. */
   long?: boolean;
   best?: number;
+  /** Show nothing (not a note) where the browser cannot listen: used once per word. */
+  quiet?: boolean;
 }) {
   const t = useTranslations("Units");
   const supported = useSyncExternalStore(
@@ -52,12 +61,19 @@ export function SpeechCheck({
   const [result, setResult] = useState<SpeechFeedback | null>(null);
   const rec = useRef<Recognition | null>(null);
   const said = useRef("");
+  const sure = useRef<number | undefined>(undefined);
+  const capture = useRef<Promise<Capture | null> | null>(null);
+  const [recording, setRecording] = useState<string | null>(null);
 
   const finish = async () => {
     setListening(false);
+    const voice = await (await capture.current)?.stop();
+    capture.current = null;
+    setRecording(voice?.url ?? null);
     setHeard(said.current);
-    if (!said.current.trim()) return;
-    const r = await checkSpeech(unitId, target, said.current);
+    if (!said.current.trim() && !voice?.url) return;
+    const measured = voice ? analyse(voice.frames) : null;
+    const r = await checkSpeech(unitId, target, said.current, measured, sure.current);
     if (!r.ok || !r.data) return;
     setResult(r.data);
     playCheer(r.data.score >= 60 ? "good" : "tryAgain");
@@ -66,16 +82,23 @@ export function SpeechCheck({
     const Engine = engine();
     if (!Engine) return;
     said.current = "";
+    sure.current = undefined;
     setResult(null);
+    setHeard("");
+    setRecording(null);
+    capture.current = startCapture();
     const r = new Engine();
     r.lang = "en-US";
     r.continuous = long;
     r.interimResults = false;
     r.onresult = (e) => {
-      said.current = Array.from(e.results, (x) => x[0]?.transcript ?? "").join(" ");
+      const best = Array.from(e.results, (x) => x[0]);
+      said.current = best.map((x) => x?.transcript ?? "").join(" ");
+      const known = best.flatMap((x) => (x?.confidence ? [x.confidence] : []));
+      if (known.length) sure.current = known.reduce((a, b) => a + b, 0) / known.length;
     };
     r.onend = () => void finish();
-    r.onerror = () => setListening(false);
+    r.onerror = () => setListening(false); // onend follows and finishes
     rec.current = r;
     try {
       r.start();
@@ -84,8 +107,8 @@ export function SpeechCheck({
       setListening(false);
     }
   };
+  if (!supported && quiet) return null;
   if (!supported) return <p className="text-sm text-muted-foreground">{t("speechUnsupported")}</p>;
-  const score = result?.score;
 
   return (
     <div className="flex flex-col gap-2" data-speech={target}>
@@ -111,26 +134,8 @@ export function SpeechCheck({
       </div>
       <div aria-live="polite">
         {listening && <p className="text-sm">{t("speechListening")}</p>}
-        {!listening && heard && (
-          <div
-            className="unit-feedback rounded-xl px-3 py-2 text-sm"
-            data-kind={score !== undefined && score >= 60 ? "right" : "hint"}
-          >
-            <p>
-              <strong>{t("speechHeard")}</strong> <span dir="ltr">{heard}</span>
-            </p>
-            {score !== undefined && (
-              <p className="font-semibold">
-                {score >= 60 ? t("speechGood", { n: score }) : t("speechAgain", { n: score })}
-              </p>
-            )}
-            {result?.usedWords && (
-              <p>
-                {t("speechUsed")}{" "}
-                {[...result.usedWords, ...(result.usedStructures ?? [])].join(" · ") || "—"}
-              </p>
-            )}
-          </div>
+        {!listening && (heard || recording) && (
+          <SpeechResult heard={heard} result={result} recording={recording} />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@
  * Marking what a learner said, from the words their browser's speech recognition heard.
  * It checks words, not pronunciation quality: a guide for practice, never a grade.
  */
-const words = (v: string) =>
+export const words = (v: string) =>
   v
     .toLowerCase()
     .replace(/[’‘]/g, "'")

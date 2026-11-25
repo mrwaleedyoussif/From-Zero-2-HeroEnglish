@@ -69,3 +69,10 @@
     transition: none;
   }
 }
+/* An answer chosen but not submitted yet. */
+.unit-option[data-picked="chosen"],
+.unit-option[aria-pressed="true"]:not([data-picked]) {
+  border-color: var(--hue-fg);
+  background: var(--hue-bg);
+  color: var(--hue-fg);
+}

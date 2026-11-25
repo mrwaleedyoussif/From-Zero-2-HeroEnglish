@@ -156,7 +156,9 @@
     "unitsFolderMissing": "The folder was not found. Paste the folder's link, or create LinguaPath / 01_Content / Units in Drive.",
     "unitsNone": "No JSON files were found in that folder.",
     "unitsTooMany": "Too many files in one go (400 at most). Import one level's folder at a time.",
-    "emailNotSent": "The account could not be created because the invitation email was not sent. Check the email service (Resend key and sender address in Vercel), then try again."
+    "emailNotSent": "The account could not be created because the invitation email was not sent. Check the email service (Resend key and sender address in Vercel), then try again.",
+    "aiOff": "AI feedback is switched off.",
+    "aiFailed": "The AI reader did not answer. Wait a minute and try again."
   },
   "Done": {
     "saved": "Saved",
@@ -1793,6 +1795,10 @@
       "spaceBefore": "No space before a comma or full stop.",
       "spaceAfter": "Put a space after a comma.",
       "smallI": "Write I with a capital letter."
-    }
+    },
+    "picturesHelp": "Word pictures: the AI reader can draw a simple picture for every word that has none and save it in Drive 02_Media / pictures. It takes a few words at a time; you can stop and carry on later. To use your own picture instead, put a file named after the word (jpg, png or webp) in 02_Media.",
+    "picturesButton": "Draw the missing word pictures",
+    "picturesProgress": "{done} of {total} words done, {drawn} pictures drawn",
+    "picturesDone": "{drawn} pictures drawn. {left, plural, =0 {Every word has been looked at.} other {# words still to do: press the button again.}}"
   }
 }

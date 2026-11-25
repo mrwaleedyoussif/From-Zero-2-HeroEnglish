@@ -77,6 +77,12 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
   // A recording named after the word it belongs to, and an index file that is not a unit.
   const recording = join(DRIVE ?? "", "LinguaPath/02_Media/audio/RW-A1P-U01-VOC01.mp3");
   writeFileSync(recording, "ID3");
+  // A picture named after the same word (what "Draw the missing word pictures" saves).
+  const picture = join(DRIVE ?? "", "LinguaPath/02_Media/RW-A1P-U01-VOC01.svg");
+  writeFileSync(
+    picture,
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40" fill="#e2bd72"/></svg>',
+  );
   writeFileSync(join(folder, "..", "manifest.json"), "{}");
   writeFileSync(
     join(folder, "unit_02.json"),
@@ -110,6 +116,9 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
 
     // Words can be repeated after the speaker.
     await expect(page.locator("[data-word] [data-speech]")).toHaveCount(1);
+    const drawn = page.locator("[data-word] img[alt='camera']");
+    await expect(drawn).toBeVisible();
+    expect(await drawn.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
     await expect(page.getByRole("button", { name: "Listen to the whole text" })).toBeVisible();
 
     // Nothing is checked until the whole exercise is answered and submitted.
@@ -161,5 +170,6 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
   } finally {
     rmSync(join(DRIVE ?? "", "LinguaPath/01_Content/Units"), { recursive: true, force: true });
     unlinkSync(recording);
+    unlinkSync(picture);
   }
 });

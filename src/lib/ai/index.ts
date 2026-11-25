@@ -21,18 +21,23 @@ export async function askAi<T extends z.ZodType>(
   shape: T,
   system: string,
   user: string,
+  /** Longer answers (drawings) may take more time and room than the defaults. */
+  room: { timeout?: number; maxTokens?: number } = {},
 ): Promise<z.infer<T> | null> {
   if (!aiReady()) return null;
   const env = serverEnv();
   client ??= new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, timeout: 40_000, maxRetries: 1 });
   try {
-    const response = await client.messages.parse({
-      model: env.AI_MODEL,
-      max_tokens: 8000,
-      output_config: { effort: "low", format: zodOutputFormat(shape) },
-      system,
-      messages: [{ role: "user", content: user }],
-    });
+    const response = await client.messages.parse(
+      {
+        model: env.AI_MODEL,
+        max_tokens: room.maxTokens ?? 8000,
+        output_config: { effort: "low", format: zodOutputFormat(shape) },
+        system,
+        messages: [{ role: "user", content: user }],
+      },
+      { timeout: room.timeout ?? 40_000 },
+    );
     if (response.stop_reason === "refusal" || response.stop_reason === "max_tokens") return null;
     return response.parsed_output ?? null;
   } catch (error) {

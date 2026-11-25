@@ -119,6 +119,7 @@ export async function loadUnit(
   const named = (picture: boolean) =>
     Object.fromEntries(
       (media ?? [])
+        .filter((m) => !m.file_name.endsWith(".none.txt"))
         .filter((m) => (m.mime_type ?? "").startsWith("image/") === picture)
         .map((m) => [m.file_name.replace(/\.[a-z0-9]+$/i, ""), `/api/media/${m.id}`]),
     );

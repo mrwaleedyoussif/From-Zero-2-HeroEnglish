@@ -13,7 +13,10 @@ export const LIMITS = {
   pinUser: { max: 8, windowSec: 15 * 60 },
   /** Staff magic links: per IP and per email address (also protects the email budget). */
   linkIp: { max: 60, windowSec: 60 * 60 },
-  linkEmail: { max: 5, windowSec: 60 * 60 },
+  linkEmail: { max: 10, windowSec: 60 * 60 },
+  /** Staff password sign-in: few guesses per address, room for a school behind one IP. */
+  passwordIp: { max: 100, windowSec: 15 * 60 },
+  passwordEmail: { max: 8, windowSec: 15 * 60 },
   /** General learners: codes requested per email, and guesses at a code per email. */
   codeEmail: { max: 5, windowSec: 60 * 60 },
   codeTry: { max: 8, windowSec: 15 * 60 },

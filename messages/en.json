@@ -62,7 +62,8 @@
     "installHelpIos": "On iPhone or iPad: tap the Share button in Safari, then “Add to Home Screen”.",
     "installHelpMac": "On a Mac in Safari: open the File menu, then “Add to Dock”. In Chrome or Edge: use the install icon in the address bar.",
     "installHelpOther": "In your browser's menu, choose “Install app” or “Add to Home screen”.",
-    "installed": "The app is installed on this device."
+    "installed": "The app is installed on this device.",
+    "password": "Password"
   },
   "Auth": {
     "staffTitle": "Staff sign in",
@@ -88,8 +89,24 @@
       "accountDisabled": "This account is switched off. Please ask your teacher.",
       "link_invalid": "That sign-in link has expired or was already used. Request a new one.",
       "no_account": "There is no Zero-2-Hero English account for this email. Ask your school to invite you.",
-      "google_unavailable": "Google sign-in isn't set up yet. Use the email link instead."
-    }
+      "google_unavailable": "Google sign-in isn't set up yet. Use the email link instead.",
+      "wrongPassword": "That email and password don't match. If you have not set a password yet, use the sign-in link, then Account → Password.",
+      "passwordShort": "The password needs at least 10 characters.",
+      "passwordMismatch": "The two passwords are not the same.",
+      "passwordNotSaved": "The password could not be saved. Please try again.",
+      "notAllowed": "Only staff accounts can set a password."
+    },
+    "password": "Password",
+    "passwordInstead": "Sign in with a password instead",
+    "passwordSignIn": "Sign in",
+    "newPassword": "New password",
+    "confirmPassword": "Type it again",
+    "passwordRule": "At least 10 characters. Use one you don't use anywhere else.",
+    "savePassword": "Save password",
+    "passwordSaved": "Password saved. Next time, choose “Sign in with a password instead” on the sign-in page.",
+    "accountTitle": "Your password",
+    "accountIntro": "Set a password for {email} so you can sign in without waiting for an email.",
+    "accountBack": "Back to the app"
   },
   "Landing": {
     "welcome": "Welcome, {name}",

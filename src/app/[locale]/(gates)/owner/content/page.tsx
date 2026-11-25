@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UnitsImport } from "@/features/units/components/units-import";
+import { AiCheck } from "@/features/units/components/ai-check";
 import { WordPictures } from "@/features/units/components/word-pictures";
 import { aiPictures } from "@/lib/ai";
 import { ContentSync } from "@/features/content/components/content-sync";
@@ -75,6 +76,7 @@ export default async function ContentPage({ params }: PageProps<"/[locale]/owner
             {tu("loaded", { n: units.count ?? 0 })}
           </p>
           {ready && !actor.viewAs && <UnitsImport />}
+          {!actor.viewAs && <AiCheck />}
           {ready && !actor.viewAs && aiPictures() && <WordPictures />}
         </CardContent>
       </Card>

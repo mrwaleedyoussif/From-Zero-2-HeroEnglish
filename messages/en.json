@@ -1799,6 +1799,21 @@
     "picturesHelp": "Word pictures: the AI reader can draw a simple picture for every word that has none and save it in Drive 02_Media / pictures. It takes a few words at a time; you can stop and carry on later. To use your own picture instead, put a file named after the word (jpg, png or webp) in 02_Media.",
     "picturesButton": "Draw the missing word pictures",
     "picturesProgress": "{done} of {total} words done, {drawn} pictures drawn",
-    "picturesDone": "{drawn} pictures drawn. {left, plural, =0 {Every word has been looked at.} other {# words still to do: press the button again.}}"
+    "picturesDone": "{drawn} pictures drawn. {left, plural, =0 {Every word has been looked at.} other {# words still to do: press the button again.}}",
+    "aiCheckHelp": "AI writing reader (marks spelling and grammar). Press the button to check that it works.",
+    "aiCheckButton": "Test the AI reader",
+    "aiChecking": "Checking…",
+    "aiCheck": {
+      "ok": "Working. The AI reader ({model}) answered. Spelling and grammar will be marked from the next writing a learner submits.",
+      "off": "Switched off. In Vercel, AI_ENABLED is not set to true for Production (or the site was not redeployed after setting it).",
+      "noKey": "No key. In Vercel, ANTHROPIC_API_KEY is missing for Production (or the site was not redeployed after adding it).",
+      "badKey": "The key was refused (error {status}). Copy the key again from console.anthropic.com → API Keys, replace ANTHROPIC_API_KEY in Vercel, then redeploy.",
+      "noCredit": "No credit (error {status}). Add credit in console.anthropic.com → Billing. It can take a few minutes to start working.",
+      "denied": "The key is not allowed to use the AI reader (error {status}). Check the key's workspace in console.anthropic.com.",
+      "noModel": "The model {model} is not available to your account (error {status}). Ask Claude Code which AI_MODEL to set.",
+      "busy": "The AI service is busy or limited right now (error {status}). Try again in a minute.",
+      "unreachable": "The site could not reach the AI service. Try again in a minute.",
+      "failed": "The AI reader did not work (error {status}). Tell Claude Code this number."
+    }
   }
 }

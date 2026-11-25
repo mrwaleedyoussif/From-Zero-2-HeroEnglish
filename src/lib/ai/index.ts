@@ -50,3 +50,53 @@ export async function askAi<T extends z.ZodType>(
     return null;
   }
 }
+
+export type AiCheck =
+  | "off"
+  | "noKey"
+  | "ok"
+  | "badKey"
+  | "noCredit"
+  | "denied"
+  | "noModel"
+  | "busy"
+  | "unreachable"
+  | "failed";
+
+/**
+ * A tiny real request, so the Owner can see why AI feedback is or is not working without
+ * reading server logs. Says what is wrong in one word; never returns the key or the reply.
+ */
+export async function checkAi(): Promise<{ result: AiCheck; status?: number; model: string }> {
+  const env = serverEnv();
+  const model = env.AI_MODEL;
+  if (!env.AI_ENABLED) return { result: "off", model };
+  if (!env.ANTHROPIC_API_KEY) return { result: "noKey", model };
+  const probe = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, timeout: 30_000, maxRetries: 0 });
+  try {
+    await probe.messages.create({
+      model,
+      max_tokens: 16,
+      output_config: { effort: "low" },
+      messages: [{ role: "user", content: "Reply with the word ready." }],
+    });
+    return { result: "ok", model };
+  } catch (error) {
+    if (error instanceof Anthropic.AuthenticationError)
+      return { result: "badKey", status: 401, model };
+    if (error instanceof Anthropic.PermissionDeniedError)
+      return { result: "denied", status: 403, model };
+    if (error instanceof Anthropic.NotFoundError) return { result: "noModel", status: 404, model };
+    if (error instanceof Anthropic.RateLimitError) return { result: "busy", status: 429, model };
+    if (error instanceof Anthropic.BadRequestError)
+      return {
+        result: /credit|billing|balance/i.test(error.message) ? "noCredit" : "failed",
+        status: 400,
+        model,
+      };
+    if (error instanceof Anthropic.APIConnectionError) return { result: "unreachable", model };
+    if (error instanceof Anthropic.APIError)
+      return { result: error.status >= 500 ? "busy" : "failed", status: error.status, model };
+    return { result: "failed", model };
+  }
+}

@@ -63,7 +63,7 @@ export function UnitQuestion({
 
   return (
     <li data-question={q.id} data-done={done} className="flex flex-col gap-3">
-      <p className="font-semibold">
+      <p dir="auto" className="text-start font-semibold">
         <span className="unit-chip me-2 inline-flex size-7 items-center justify-center rounded-full text-sm">
           {number}
         </span>
@@ -75,6 +75,7 @@ export function UnitQuestion({
             <button
               key={c.value}
               type="button"
+              dir="auto"
               disabled={off}
               aria-pressed={value === c.value}
               data-picked={mark(c.value) ?? (value === c.value ? "chosen" : undefined)}

@@ -45,7 +45,7 @@ export function OrderPicker({
             >
               {at >= 0 ? at + 1 : ""}
             </span>
-            <span>{event}</span>
+            <span dir="auto">{event}</span>
           </button>
         );
       })}

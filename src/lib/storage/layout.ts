@@ -58,13 +58,14 @@ export async function listRecursive(
   depth = 0,
 ): Promise<{ path: string; file: Awaited<ReturnType<StorageAdapter["list"]>>[number] }[]> {
   if (depth > 4) return [];
-  const out: { path: string; file: Awaited<ReturnType<StorageAdapter["list"]>>[number] }[] = [];
-  for (const f of await storage.list(folderId)) {
-    if (f.mimeType === "application/vnd.google-apps.folder") {
-      out.push(...(await listRecursive(storage, f.id, `${prefix}${f.name}/`, depth + 1)));
-    } else {
-      out.push({ path: `${prefix}${f.name}`, file: f });
-    }
-  }
-  return out;
+  // Subfolders are read side by side: a course folder with a hundred of them would otherwise
+  // take longer to walk than a request may run.
+  const parts = await Promise.all(
+    (await storage.list(folderId)).map(async (f) =>
+      f.mimeType === "application/vnd.google-apps.folder"
+        ? listRecursive(storage, f.id, `${prefix}${f.name}/`, depth + 1)
+        : [{ path: `${prefix}${f.name}`, file: f }],
+    ),
+  );
+  return parts.flat();
 }

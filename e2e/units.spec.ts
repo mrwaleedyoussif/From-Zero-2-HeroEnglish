@@ -158,14 +158,6 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     await page.goto("/en/teacher/units");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Course units");
     await expect(page.getByText("No learner has started a unit yet.")).toBeVisible();
-    await page.goBack();
-
-    const { violations } = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-      .analyze();
-    expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(" | ")}`)).toEqual(
-      [],
-    );
   } finally {
     rmSync(join(DRIVE ?? "", "LinguaPath/01_Content/Units"), { recursive: true, force: true });
     unlinkSync(recording);

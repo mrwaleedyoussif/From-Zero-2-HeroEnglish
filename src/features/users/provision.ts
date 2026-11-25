@@ -3,7 +3,6 @@ import { ActionError, check } from "@/lib/action-result";
 import type { Scope } from "@/lib/auth/engine";
 import { pinPassword } from "@/lib/auth/pin-password";
 import { generatePin, isStudentEmail, studentEmail } from "@/lib/auth/student-identity";
-import { publicEnv } from "@/lib/env.public";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { createClient } from "@/lib/supabase/server";
 
@@ -14,7 +13,7 @@ type Db = Awaited<ReturnType<typeof createClient>>;
  * (profile, enrolment, role) is written with the caller's own client so RLS re-checks it.
  * If the app rows fail, the auth user is deleted again.
  */
-async function withAuthUser<T>(
+export async function withAuthUser<T>(
   create: () => Promise<{ id: string }>,
   rest: (id: string) => Promise<T>,
 ): Promise<T> {
@@ -27,7 +26,7 @@ async function withAuthUser<T>(
   }
 }
 
-function authError(error: { code?: string; status?: number } | null): never {
+export function authError(error: { code?: string; status?: number } | null): never {
   throw new ActionError(
     error?.code === "email_exists" || error?.status === 422 ? "duplicate" : "failed",
   );
@@ -127,57 +126,6 @@ export async function provisionStudent(
   return { id, pin };
 }
 
-export interface NewStaff {
-  email: string;
-  fullName: string;
-  schoolId: string | null;
-  locale: "en" | "ar";
-  /** true = send Supabase's invite email now; false = create silently (they use the sign-in page). */
-  sendInvite: boolean;
-}
-
-/**
- * `grant` (the person's first role) runs inside the rollback: if RLS refuses the role, no
- * half-made account is left behind to block a second try.
- */
-export async function provisionStaff(
-  db: Db,
-  s: NewStaff,
-  grant?: (id: string) => Promise<void>,
-): Promise<string> {
-  const admin = createAdminClient();
-  return withAuthUser(
-    async () => {
-      const { data, error } = s.sendInvite
-        ? await admin.auth.admin.inviteUserByEmail(s.email, {
-            redirectTo: `${publicEnv().NEXT_PUBLIC_APP_URL}/auth/callback?locale=${s.locale}`,
-            data: { full_name: s.fullName },
-          })
-        : await admin.auth.admin.createUser({
-            email: s.email,
-            email_confirm: true,
-            user_metadata: { full_name: s.fullName },
-          });
-      if (error || !data.user) authError(error);
-      return { id: data.user.id };
-    },
-    async (uid) => {
-      check(
-        await db.from("profiles").insert({
-          id: uid,
-          school_id: s.schoolId,
-          kind: "staff",
-          full_name: s.fullName,
-          email: s.email,
-          locale: s.locale,
-        }),
-      );
-      await grant?.(uid);
-      return uid;
-    },
-  );
-}
-
 /**
  * New PIN, for student sign-in identities only. The check is on the auth account itself (not
  * the editable profile row), so a PIN can never become the password of a staff email.
@@ -194,3 +142,5 @@ export async function setPin(userId: string): Promise<string> {
   if (error) throw new ActionError("failed");
   return pin;
 }
+
+export { type NewStaff, provisionStaff } from "./provision-staff";

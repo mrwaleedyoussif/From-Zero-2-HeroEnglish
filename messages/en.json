@@ -137,7 +137,8 @@
     "unitsFolderLink": "That does not look like a Drive folder link.",
     "unitsFolderMissing": "The folder was not found. Paste the folder's link, or create LinguaPath / 01_Content / Units in Drive.",
     "unitsNone": "No JSON files were found in that folder.",
-    "unitsTooMany": "Too many files in one go (400 at most). Import one level's folder at a time."
+    "unitsTooMany": "Too many files in one go (400 at most). Import one level's folder at a time.",
+    "emailNotSent": "The account could not be created because the invitation email was not sent. Check the email service (Resend key and sender address in Vercel), then try again."
   },
   "Done": {
     "saved": "Saved",

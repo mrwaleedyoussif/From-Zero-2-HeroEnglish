@@ -8,7 +8,7 @@ import { getActor } from "@/lib/auth/session";
 
 /** Owner: send one tiny request to the AI reader and say plainly whether it works. */
 export async function testAiReader(): Promise<
-  ActionResult<{ result: AiCheck; status?: number; model: string }>
+  ActionResult<{ result: AiCheck; status?: number; model: string; detail?: string }>
 > {
   return runAction(async () => {
     const actor = await getActor();

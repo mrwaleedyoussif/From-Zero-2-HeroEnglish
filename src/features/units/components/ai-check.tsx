@@ -12,6 +12,7 @@ export function AiCheck() {
   const te = useTranslations("Errors");
   const [answer, setAnswer] = useState<string | null>(null);
   const [good, setGood] = useState(false);
+  const [detail, setDetail] = useState<string | null>(null);
   const [pending, start] = useTransition();
   return (
     <div className="flex flex-col gap-2 border-t border-border pt-4" data-ai-check>
@@ -25,6 +26,7 @@ export function AiCheck() {
             const r = await testAiReader();
             if (!r.ok || !r.data) return setAnswer(te(r.ok ? "failed" : r.error));
             setGood(r.data.result === "ok");
+            setDetail(r.data.detail ?? null);
             setAnswer(
               t(`aiCheck.${r.data.result}`, {
                 model: r.data.model,
@@ -45,6 +47,11 @@ export function AiCheck() {
           data-kind={good ? "right" : "hint"}
         >
           {answer}
+          {detail && (
+            <span dir="ltr" className="mt-1 block font-normal" data-ai-detail>
+              {t("aiCheckDetail")} <code>{detail}</code>
+            </span>
+          )}
         </p>
       )}
     </div>

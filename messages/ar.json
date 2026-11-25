@@ -107,7 +107,9 @@
     "accountTitle": "كلمة المرور",
     "accountIntro": "عيّن كلمة مرور للحساب {email} لتدخل دون انتظار رسالة بريد.",
     "accountBack": "العودة إلى التطبيق",
-    "passwordEmail": "بريدك الإلكتروني"
+    "passwordEmail": "بريدك الإلكتروني",
+    "showSecret": "أظهر ما كتبته",
+    "hideSecret": "أخفِ ما كتبته"
   },
   "Landing": {
     "welcome": "مرحبًا، {name}",

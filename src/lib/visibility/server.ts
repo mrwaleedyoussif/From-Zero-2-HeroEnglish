@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import type { Actor } from "@/lib/auth/session";
 import { isFeatureOnFor } from "@/lib/flags/server";
-import { defaultVisibility } from "@/lib/registry";
+import { defaultVisibility, moduleOf } from "@/lib/registry";
 import { createClient } from "@/lib/supabase/server";
 import { decide, type VisibilityDecision, type VisibilityRule } from "./engine";
 
@@ -31,6 +31,8 @@ export async function isVisible(actor: Actor, key: string): Promise<boolean> {
 export async function isVisibleTo(userId: string, key: string): Promise<boolean> {
   // Features also have an on/off switch (Visibility Studio → feature flags).
   if (key.startsWith("feature.") && !(await isFeatureOnFor(userId, key))) return false;
+  const parent = moduleOf(key);
+  if (parent && !(await explainVisibility(userId, parent)).visible) return false;
   return (await explainVisibility(userId, key)).visible;
 }
 

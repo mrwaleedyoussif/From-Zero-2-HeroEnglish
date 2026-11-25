@@ -101,3 +101,8 @@ begin
   values (pg_temp.demo_id('coach'), teacher, school, 'coaching', 'manual') on conflict do nothing;
   perform public.apply_supervision_defaults(school);
 end $$;
+
+-- Demo only: the placement test is off by default (registry); the demo shows it so it can be tested.
+insert into public.visibility_rules (target_key, subject_type, subject_id, effect, note)
+select 'module.placement', 'plan', p.id, 'show', 'demo: placement test on'
+from public.plans p where p.key = 'free';

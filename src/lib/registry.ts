@@ -41,7 +41,8 @@ export const registry = [
   ...group("module", 1, ["core"]),
   ...group("module", 2, ["billing"]),
   ...group("module", 3, ["content"]),
-  ...group("module", 4, ["placement"]),
+  // Off until the Owner shows it (Visibility Studio): the STEP placement test is being replaced.
+  ...group("module", 4, ["placement"], false),
   ...group("module", 5, ["learning"]),
   ...group("module", 6, ["rewards"]),
   ...group("module", 7, ["dashboards", "supervision"]),
@@ -145,6 +146,28 @@ export function isKnownKey(key: string): key is VisibilityKey {
 }
 
 /** Default visibility: registry default, or visible for dynamic content keys. */
+/**
+ * Keys that belong to a module: hiding the module hides them all (one switch for the Owner).
+ * Showing the module does not override a rule that hides one of its parts.
+ */
+const MODULE_PARTS: Record<string, readonly string[]> = {
+  "module.placement": [
+    "page.student.placement",
+    "nav.student.placement",
+    "page.teacher.placement",
+    "nav.teacher.placement",
+    "widget.student.placementCta",
+    "widget.leadership.placementDistribution",
+    "feature.placementWriting",
+    "feature.placementSpeaking",
+  ],
+};
+const moduleByPart = new Map(
+  Object.entries(MODULE_PARTS).flatMap(([module, parts]) => parts.map((p) => [p, module])),
+);
+/** The module a key belongs to, if any. */
+export const moduleOf = (key: string): string | undefined => moduleByPart.get(key);
+
 export function defaultVisibility(key: string): boolean {
   return byKey.get(key)?.defaultVisible ?? true;
 }

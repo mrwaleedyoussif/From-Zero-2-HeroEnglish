@@ -16,6 +16,13 @@ test("student signs in with school code, username and PIN", async ({ page }) => 
   await expect(page.getByLabel("PIN (6 digits)")).toHaveValue("");
 
   await page.getByLabel("PIN (6 digits)").fill("246810");
+  // The eye button shows the PIN so the learner can check it, and hides it again.
+  const pin = page.getByLabel("PIN (6 digits)");
+  await expect(pin).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Show what I typed" }).click();
+  await expect(pin).toHaveAttribute("type", "text");
+  await page.getByRole("button", { name: "Hide what I typed" }).click();
+  await expect(pin).toHaveAttribute("type", "password");
   await page.getByRole("button", { name: "Sign in" }).click();
   // Lands on the student gate (highest-priority gate the student may enter).
   await expect(page).toHaveURL(/\/en\/student$/);

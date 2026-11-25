@@ -107,7 +107,9 @@
     "accountTitle": "Your password",
     "accountIntro": "Set a password for {email} so you can sign in without waiting for an email.",
     "accountBack": "Back to the app",
-    "passwordEmail": "Your email"
+    "passwordEmail": "Your email",
+    "showSecret": "Show what I typed",
+    "hideSecret": "Hide what I typed"
   },
   "Landing": {
     "welcome": "Welcome, {name}",

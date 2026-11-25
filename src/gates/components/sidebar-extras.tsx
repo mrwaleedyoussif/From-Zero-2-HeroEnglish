@@ -5,6 +5,7 @@ import { departmentIcon } from "@/features/departments/icons";
 import { Link } from "@/i18n/navigation";
 import type { Actor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { isVisible } from "@/lib/visibility/server";
 import type { SidebarBlock } from "../types";
 import "@/features/departments/components/department-grid.css";
 
@@ -16,7 +17,8 @@ async function Continue({ actor }: { actor: Actor }) {
     .from("ability_estimates")
     .select("student_id", { count: "exact", head: true })
     .eq("student_id", actor.effective.id);
-  const placed = (count ?? 0) > 0;
+  // While the level test is switched off, Continue always leads to learning.
+  const placed = (count ?? 0) > 0 || !(await isVisible(actor, "module.placement"));
   return (
     <Link
       href={placed ? "/student/lessons" : "/student/placement"}

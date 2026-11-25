@@ -75,12 +75,20 @@ export interface Answered {
   tries: number;
   /** Whether the first try was right (what the score counts). */
   first: boolean;
+  /** Speech checks only: the best score so far (0–100). */
+  score?: number;
 }
 
 export async function loadUnit(
   actor: Actor,
   unitId: string,
-): Promise<{ unit: Unit; answers: Record<string, Answered>; writing: string } | null> {
+): Promise<{
+  unit: Unit;
+  answers: Record<string, Answered>;
+  writing: string;
+  /** Recorded audio by item id, where the Owner has put "<id>.mp3" in Drive 02_Media. */
+  audio: Record<string, string>;
+} | null> {
   if (!/^[A-Z0-9-]{3,40}$/.test(unitId)) return null;
   const admin = createAdminClient();
   const { data: row } = await admin
@@ -97,8 +105,17 @@ export async function loadUnit(
     .eq("student_id", actor.effective.id)
     .eq("unit_id", unitId)
     .maybeSingle();
+  const { data: media } = await admin
+    .from("media_assets")
+    .select("id, file_name")
+    .like("file_name", `${unitId}-%`)
+    .eq("status", "active")
+    .limit(400);
   return {
     unit: unit.data,
+    audio: Object.fromEntries(
+      (media ?? []).map((m) => [m.file_name.replace(/\.[a-z0-9]+$/i, ""), `/api/media/${m.id}`]),
+    ),
     answers: (progress?.answers ?? {}) as unknown as Record<string, Answered>,
     writing: progress?.writing ?? "",
   };

@@ -1,4 +1,4 @@
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
@@ -19,7 +19,7 @@ const unit = {
   objectives: [bi("Read a short text about a phone.")],
   vocabulary: [
     {
-      id: "V1",
+      id: "RW-A1P-U01-VOC01",
       word: "camera",
       pos: "noun",
       ipa: "/ˈkæm.rə/",
@@ -66,6 +66,10 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
   const folder = join(DRIVE ?? "", "LinguaPath/01_Content/Units/RW/A1P");
   mkdirSync(folder, { recursive: true });
   writeFileSync(join(folder, "unit_01.json"), JSON.stringify(unit));
+  // A recording named after the word it belongs to, and an index file that is not a unit.
+  const recording = join(DRIVE ?? "", "LinguaPath/02_Media/audio/RW-A1P-U01-VOC01.mp3");
+  writeFileSync(recording, "ID3");
+  writeFileSync(join(folder, "..", "manifest.json"), "{}");
   writeFileSync(
     join(folder, "unit_02.json"),
     JSON.stringify({ ...unit, id: "RW-A1P-U02", unit: 2, level: "Z9" }),
@@ -75,7 +79,9 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     await page.goto("/en/owner/content");
     await page.getByRole("button", { name: "Import units from Drive" }).click();
     await expect(page.locator("[data-units-imported='1']")).toContainText("1 saved");
+    await expect(page.locator("[data-unit-issue]")).toHaveCount(1);
     await expect(page.locator("[data-unit-issue]")).toContainText("unit_02.json");
+    await expect(page.locator("[data-units-audio]")).not.toHaveAttribute("data-units-audio", "0");
     // A second import changes nothing.
     await page.getByRole("button", { name: "Import units from Drive" }).click();
     await expect(page.locator("[data-units-imported='0']")).toContainText("1 unchanged");
@@ -84,6 +90,9 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     await expect(page.locator("[data-level='A1+']")).toBeVisible();
     await page.locator("[data-unit='RW-A1P-U01']").click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("A new phone");
+    // The word plays its recording; the paragraph has none and uses the device voice.
+    await expect(page.locator("[data-part='words'] [data-recorded]")).toHaveCount(1);
+    await expect(page.locator("[data-part='passage'] [data-recorded]")).toHaveCount(0);
     // The page never carries the key or the explanation before the learner answers.
     expect(await page.content()).not.toContain("The first sentence says");
 
@@ -99,6 +108,12 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     await page.getByRole("button", { name: "Save my writing" }).click();
     await expect(page.getByText("It is black.")).toBeVisible();
 
+    // Staff see what learners did (the Owner previewing leaves no progress behind).
+    await page.goto("/en/teacher/units");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Course units");
+    await expect(page.getByText("No learner has started a unit yet.")).toBeVisible();
+    await page.goBack();
+
     const { violations } = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
       .analyze();
@@ -107,5 +122,6 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     );
   } finally {
     rmSync(join(DRIVE ?? "", "LinguaPath/01_Content/Units"), { recursive: true, force: true });
+    unlinkSync(recording);
   }
 });

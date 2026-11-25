@@ -4,14 +4,12 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { SpeakButton } from "@/features/units/components/speak-button";
 import { Bi, UnitPanel } from "@/features/units/components/unit-panel";
+import { UnitGrammar, UnitQuestions, UnitText } from "@/features/units/components/unit-sections";
 import {
-  UnitGrammar,
-  UnitQuestions,
   UnitScript,
   UnitShadow,
   UnitSpeaking,
-  UnitText,
-} from "@/features/units/components/unit-sections";
+} from "@/features/units/components/unit-speech-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
 import { UnitWriting } from "@/features/units/components/unit-writing";
 import { loadUnit } from "@/features/units/queries";
@@ -27,7 +25,7 @@ export default async function UnitPage({
   const actor = await requirePermission(locale, "learning:self", "page.student.units");
   const loaded = await loadUnit(actor, unitId);
   if (!loaded || loaded.unit.strand !== strand) notFound();
-  const { unit, answers, writing } = loaded;
+  const { unit, answers, writing, audio } = loaded;
   const t = await getTranslations("Units");
   const skill = unit.writing_skill;
   const task = unit.writing_task;
@@ -69,7 +67,7 @@ export default async function UnitPage({
                 className="flex flex-col gap-1 rounded-xl border border-border bg-background p-3"
               >
                 <div className="flex items-center gap-2">
-                  <SpeakButton text={w.word} label={t("listen")} />
+                  <SpeakButton text={w.word} label={t("listen")} src={audio[w.id]} />
                   <strong className="text-lg">{w.word}</strong>
                   {w.pos && <span className="unit-chip rounded-full px-2 text-xs">{w.pos}</span>}
                 </div>
@@ -91,7 +89,7 @@ export default async function UnitPage({
           <Bi en={unit.hook.prediction.en} ar={unit.hook.prediction.ar} />
         </UnitPanel>
       )}
-      {unit.script && <UnitScript script={unit.script} />}
+      {unit.script && <UnitScript script={unit.script} unitId={unit.id} audio={audio} />}
       <UnitQuestions
         unitId={unit.id}
         title={t("listenQuestions")}
@@ -99,9 +97,17 @@ export default async function UnitPage({
         questions={unit.listening}
         answers={answers}
       />
-      {unit.speaking_task && <UnitSpeaking task={unit.speaking_task} />}
-      {unit.model_text && <UnitShadow model={unit.model_text} />}
-      {unit.passage && <UnitText text={unit.passage} part="passage" />}
+      {unit.speaking_task && (
+        <UnitSpeaking
+          task={unit.speaking_task}
+          unitId={unit.id}
+          best={answers["speech:speaking"]?.score}
+        />
+      )}
+      {unit.model_text && (
+        <UnitShadow model={unit.model_text} unitId={unit.id} audio={audio} answers={answers} />
+      )}
+      {unit.passage && <UnitText text={unit.passage} part="passage" audio={audio} />}
       <UnitQuestions
         unitId={unit.id}
         title={t("questions")}
@@ -109,7 +115,7 @@ export default async function UnitPage({
         questions={unit.comprehension}
         answers={answers}
       />
-      {unit.context_text && <UnitText text={unit.context_text} part="context" />}
+      {unit.context_text && <UnitText text={unit.context_text} part="context" audio={audio} />}
       {grammar && <UnitGrammar lesson={grammar} />}
       <UnitQuestions
         unitId={unit.id}

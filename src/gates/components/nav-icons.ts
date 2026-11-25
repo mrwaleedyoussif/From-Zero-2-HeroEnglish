@@ -53,6 +53,7 @@ export const ICONS: Record<string, LucideIcon> = {
   studentLogin: GraduationCap,
   staffLogin: Users,
   departments: LayoutGrid,
+  units: Library,
 };
 
 /** Every icon gets a colour of its own, the same on every visit (by its position in the list). */

@@ -97,6 +97,9 @@ export async function checkAi(): Promise<{
     return { result: "ok", model };
   } catch (error) {
     const detail = reason(error);
+    console.warn(
+      `ai check: ${error instanceof Anthropic.APIError ? error.status : "no reply"} ${detail ?? ""}`,
+    );
     if (error instanceof Anthropic.AuthenticationError)
       return { result: "badKey", status: 401, model, detail };
     if (error instanceof Anthropic.PermissionDeniedError)
@@ -110,6 +113,7 @@ export async function checkAi(): Promise<{
         result: /credit|billing|balance/i.test(error.message) ? "noCredit" : "failed",
         status: 400,
         model,
+        detail,
       };
     if (error instanceof Anthropic.APIConnectionError)
       return { result: "unreachable", model, detail };

@@ -56,6 +56,8 @@ export const serverEnvSchema = publicEnvSchema
     /** AI feedback on writing and answers (lib/ai). Needs ANTHROPIC_API_KEY; off = rules only. */
     AI_ENABLED: flag(false),
     ANTHROPIC_API_KEY: optionalString,
+    /** Also let the AI reader draw word pictures (extra cost). Off: AI marks writing only. */
+    AI_PICTURES: flag(false),
     AI_MODEL: z.string().min(3).default("claude-opus-5-5"),
     DEFAULT_TIMEZONE: z.string().min(1).default("Asia/Riyadh"),
     /** Multiplies sign-in rate limits; raise only for automated test runs (default 1). */

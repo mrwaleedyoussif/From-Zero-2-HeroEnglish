@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { ActionError, type ActionResult, runAction } from "@/lib/action-result";
-import { aiReady, askAi } from "@/lib/ai";
+import { aiPictures, askAi } from "@/lib/ai";
 import { assertCanWrite } from "@/lib/auth/can";
 import { platformTarget } from "@/lib/auth/scope";
 import { getActor } from "@/lib/auth/session";
@@ -19,7 +19,7 @@ async function allowed() {
   const actor = await getActor();
   if (!actor) throw new ActionError("signedOut");
   await assertCanWrite(actor, "content:import", platformTarget);
-  if (!aiReady()) throw new ActionError("aiOff");
+  if (!aiPictures()) throw new ActionError("aiOff");
 }
 
 interface Word {

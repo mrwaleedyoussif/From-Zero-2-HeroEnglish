@@ -10,6 +10,9 @@ export function aiReady(): boolean {
   return env.AI_ENABLED && !!env.ANTHROPIC_API_KEY;
 }
 
+/** Whether the AI reader may also draw word pictures (a separate switch: it costs extra). */
+export const aiPictures = () => aiReady() && serverEnv().AI_PICTURES;
+
 let client: Anthropic | undefined;
 
 /**

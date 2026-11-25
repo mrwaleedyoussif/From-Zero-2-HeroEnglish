@@ -6,3 +6,4 @@ because `askAi` returns `null` whenever the service is off, slow, refuses or fai
 
 - `AI_MODEL` picks the model (default `claude-opus-5-5`).
 - Learner text is sent without names or ids.
+- With only these set, AI is used for writing feedback and nothing else. Word pictures need `AI_PICTURES=true` as well.

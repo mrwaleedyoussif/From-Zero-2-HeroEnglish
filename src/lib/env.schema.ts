@@ -58,7 +58,9 @@ export const serverEnvSchema = publicEnvSchema
     ANTHROPIC_API_KEY: optionalString,
     /** Also let the AI reader draw word pictures (extra cost). Off: AI marks writing only. */
     AI_PICTURES: flag(false),
-    AI_MODEL: z.string().min(3).default("claude-opus-5-5"),
+    AI_MODEL: z.string().min(3).default("claude-sonnet-5-5"),
+    /** How hard the AI reader thinks: more is slower and costs a little more. */
+    AI_EFFORT: z.enum(["low", "medium", "high"]).default("medium"),
     DEFAULT_TIMEZONE: z.string().min(1).default("Asia/Riyadh"),
     /** Multiplies sign-in rate limits; raise only for automated test runs (default 1). */
     RATE_LIMIT_MULTIPLIER: z.coerce.number().int().min(1).max(1000).default(1),

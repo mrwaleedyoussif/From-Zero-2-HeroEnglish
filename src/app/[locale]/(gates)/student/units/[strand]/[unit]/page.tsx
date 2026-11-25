@@ -16,7 +16,7 @@ import { loadUnit, strandUnits } from "@/features/units/queries";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
 
-/** Submitting writing may wait up to 40 s for the AI reader: allow the request that long. */
+/** Submitting writing may wait up to 50 s for the AI reader: allow the request that long. */
 export const maxDuration = 60;
 
 /** One unit, in its author's order: aims, words, reading, questions, writing lesson and task. */

@@ -37,17 +37,17 @@ export async function askAi<T extends z.ZodType>(
 ): Promise<z.infer<T> | null> {
   if (!aiReady()) return null;
   const env = serverEnv();
-  client ??= new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, timeout: 40_000, maxRetries: 1 });
+  client ??= new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, timeout: 50_000, maxRetries: 0 });
   try {
     const response = await client.messages.parse(
       {
         model: env.AI_MODEL,
         max_tokens: room.maxTokens ?? 8000,
-        output_config: { effort: "low", format: zodOutputFormat(shape) },
+        output_config: { effort: env.AI_EFFORT, format: zodOutputFormat(shape) },
         system,
         messages: [{ role: "user", content: user }],
       },
-      { timeout: room.timeout ?? 40_000 },
+      { timeout: room.timeout ?? 50_000 },
     );
     if (response.stop_reason === "refusal" || response.stop_reason === "max_tokens") return null;
     return response.parsed_output ?? null;
@@ -91,7 +91,7 @@ export async function checkAi(): Promise<{
     await probe.messages.create({
       model,
       max_tokens: 512,
-      output_config: { effort: "low" },
+      output_config: { effort: env.AI_EFFORT },
       messages: [{ role: "user", content: "Reply with the word ready." }],
     });
     return { result: "ok", model };

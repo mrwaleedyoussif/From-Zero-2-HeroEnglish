@@ -30,7 +30,10 @@ const base = {
   skill: text,
   stem: text,
   difficulty: z.number().int().min(1).max(5).optional(),
-  explanation: bi.optional(),
+  /** Why the answer is right; the Arabic hint is optional (some keys give English only). */
+  explanation: z.object({ en: text, ar: z.string().optional() }).optional(),
+  /** The part of a quiz the question belongs to ("Part B — Error Identification …"). */
+  part: z.string().optional(),
 };
 const question = z.discriminatedUnion("type", [
   z.object({
@@ -79,7 +82,7 @@ export const unitSchema = z
           /** Syllables ("re·fute") and their stress ("oO": the big O is the strong one). */
           syllables: z.string().optional(),
           stress: z.string().optional(),
-          definition: text,
+          definition: z.string().optional(),
           arabic: z.string().optional(),
           example: z.string().optional(),
         }),
@@ -144,6 +147,31 @@ export const unitSchema = z
       })
       .optional(),
     practice: z.array(question).default([]),
+    /** Where a STEP Foundation lesson comes from (booklet, unit, lesson "1.2" or "UR"). */
+    step: z.object({ booklet: z.string(), unit: z.number(), lesson: z.string() }).optional(),
+    // STEP Foundation lessons: the teaching, then a quiz in groups (a text or a recording each).
+    notes: z
+      .array(
+        z.object({
+          heading: z.string(),
+          lines: z.array(z.string()).default([]),
+          staff: z.boolean().optional(),
+        }),
+      )
+      .default([]),
+    quiz: z
+      .array(
+        z.object({
+          id: text,
+          title: z.string().optional(),
+          text: z.object({ id: text, title: text, paragraphs: z.array(text).min(1) }).optional(),
+          /** A recording: "<track>.mp3" in Drive; the script is shown once the quiz is done. */
+          track: z.string().optional(),
+          script: z.array(z.object({ speaker: text, text })).optional(),
+          questions: z.array(question).min(1),
+        }),
+      )
+      .default([]),
     writing_skill: z
       .looseObject({
         name: bi,
@@ -164,14 +192,20 @@ export const unitSchema = z
         word_count: z.tuple([z.number().int(), z.number().int()]).optional(),
         planning_frame: z.array(text).default([]),
         starters: z.array(text).default([]),
-        checklist: z.array(bi).default([]),
+        checklist: z.array(z.object({ en: text, ar: z.string().optional() })).default([]),
         model_answer_4: z.string().optional(),
       })
       .optional(),
   })
   .loose()
   .superRefine((unit, ctx) => {
-    if (!unit.passage && !unit.script && !unit.model_text && !unit.context_text)
+    if (
+      !unit.passage &&
+      !unit.script &&
+      !unit.model_text &&
+      !unit.context_text &&
+      unit.quiz.length === 0
+    )
       ctx.addIssue({
         code: "custom",
         message: "no text: passage, script, model_text or context_text",
@@ -192,12 +226,14 @@ export function questionsOf(unit: {
   listening: Question[];
   practice: Question[];
   grammar_lesson?: { controlled: Question[] };
+  quiz?: { questions: Question[] }[];
 }): Question[] {
   return [
     ...unit.comprehension,
     ...unit.listening,
     ...(unit.grammar_lesson?.controlled ?? []),
     ...unit.practice,
+    ...(unit.quiz ?? []).flatMap((g) => g.questions),
   ];
 }
 

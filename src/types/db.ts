@@ -477,6 +477,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"department_states": {
+                  Row: {
+                    "audience": string,"created_at": string,"department": string,"id": string,"state": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "audience": string,"created_at"?: string,"department": string,"id"?: string,"state": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "audience"?: string,"created_at"?: string,"department"?: string,"id"?: string,"state"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"departments": {
                   Row: {
                     "code": string,"created_at": string,"description": string | null,"id": string,"name_ar": string,"name_en": string,"placement_max_items": number,"placement_min_items": number,"placement_target_se": number,"status": string,"updated_at": string
@@ -957,6 +971,52 @@ isOneToOne: false
                   }
                   Update: {
                     "created_at"?: string,"drive_file_id"?: string,"drive_modified_at"?: string | null,"file_name"?: string,"folder"?: string | null,"id"?: string,"last_seen_at"?: string,"mime_type"?: string,"size_bytes"?: number | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"mock_attempts": {
+                  Row: {
+                    "answers": NonNullable<Json>,"created_at": string,"exam_id": string,"finished_at": string | null,"id": string,"played": NonNullable<Json>,"school_id": string | null,"score": number | null,"section": number,"section_scores": Json | null,"section_started_at": string,"student_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answers"?: NonNullable<Json>,"created_at"?: string,"exam_id": string,"finished_at"?: string | null,"id"?: string,"played"?: NonNullable<Json>,"school_id"?: string | null,"score"?: number | null,"section"?: number,"section_scores"?: Json | null,"section_started_at"?: string,"student_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "answers"?: NonNullable<Json>,"created_at"?: string,"exam_id"?: string,"finished_at"?: string | null,"id"?: string,"played"?: NonNullable<Json>,"school_id"?: string | null,"score"?: number | null,"section"?: number,"section_scores"?: Json | null,"section_started_at"?: string,"student_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mock_attempts_exam_id_fkey"
+      columns: ["exam_id"]
+isOneToOne: false
+      referencedRelation: "mock_exams"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mock_attempts_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mock_attempts_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"mock_exams": {
+                  Row: {
+                    "content": NonNullable<Json>,"created_at": string,"hash": string,"id": string,"set_code": string,"status": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "content": NonNullable<Json>,"created_at"?: string,"hash": string,"id": string,"set_code": string,"status"?: string,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "content"?: NonNullable<Json>,"created_at"?: string,"hash"?: string,"id"?: string,"set_code"?: string,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -2206,6 +2266,9 @@ isOneToOne: false
                            },
 "log_audit":
 { Args: { "p_action": string,"p_details"?: Json,"p_school"?: string,"p_target_id"?: string,"p_target_table": string }; Returns: undefined
+                           },
+"mock_set_answer":
+{ Args: { "p_attempt": string,"p_choice": string,"p_question": string }; Returns: undefined
                            },
 "my_school_id":
 { Args: Record<PropertyKey, never>; Returns: string

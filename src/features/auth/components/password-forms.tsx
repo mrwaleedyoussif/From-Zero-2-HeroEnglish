@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { startTransition, useActionState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { SecretInput } from "@/components/secret-input";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { FormState } from "../actions";
@@ -41,10 +42,9 @@ export function PasswordSignIn() {
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="pw-password">{t("password")}</Label>
-        <Input
+        <SecretInput
           id="pw-password"
           name="password"
-          type="password"
           autoComplete="current-password"
           dir="ltr"
           required
@@ -75,10 +75,9 @@ export function SetPasswordForm() {
       )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="new-password">{t("newPassword")}</Label>
-        <Input
+        <SecretInput
           id="new-password"
           name="password"
-          type="password"
           autoComplete="new-password"
           dir="ltr"
           minLength={10}
@@ -89,10 +88,9 @@ export function SetPasswordForm() {
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
-        <Input
+        <SecretInput
           id="confirm-password"
           name="confirm"
-          type="password"
           autoComplete="new-password"
           dir="ltr"
           required

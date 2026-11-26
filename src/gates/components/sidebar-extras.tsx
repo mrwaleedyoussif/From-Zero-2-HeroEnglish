@@ -1,10 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { audienceFor, CATALOG } from "@/features/departments/catalog";
+import { audienceFor, departmentHref } from "@/features/departments/catalog";
+import { departmentsFor } from "@/features/departments/states";
 import { departmentIcon } from "@/features/departments/icons";
 import { Link } from "@/i18n/navigation";
 import type { Actor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { isVisible } from "@/lib/visibility/server";
 import type { SidebarBlock } from "../types";
 import "@/features/departments/components/department-grid.css";
 
@@ -16,7 +18,8 @@ async function Continue({ actor }: { actor: Actor }) {
     .from("ability_estimates")
     .select("student_id", { count: "exact", head: true })
     .eq("student_id", actor.effective.id);
-  const placed = (count ?? 0) > 0;
+  // While the level test is switched off, Continue always leads to learning.
+  const placed = (count ?? 0) > 0 || !(await isVisible(actor, "module.placement"));
   return (
     <Link
       href={placed ? "/student/lessons" : "/student/placement"}
@@ -49,7 +52,7 @@ async function Departments({ actor }: { actor: Actor }) {
         {t("mine")}
       </summary>
       <ul className="flex flex-col gap-0.5 p-1.5 pt-0">
-        {CATALOG[audience].map((d) => {
+        {(await departmentsFor(audience)).map((d) => {
           const Icon = departmentIcon(d.key);
           return (
             <li key={d.key} data-hue={d.hue} className="flex items-center gap-2 px-1 py-1 text-sm">
@@ -62,9 +65,9 @@ async function Departments({ actor }: { actor: Actor }) {
                   {t("soon")}
                 </span>
               ) : (
-                d.strand && (
+                departmentHref(d) && (
                   <Link
-                    href={`/student/units/${d.strand}`}
+                    href={departmentHref(d) ?? ""}
                     className="dept-soon rounded-full px-2 py-0.5 text-[11px] font-bold hover:underline"
                   >
                     {t("open")}

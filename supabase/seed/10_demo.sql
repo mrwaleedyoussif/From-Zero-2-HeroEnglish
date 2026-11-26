@@ -101,3 +101,4 @@ begin
   values (pg_temp.demo_id('coach'), teacher, school, 'coaching', 'manual') on conflict do nothing;
   perform public.apply_supervision_defaults(school);
 end $$;
+

@@ -9,7 +9,8 @@ import { OrderPicker } from "./order-picker";
 const TFNG = ["True", "False", "Not Given"] as const;
 
 /** Arabic support under an English line. */
-function Ar({ children }: { children: string }) {
+function Ar({ children }: { children?: string }) {
+  if (!children) return null;
   return (
     <span lang="ar" dir="rtl" className="block text-sm opacity-90">
       {children}
@@ -113,7 +114,7 @@ export function UnitQuestion({
         )}
         {checked?.correct === false && !done && (
           <div className="unit-feedback rounded-xl px-3 py-2" data-kind="hint">
-            <p className="font-semibold">{t("tryAgain")}</p>
+            <p className="font-semibold whitespace-pre-line">{t("tryAgain")}</p>
             {checked.hint && (
               <p>
                 💡 {checked.hint.en}

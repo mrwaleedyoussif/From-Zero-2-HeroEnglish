@@ -107,7 +107,9 @@
     "accountTitle": "Your password",
     "accountIntro": "Set a password for {email} so you can sign in without waiting for an email.",
     "accountBack": "Back to the app",
-    "passwordEmail": "Your email"
+    "passwordEmail": "Your email",
+    "showSecret": "Show what I typed",
+    "hideSecret": "Hide what I typed"
   },
   "Landing": {
     "welcome": "Welcome, {name}",
@@ -470,7 +472,8 @@
         "integrations": "Integrations",
         "rewards": "Rewards",
         "insights": "Insights",
-        "learners": "General learners"
+        "learners": "General learners",
+        "departments": "Departments"
       },
       "leadership": {
         "home": "Overview",
@@ -501,7 +504,9 @@
         "lessons": "Lessons",
         "profile": "My profile",
         "rewards": "Rewards",
-        "units": "Course units"
+        "units": "Course units",
+        "step": "STEP Preparation",
+        "mocks": "STEP mock exams"
       }
     },
     "nav": {
@@ -520,7 +525,8 @@
         "integrations": "Integrations",
         "rewards": "Rewards",
         "insights": "Insights",
-        "learners": "General learners"
+        "learners": "General learners",
+        "departments": "Departments"
       },
       "leadership": {
         "home": "Overview",
@@ -551,7 +557,9 @@
         "lessons": "Lessons",
         "profile": "My profile",
         "rewards": "Rewards",
-        "units": "Course units"
+        "units": "Course units",
+        "step": "STEP Preparation",
+        "mocks": "STEP mock exams"
       }
     },
     "widget": {
@@ -607,7 +615,8 @@
       "streaks": "Streaks",
       "kaganTeams": "Kagan teams",
       "webPush": "Web push notifications",
-      "parentGate": "Parent portal"
+      "parentGate": "Parent portal",
+      "unitOrder": "Units one after another"
     },
     "limit": {
       "students": "Max students",
@@ -1815,6 +1824,84 @@
       "unreachable": "The site could not reach the AI service. Try again in a minute.",
       "failed": "The AI reader did not work (error {status}). Tell Claude Code this number."
     },
-    "aiCheckDetail": "Anthropic says:"
+    "aiCheckDetail": "Anthropic says:",
+    "locked": "Locked",
+    "lockedHint": "Opens when you finish the unit before it.",
+    "lockedTitle": "This unit is not open yet",
+    "lockedBody": "Finish the units before it first. Units open one after another, so you always know what comes next.",
+    "toList": "Back to the units",
+    "lesson": "The lesson",
+    "aboutLesson": "About this lesson",
+    "forTeachers": "For teachers",
+    "quiz": "Lesson quiz · {n} questions",
+    "playRecording": "Play the recording",
+    "finishToOpen": "Finish this lesson to open the next one."
+  },
+  "OwnerDepartments": {
+    "title": "Departments",
+    "intro": "Choose, for each kind of learner, which departments are open, shown as \"Soon\", or hidden. Changes apply at once and are kept in the audit log.",
+    "state": {
+      "open": "Open",
+      "soon": "Soon",
+      "hidden": "Hidden"
+    },
+    "stateHelp": "Open: learners can enter. Soon: shown, but closed. Hidden: not shown at all.",
+    "saved": "Saved: {name} is now {state} for {audience}.",
+    "notSaved": "Could not save. Please try again.",
+    "changed": "changed by you"
+  },
+  "Step": {
+    "title": "STEP Preparation",
+    "intro": "STEP Foundation with Mr. Waleed Yussuf: four booklets from A1 to B2+, lesson by lesson, and full mock exams.",
+    "booklets": {
+      "SG": "Grammar (Sentence Structure)",
+      "SR": "Reading Comprehension",
+      "SL": "Listening",
+      "SC": "Composition Analysis"
+    },
+    "lessonsDone": "{done} of {total} lessons finished",
+    "notLoaded": "Not loaded yet",
+    "mocks": "Mock exams",
+    "mocksSoon": "30 full mock exams, timed like the real exam. Coming soon.",
+    "mocksHelp": "30 full exams, timed like the real test."
+  },
+  "Mocks": {
+    "title": "STEP mock exams",
+    "intro": "Full STEP-style exams: 100 questions in four timed sections, as in the real test. Each recording plays once, and a finished section cannot be opened again.",
+    "noneYet": "No mock exams are loaded yet.",
+    "setA": "Set A · Foundation",
+    "setB": "Set B · Intermediate",
+    "setC": "Set C · Exam standard",
+    "underWay": "Under way: carry on",
+    "best": "Best score: {n} / 100",
+    "notTaken": "Not taken yet",
+    "band": "Difficulty: {band}",
+    "place": "Section {n} of {total}",
+    "before": "Before you start",
+    "sectionLine": "{q} questions · {m} minutes",
+    "rule1": "Each section has its own clock. When the time is up, the next section starts.",
+    "rule2": "You can change answers inside a section until you finish it. You cannot go back to a finished section.",
+    "rule3": "Each recording plays once. Read its questions first.",
+    "start": "Start the exam",
+    "again": "Sit this exam again",
+    "timeUp": "Time is up for this section.",
+    "notSaved": "Could not save. Please check your connection.",
+    "cantPlay": "This recording cannot be played.",
+    "palette": "Questions in this section",
+    "played": "Played",
+    "playOnce": "Play the recording (once)",
+    "question": "Question",
+    "finishSection": "Finish this section",
+    "sure": "Finish this section? You cannot come back to it.",
+    "sureEmpty": "{n, plural, one {# question is not answered.} other {# questions are not answered.}} Finish anyway? You cannot come back.",
+    "yesFinish": "Yes, finish",
+    "keepWorking": "Keep working",
+    "score": "{score} / {total}",
+    "guideNote": "The score guide is the series' own guide, not an official STEP conversion.",
+    "review": "Review: {name}",
+    "script": "Show the script",
+    "yours": "Your answer",
+    "none": "no answer",
+    "correct": "Right answer"
   }
 }

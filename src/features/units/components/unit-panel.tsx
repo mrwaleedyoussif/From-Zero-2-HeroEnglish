@@ -35,10 +35,10 @@ export function UnitPanel({
 }
 
 /** An English line with its Arabic support beneath. */
-export function Bi({ en, ar }: { en: string; ar?: string }) {
+export function Bi({ en, ar }: { en?: string; ar?: string }) {
   return (
     <span className="flex flex-col">
-      <span>{en}</span>
+      {en && <span>{en}</span>}
       {ar && (
         <span lang="ar" dir="rtl" className="text-sm text-muted-foreground">
           {ar}

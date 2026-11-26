@@ -1,10 +1,13 @@
 import "server-only";
-import { audienceFor, CATALOG } from "@/features/departments/catalog";
+import { audienceFor } from "@/features/departments/catalog";
+import { departmentsFor } from "@/features/departments/states";
 import { canSomewhere } from "@/lib/auth/can";
 import type { Actor } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { WritingFeedback } from "./writing-feedback";
+import { isVisible } from "@/lib/visibility/server";
+import { courseLevel, openUnits } from "./order";
 import { type Level, LEVELS, type Unit, unitSchema } from "./schema";
 
 /**
@@ -23,7 +26,12 @@ export async function mayOpenStrand(actor: Actor, strand: string): Promise<boole
     .eq("id", schoolId)
     .maybeSingle();
   const audience = school && audienceFor(school);
-  return !!audience && CATALOG[audience].some((d) => d.strand === strand && !d.soon);
+  return (
+    !!audience &&
+    (await departmentsFor(audience)).some(
+      (d) => !d.soon && (d.strand === strand || d.strands?.includes(strand)),
+    )
+  );
 }
 
 export interface UnitCard {
@@ -35,6 +43,8 @@ export interface UnitCard {
   correct: number;
   total: number;
   done: boolean;
+  /** Not open yet: the learner finishes the unit before it first (see order.ts). */
+  locked: boolean;
 }
 
 /** A strand's units in course order, with the learner's progress on each. */
@@ -55,7 +65,7 @@ export async function strandUnits(actor: Actor, strand: string): Promise<UnitCar
   ]);
   const mine = new Map((progress ?? []).map((p) => [p.unit_id, p]));
   const order = (l: string) => LEVELS.indexOf(l as Level);
-  return (units ?? [])
+  const cards = (units ?? [])
     .map((u) => ({
       id: u.id,
       level: u.level as Level,
@@ -65,8 +75,31 @@ export async function strandUnits(actor: Actor, strand: string): Promise<UnitCar
       correct: mine.get(u.id)?.correct ?? 0,
       total: mine.get(u.id)?.total ?? 0,
       done: !!mine.get(u.id)?.completed_at,
+      locked: false,
     }))
     .sort((a, b) => order(a.level) - order(b.level) || a.unit - b.unit);
+  if (!(await stepByStep(actor))) return cards;
+  const open = openUnits(cards, await placedLevel(actor.effective.id));
+  return cards.map((c) => ({ ...c, locked: !open.has(c.id) }));
+}
+
+/** Learners go unit by unit (the Owner can switch this off: feature.unitOrder); staff never. */
+async function stepByStep(actor: Actor): Promise<boolean> {
+  if (await canSomewhere(actor, "content:view")) return false;
+  return isVisible(actor, "feature.unitOrder");
+}
+
+/** The learner's level from their latest placement result, or null before any test. */
+async function placedLevel(studentId: string): Promise<Level | null> {
+  const { data } = await createAdminClient()
+    .from("ability_estimates")
+    .select("cefr")
+    .eq("student_id", studentId)
+    .is("skill_id", null)
+    .order("measured_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return courseLevel(data?.cefr);
 }
 
 /** What the learner has done on one question so far. */
@@ -102,6 +135,8 @@ export async function loadUnit(
     .eq("id", unitId)
     .maybeSingle();
   if (!row || row.status !== "active" || !(await mayOpenStrand(actor, row.strand))) return null;
+  // A unit the learner has not reached yet cannot be opened, nor answered (actions load it too).
+  if ((await strandUnits(actor, row.strand)).find((u) => u.id === unitId)?.locked) return null;
   const unit = unitSchema.safeParse(row.content);
   if (!unit.success) return null;
   const { data: progress } = await admin
@@ -110,12 +145,24 @@ export async function loadUnit(
     .eq("student_id", actor.effective.id)
     .eq("unit_id", unitId)
     .maybeSingle();
-  const { data: media } = await admin
-    .from("media_assets")
-    .select("id, file_name, mime_type")
-    .like("file_name", `${unitId}-%`)
-    .eq("status", "active")
-    .limit(400);
+  // Items named after the unit ("<unit id>-…"), and recordings a quiz names by track code.
+  const tracks = unit.data.quiz.flatMap((g) => (g.track ? [`${g.track}.mp3`] : []));
+  const [{ data: own }, { data: named_ }] = await Promise.all([
+    admin
+      .from("media_assets")
+      .select("id, file_name, mime_type")
+      .like("file_name", `${unitId}-%`)
+      .eq("status", "active")
+      .limit(400),
+    tracks.length
+      ? admin
+          .from("media_assets")
+          .select("id, file_name, mime_type")
+          .in("file_name", tracks)
+          .eq("status", "active")
+      : Promise.resolve({ data: [] }),
+  ]);
+  const media = [...(own ?? []), ...(named_ ?? [])];
   const named = (picture: boolean) =>
     Object.fromEntries(
       (media ?? [])

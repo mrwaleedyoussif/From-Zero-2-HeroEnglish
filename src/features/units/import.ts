@@ -8,9 +8,13 @@ import { platformTarget } from "@/lib/auth/scope";
 import { getActor } from "@/lib/auth/session";
 import { getStorage, StorageNotConnectedError } from "@/lib/storage";
 import { listMedia, syncMediaAssets } from "@/features/content/import/drive-source";
+import { addFolderMedia } from "@/features/content/import/external-media";
 import { findLayoutFolder, listRecursive } from "@/lib/storage/layout";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/db";
+import { mockSchema } from "@/features/mocks/schema";
+import { saveMocks } from "./save-mocks";
+import { STEP_BOOKLET, STEP_MOCK, unitDocsIn } from "./read-file";
 import { unitSchema } from "./schema";
 
 /** Where unit files are looked for when no folder link is given. */
@@ -68,6 +72,11 @@ export async function listUnitFiles(folderInput: string): Promise<ActionResult<U
     } catch {
       throw new ActionError("unitsFolderMissing");
     }
+    // The STEP Foundation pack: its booklet part files (Word) hold the lessons.
+    const step = listed.filter(
+      (f) => STEP_BOOKLET.test(f.file.name) || STEP_MOCK.test(f.file.name),
+    );
+    if (step.length > 0) return step.map(({ path, file }) => ({ id: file.id, path }));
     const json = listed.filter((f) => f.file.name.toLowerCase().endsWith(".json"));
     // A course folder also holds other JSON (an index, rubrics, a schema). When its unit files
     // are named "unit…", only those are read; otherwise every JSON file is tried.
@@ -96,33 +105,40 @@ export async function importUnitBatch(files: UnitFile[]): Promise<ActionResult<U
     const raws = await Promise.all(
       batch.map(async ({ id, path }) => {
         try {
-          return { path, raw: await new Response((await drive.stream(id)).body).text() };
+          const bytes = await new Response((await drive.stream(id)).body).arrayBuffer();
+          return { path, raw: new Uint8Array(bytes) };
         } catch {
           return { path, raw: null };
         }
       }),
     );
     const units = [];
+    const mocks = [];
     for (const { path, raw } of raws) {
       if (raw === null) {
         problem(path, "could not be read from Drive");
         continue;
       }
-      let json: unknown;
-      try {
-        json = JSON.parse(raw.replace(/^\uFEFF/, ""));
-      } catch {
-        problem(path, "is not valid JSON");
+      const read = unitDocsIn(path, raw);
+      if ("problem" in read) {
+        problem(path, read.problem);
         continue;
       }
-      const parsed = unitSchema.safeParse(json);
-      if (!parsed.success) {
-        const first = parsed.error.issues[0];
-        problem(path, `${first?.path.join(".") || "file"}: ${first?.message ?? "invalid"}`);
-        continue;
+      if (read.mock) {
+        const parsed = mockSchema.safeParse(read.mock);
+        if (parsed.success) mocks.push(parsed.data);
+        else problem(path, `mock: ${parsed.error.issues[0]?.message ?? "invalid"}`);
       }
-      const hash = createHash("sha256").update(JSON.stringify(parsed.data)).digest("hex");
-      units.push({ unit: parsed.data, hash });
+      for (const json of read.docs) {
+        const parsed = unitSchema.safeParse(json);
+        if (!parsed.success) {
+          const first = parsed.error.issues[0];
+          problem(path, `${first?.path.join(".") || "file"}: ${first?.message ?? "invalid"}`);
+          continue;
+        }
+        const hash = createHash("sha256").update(JSON.stringify(parsed.data)).digest("hex");
+        units.push({ unit: parsed.data, hash });
+      }
     }
     const { data: existing } = await db
       .from("course_units")
@@ -151,21 +167,24 @@ export async function importUnitBatch(files: UnitFile[]): Promise<ActionResult<U
       check(
         await db.from("course_units").upsert([...rows.values()] as never, { onConflict: "id" }),
       );
-    result.imported = rows.size;
+    result.imported = rows.size + (await saveMocks(db, mocks, result));
     return result;
   });
 }
 
 /**
  * Step 3: register the files in /LinguaPath/02_Media so units can play their recorded audio
- * (a file named after the item it belongs to, e.g. "LS-A1-U01-VOC01.mp3").
+ * (a file named after the item it belongs to, e.g. "LS-A1-U01-VOC01.mp3"), and the audio and
+ * pictures inside the linked folder itself (a pack such as STEP keeps its MP3s beside its files).
  */
-export async function linkUnitAudio(): Promise<ActionResult<{ files: number }>> {
+export async function linkUnitAudio(folderInput = ""): Promise<ActionResult<{ files: number }>> {
   return runAction(async () => {
     const drive = await ready();
     const db = await createClient();
     const media = await syncMediaAssets(db, await listMedia(drive));
+    const folder = folderIdFrom(folderInput) ?? (await findLayoutFolder(drive, UNITS_FOLDER));
+    const own = folder ? await addFolderMedia(db, drive, folder) : 0;
     revalidatePath("/[locale]/owner/content", "page");
-    return { files: media.size };
+    return { files: media.size + own };
   });
 }

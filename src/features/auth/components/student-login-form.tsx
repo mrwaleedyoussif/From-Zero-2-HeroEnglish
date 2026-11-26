@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { startTransition, useActionState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { SecretInput } from "@/components/secret-input";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type FormState, studentSignIn } from "../actions";
@@ -61,11 +62,10 @@ export function StudentLoginForm({ defaultSchool }: { defaultSchool?: string }) 
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="pin">{t("pin")}</Label>
-        <Input
+        <SecretInput
           id="pin"
           ref={pinRef}
           name="pin"
-          type="password"
           inputMode="numeric"
           pattern="[0-9]{6}"
           maxLength={6}

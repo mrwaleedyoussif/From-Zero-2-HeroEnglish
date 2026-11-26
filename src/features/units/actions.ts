@@ -18,7 +18,7 @@ export interface Feedback {
   hint?: Bi;
   /** Once the question is settled: the right answer and why. */
   answer?: string;
-  explanation?: Bi;
+  explanation?: { en: string; ar?: string };
 }
 
 /**

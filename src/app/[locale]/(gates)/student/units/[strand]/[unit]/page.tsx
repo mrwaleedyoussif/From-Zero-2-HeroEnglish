@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Lightbulb, PenLine, Target } from "lucide-react";
+import { ChevronLeft, Lightbulb, PenLine, Target } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
@@ -10,13 +10,18 @@ import {
   UnitSpeaking,
 } from "@/features/units/components/unit-speech-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
+import { UnitLocked } from "@/features/units/components/unit-locked";
+import { UnitNav } from "@/features/units/components/unit-nav";
+import { UnitNotes } from "@/features/units/components/unit-notes";
+import { UnitQuiz } from "@/features/units/components/unit-quiz";
 import { UnitWords } from "@/features/units/components/unit-words";
 import { UnitWriting } from "@/features/units/components/unit-writing";
 import { loadUnit, strandUnits } from "@/features/units/queries";
 import { Link } from "@/i18n/navigation";
+import { canSomewhere } from "@/lib/auth/can";
 import { requirePermission } from "@/lib/auth/guard";
 
-/** Submitting writing may wait up to 40 s for the AI reader: allow the request that long. */
+/** Submitting writing may wait up to 50 s for the AI reader: allow the request that long. */
 export const maxDuration = 60;
 
 /** One unit, in its author's order: aims, words, reading, questions, writing lesson and task. */
@@ -26,10 +31,12 @@ export default async function UnitPage({
   const { locale, strand, unit: unitId } = await params;
   setRequestLocale(locale);
   const actor = await requirePermission(locale, "learning:self", "page.student.units");
+  const all = await strandUnits(actor, strand);
+  const card = all.find((u) => u.id === unitId);
+  if (card?.locked) return <UnitLocked strand={strand} unit={card.unit} title={card.title} />;
   const loaded = await loadUnit(actor, unitId);
   if (!loaded || loaded.unit.strand !== strand) notFound();
   const { unit, answers, writing, audio, images } = loaded;
-  const all = await strandUnits(actor, strand);
   const next = all[all.findIndex((u) => u.id === unit.id) + 1];
   const t = await getTranslations("Units");
   const skill = unit.writing_skill;
@@ -39,8 +46,8 @@ export default async function UnitPage({
   return (
     <>
       <PageHeader
-        title={`${t("unitN", { n: unit.unit })} · ${unit.title}`}
-        description={`${unit.level}${unit.title_ar ? ` · ${unit.title_ar}` : ""}`}
+        title={unit.step ? unit.title : `${t("unitN", { n: unit.unit })} · ${unit.title}`}
+        description={`${unit.level}${unit.step ? ` · ${unit.topic}` : ""}${unit.title_ar ? ` · ${unit.title_ar}` : ""}`}
         actions={
           <Link
             href={`/student/units/${strand}`}
@@ -126,6 +133,10 @@ export default async function UnitPage({
         questions={unit.practice}
         answers={answers}
       />
+      {unit.notes.length > 0 && (
+        <UnitNotes notes={unit.notes} staff={await canSomewhere(actor, "content:view")} />
+      )}
+      <UnitQuiz unit={unit} answers={answers} audio={audio} />
       {skill && <UnitSkill skill={skill} title={skill.name.en} showAnswer={t("showAnswer")} />}
       {task && (
         <UnitPanel hue="orange" icon={PenLine} title={t("writingTask")} part="task">
@@ -164,28 +175,7 @@ export default async function UnitPage({
           )}
         </UnitPanel>
       )}
-      <nav aria-label={t("unitNav")} className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href={`/student/units/${strand}`}
-          className="inline-flex min-h-11 items-center gap-1 rounded-full border-2 border-border bg-card px-5 font-semibold"
-        >
-          <ChevronLeft aria-hidden className="size-4 rtl:rotate-180" />
-          {t("allUnits")}
-        </Link>
-        {next && (
-          <Link
-            href={`/student/units/${strand}/${next.id}`}
-            data-next-unit={next.id}
-            className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-bold text-primary-foreground shadow-md"
-          >
-            {t("nextLesson")}
-            <span className="text-sm font-normal opacity-90">
-              {t("unitN", { n: next.unit })} · {next.title}
-            </span>
-            <ChevronRight aria-hidden className="size-5 rtl:rotate-180" />
-          </Link>
-        )}
-      </nav>
+      <UnitNav strand={strand} next={next} />
     </>
   );
 }

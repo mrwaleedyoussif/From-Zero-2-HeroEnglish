@@ -6,6 +6,7 @@ import { rewardsSummary } from "@/features/rewards/queries";
 import { Link } from "@/i18n/navigation";
 import { localName } from "@/lib/i18n-names";
 import { createClient } from "@/lib/supabase/server";
+import { isVisible } from "@/lib/visibility/server";
 import { appTimeZone } from "@/lib/time";
 import type { WidgetProps } from ".";
 import "./student-journey.css";
@@ -50,9 +51,11 @@ export async function StudentJourneyWidget({ actor }: WidgetProps) {
   const tasksDone = (tasks ?? []).filter((x) => x.status === "done").length;
   const { current, next, progress } = summary.level;
   const first = actor.effective.full_name.split(/\s+/)[0] ?? "";
-  const next_ = placed
-    ? { href: "/student/lessons", title: t("continue"), hint: t("continueHint") }
-    : { href: "/student/placement", title: t("findLevel"), hint: t("findLevelHint") };
+  const testOn = await isVisible(actor, "module.placement");
+  const next_ =
+    placed || !testOn
+      ? { href: "/student/lessons", title: t("continue"), hint: t("continueHint") }
+      : { href: "/student/placement", title: t("findLevel"), hint: t("findLevelHint") };
 
   return (
     <section

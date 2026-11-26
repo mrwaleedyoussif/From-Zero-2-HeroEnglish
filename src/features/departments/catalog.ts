@@ -1,7 +1,8 @@
 /**
  * The departments each kind of learner is offered, in the Owner's order. Names live in the
  * "Departments" messages (English and Arabic); `inside` lists what a department contains.
- * A department stays `soon` until its content is loaded: shown, but not yet open.
+ * `soon` here is only the default: the Owner opens, closes or hides each department per audience
+ * (Owner → Departments, table department_states), and `departmentsFor` applies that choice.
  */
 export const HUES = [
   "violet",
@@ -27,7 +28,14 @@ export interface Department {
   soon: boolean;
   /** The course units behind the department, once loaded (see features/units). */
   strand?: string;
+  /** A department with several courses (STEP: four booklets) and its own page. */
+  strands?: readonly string[];
+  home?: string;
 }
+
+/** Where an open department leads inside the app. */
+export const departmentHref = (d: Department) =>
+  d.home ?? (d.strand ? `/student/units/${d.strand}` : undefined);
 
 const dept = (key: string, hue: Hue, inside?: readonly string[]): Department => ({
   key,
@@ -45,7 +53,13 @@ const SKILLS = [
   dept("languageUsage", "amber", ["grammar", "vocabulary"]),
 ];
 const EXAMS = [
-  dept("step", "teal", PREP),
+  // STEP Foundation: four booklets (Grammar, Reading, Listening, Composition) and mock exams.
+  {
+    ...dept("step", "teal", PREP),
+    soon: false,
+    strands: ["SG", "SR", "SL", "SC"],
+    home: "/student/step",
+  },
   dept("ielts", "pink", PREP),
   dept("sat", "orange", PREP),
   dept("gat", "fuchsia", PREP),
@@ -69,8 +83,9 @@ export const CATALOG: Record<Audience, readonly Department[]> = {
     dept("handwriting", "cyan"),
     ...EXAMS,
   ],
+  // Andalus has the same units behind its skill departments; they open when the Owner opens them.
   "andalus-international": [
-    ...SKILLS,
+    ...SKILLS.map((d) => (STRANDS[d.key] ? { ...d, strand: STRANDS[d.key] } : d)),
     dept("ghars", "lime", ["wordLine", "performingArts"]),
     dept("mcgrawHill", "brown", ["grades3to12"]),
     dept("mapTest", "indigo"),
@@ -91,4 +106,19 @@ export function audienceFor(school: { code: string; name_en: string }): Audience
   return name.includes("andalus") && name.includes("international")
     ? "andalus-international"
     : null;
+}
+
+export const DEPARTMENT_STATES = ["open", "soon", "hidden"] as const;
+export type DepartmentState = (typeof DEPARTMENT_STATES)[number];
+
+/** A department as learners of one audience see it, after the Owner's choice. */
+export function applyStates(
+  audience: Audience,
+  chosen: ReadonlyMap<string, DepartmentState>,
+): Department[] {
+  return CATALOG[audience].flatMap((d) => {
+    const state = chosen.get(d.key);
+    if (state === "hidden") return [];
+    return [state ? { ...d, soon: state === "soon" } : d];
+  });
 }

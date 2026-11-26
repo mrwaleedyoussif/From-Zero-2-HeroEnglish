@@ -33,15 +33,17 @@ describe("department catalogue", () => {
     ]);
   });
 
-  it("opens general learners' four unit departments; everything else says Soon, STEP too", () => {
+  it("opens general learners' four unit departments and STEP for everyone; the rest say Soon", () => {
     const open = AUDIENCES.flatMap((a) =>
-      CATALOG[a].filter((d) => !d.soon).map((d) => `${a}:${d.key}:${d.strand}`),
+      CATALOG[a].filter((d) => !d.soon).map((d) => `${a}:${d.key}:${d.strand ?? d.home}`),
     );
     expect(open).toEqual([
       "general:listeningSpeaking:LS",
       "general:shadowing:SH",
       "general:readingWriting:RW",
       "general:languageUsage:LU",
+      "general:step:/student/step",
+      "andalus-international:step:/student/step",
     ]);
   });
 

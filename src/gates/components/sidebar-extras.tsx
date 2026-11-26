@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { audienceFor } from "@/features/departments/catalog";
+import { audienceFor, departmentHref } from "@/features/departments/catalog";
 import { departmentsFor } from "@/features/departments/states";
 import { departmentIcon } from "@/features/departments/icons";
 import { Link } from "@/i18n/navigation";
@@ -65,9 +65,9 @@ async function Departments({ actor }: { actor: Actor }) {
                   {t("soon")}
                 </span>
               ) : (
-                d.strand && (
+                departmentHref(d) && (
                   <Link
-                    href={`/student/units/${d.strand}`}
+                    href={departmentHref(d) ?? ""}
                     className="dept-soon rounded-full px-2 py-0.5 text-[11px] font-bold hover:underline"
                   >
                     {t("open")}

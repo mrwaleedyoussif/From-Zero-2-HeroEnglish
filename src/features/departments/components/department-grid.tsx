@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import type { Audience } from "../catalog";
+import { type Audience, departmentHref } from "../catalog";
 import { departmentIcon } from "../icons";
 import { departmentsFor } from "../states";
 import "./department-grid.css";
@@ -55,9 +55,9 @@ export async function DepartmentGrid({
                 <span className="dept-soon shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold">
                   {t("soon")}
                 </span>
-              ) : linked && d.strand ? (
+              ) : linked && departmentHref(d) ? (
                 <Link
-                  href={`/student/units/${d.strand}`}
+                  href={departmentHref(d) ?? ""}
                   className="dept-soon inline-flex min-h-9 shrink-0 items-center rounded-full px-3 text-sm font-bold underline-offset-2 hover:underline"
                 >
                   {t("open")} →

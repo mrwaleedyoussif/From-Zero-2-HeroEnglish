@@ -28,7 +28,14 @@ export interface Department {
   soon: boolean;
   /** The course units behind the department, once loaded (see features/units). */
   strand?: string;
+  /** A department with several courses (STEP: four booklets) and its own page. */
+  strands?: readonly string[];
+  home?: string;
 }
+
+/** Where an open department leads inside the app. */
+export const departmentHref = (d: Department) =>
+  d.home ?? (d.strand ? `/student/units/${d.strand}` : undefined);
 
 const dept = (key: string, hue: Hue, inside?: readonly string[]): Department => ({
   key,
@@ -46,7 +53,13 @@ const SKILLS = [
   dept("languageUsage", "amber", ["grammar", "vocabulary"]),
 ];
 const EXAMS = [
-  dept("step", "teal", PREP),
+  // STEP Foundation: four booklets (Grammar, Reading, Listening, Composition) and mock exams.
+  {
+    ...dept("step", "teal", PREP),
+    soon: false,
+    strands: ["SG", "SR", "SL", "SC"],
+    home: "/student/step",
+  },
   dept("ielts", "pink", PREP),
   dept("sat", "orange", PREP),
   dept("gat", "fuchsia", PREP),

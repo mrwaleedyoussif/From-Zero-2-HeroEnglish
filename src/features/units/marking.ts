@@ -1,10 +1,11 @@
 import { isCorrect, type Question, type Unit } from "./schema";
 
 /** The question sets of a unit, by the name the page gives them. */
-export const SETS = ["listening", "comprehension", "controlled", "practice"] as const;
+export const SETS = ["listening", "comprehension", "controlled", "practice", "quiz"] as const;
 export type SetName = (typeof SETS)[number];
 export function setOf(unit: Unit, set: SetName): Question[] {
   if (set === "controlled") return unit.grammar_lesson?.controlled ?? [];
+  if (set === "quiz") return unit.quiz.flatMap((g) => g.questions);
   return unit[set];
 }
 

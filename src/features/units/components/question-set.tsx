@@ -2,7 +2,8 @@
 
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useRouter } from "@/i18n/navigation";
+import { Fragment, type ReactNode, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { playCheer } from "@/features/rewards/sounds";
@@ -21,6 +22,7 @@ export function QuestionSet({
   questions,
   from,
   initial,
+  before,
 }: {
   unitId: string;
   set: string;
@@ -29,8 +31,10 @@ export function QuestionSet({
   from: number;
   /** What the learner did earlier (the page was reloaded). */
   initial: Record<string, Checked>;
+  before?: Record<string, ReactNode>;
 }) {
   const t = useTranslations("Units");
+  const router = useRouter();
   const [checked, setChecked] = useState(initial);
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(Object.entries(initial).map(([id, c]) => [id, c.choice])),
@@ -50,21 +54,25 @@ export function QuestionSet({
       setChecked(next);
       const right = Object.values(r.data).filter((f) => f.correct !== false).length;
       playCheer(right === open.length ? "good" : "tryAgain");
+      // A finished exercise can open the next lesson: refresh the page around it.
+      router.refresh();
     });
 
   return (
     <>
       <ol className="flex flex-col gap-6">
         {questions.map((q, i) => (
-          <UnitQuestion
-            key={q.id}
-            number={from + i}
-            q={q}
-            value={values[q.id] ?? ""}
-            onChange={(v) => setValues((old) => ({ ...old, [q.id]: v }))}
-            checked={checked[q.id]}
-            busy={pending}
-          />
+          <Fragment key={q.id}>
+            {before?.[q.id] && <li className="flex flex-col gap-3">{before[q.id]}</li>}
+            <UnitQuestion
+              number={from + i}
+              q={q}
+              value={values[q.id] ?? ""}
+              onChange={(v) => setValues((old) => ({ ...old, [q.id]: v }))}
+              checked={checked[q.id]}
+              busy={pending}
+            />
+          </Fragment>
         ))}
       </ol>
       <div className="flex flex-wrap items-center gap-3" data-submit={set}>

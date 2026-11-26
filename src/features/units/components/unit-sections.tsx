@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { BookOpenText, HelpCircle, type LucideIcon, Sigma } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import type { Hue } from "@/features/departments/catalog";
@@ -63,6 +64,7 @@ export function UnitQuestions({
   from = 1,
   hue = "rose",
   icon = HelpCircle,
+  before,
 }: {
   unitId: string;
   set: SetName;
@@ -74,6 +76,8 @@ export function UnitQuestions({
   from?: number;
   hue?: Hue;
   icon?: LucideIcon;
+  /** Shown just before a question (a reading text, a recording, a part heading), by its id. */
+  before?: Record<string, ReactNode>;
 }) {
   if (questions.length === 0) return null;
   const initial: Record<string, Checked> = {};
@@ -102,6 +106,7 @@ export function UnitQuestions({
         questions={questions.map(publicQuestion)}
         from={from}
         initial={initial}
+        before={before}
       />
     </UnitPanel>
   );

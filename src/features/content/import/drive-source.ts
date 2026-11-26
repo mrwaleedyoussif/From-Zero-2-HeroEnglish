@@ -100,7 +100,12 @@ export async function syncMediaAssets(db: Db, media: MediaFile[]): Promise<Map<s
     );
     if (error) throw new Error("Could not save media list", { cause: error });
   }
-  await db.from("media_assets").update({ status: "missing" }).lt("last_seen_at", now);
+  // Files registered from another folder (a content pack, "external:…") are not in 02_Media.
+  await db
+    .from("media_assets")
+    .update({ status: "missing" })
+    .lt("last_seen_at", now)
+    .not("folder", "like", "external:%");
   const { data } = await selectAll(
     (after) => {
       const q = db.from("media_assets").select("id, file_name").eq("status", "active");

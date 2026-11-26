@@ -8,6 +8,8 @@ import { mayOpenStrand, strandUnits } from "@/features/units/queries";
 import { LEVELS } from "@/features/units/schema";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
+
+const STEP_BOOKLETS = ["SG", "SR", "SL", "SC"];
 import "@/features/units/components/units.css";
 
 const HUES = ["green", "teal", "blue", "violet", "pink", "rose", "orange", "amber"] as const;
@@ -20,6 +22,7 @@ export default async function UnitsPage({ params }: PageProps<"/[locale]/student
   if (!/^[A-Z]{1,8}$/.test(strand) || !(await mayOpenStrand(actor, strand))) notFound();
   const t = await getTranslations("Units");
   const td = await getTranslations("Departments");
+  const ts = await getTranslations("Step");
   const department = Object.values(CATALOG)
     .flat()
     .find((d) => d.strand === strand);
@@ -29,7 +32,13 @@ export default async function UnitsPage({ params }: PageProps<"/[locale]/student
   return (
     <>
       <PageHeader
-        title={department ? td(`names.${department.key}`) : strand}
+        title={
+          STEP_BOOKLETS.includes(strand)
+            ? `${td("names.step")} · ${ts(`booklets.${strand}`)}`
+            : department
+              ? td(`names.${department.key}`)
+              : strand
+        }
         description={t("listIntro", { done, total: units.length })}
       />
       {units.length === 0 && <p className="text-muted-foreground">{t("none")}</p>}

@@ -504,7 +504,8 @@
         "lessons": "Lessons",
         "profile": "My profile",
         "rewards": "Rewards",
-        "units": "Course units"
+        "units": "Course units",
+        "step": "STEP Preparation"
       }
     },
     "nav": {
@@ -555,7 +556,8 @@
         "lessons": "Lessons",
         "profile": "My profile",
         "rewards": "Rewards",
-        "units": "Course units"
+        "units": "Course units",
+        "step": "STEP Preparation"
       }
     },
     "widget": {
@@ -1825,7 +1827,13 @@
     "lockedHint": "Opens when you finish the unit before it.",
     "lockedTitle": "This unit is not open yet",
     "lockedBody": "Finish the units before it first. Units open one after another, so you always know what comes next.",
-    "toList": "Back to the units"
+    "toList": "Back to the units",
+    "lesson": "The lesson",
+    "aboutLesson": "About this lesson",
+    "forTeachers": "For teachers",
+    "quiz": "Lesson quiz · {n} questions",
+    "playRecording": "Play the recording",
+    "finishToOpen": "Finish this lesson to open the next one."
   },
   "OwnerDepartments": {
     "title": "Departments",
@@ -1839,5 +1847,19 @@
     "saved": "Saved: {name} is now {state} for {audience}.",
     "notSaved": "Could not save. Please try again.",
     "changed": "changed by you"
+  },
+  "Step": {
+    "title": "STEP Preparation",
+    "intro": "STEP Foundation with Mr. Waleed Yussuf: four booklets from A1 to B2+, lesson by lesson, and full mock exams.",
+    "booklets": {
+      "SG": "Grammar (Sentence Structure)",
+      "SR": "Reading Comprehension",
+      "SL": "Listening",
+      "SC": "Composition Analysis"
+    },
+    "lessonsDone": "{done} of {total} lessons finished",
+    "notLoaded": "Not loaded yet",
+    "mocks": "Mock exams",
+    "mocksSoon": "30 full mock exams, timed like the real exam. Coming soon."
   }
 }

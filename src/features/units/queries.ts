@@ -26,7 +26,12 @@ export async function mayOpenStrand(actor: Actor, strand: string): Promise<boole
     .eq("id", schoolId)
     .maybeSingle();
   const audience = school && audienceFor(school);
-  return !!audience && (await departmentsFor(audience)).some((d) => d.strand === strand && !d.soon);
+  return (
+    !!audience &&
+    (await departmentsFor(audience)).some(
+      (d) => !d.soon && (d.strand === strand || d.strands?.includes(strand)),
+    )
+  );
 }
 
 export interface UnitCard {
@@ -140,12 +145,24 @@ export async function loadUnit(
     .eq("student_id", actor.effective.id)
     .eq("unit_id", unitId)
     .maybeSingle();
-  const { data: media } = await admin
-    .from("media_assets")
-    .select("id, file_name, mime_type")
-    .like("file_name", `${unitId}-%`)
-    .eq("status", "active")
-    .limit(400);
+  // Items named after the unit ("<unit id>-…"), and recordings a quiz names by track code.
+  const tracks = unit.data.quiz.flatMap((g) => (g.track ? [`${g.track}.mp3`] : []));
+  const [{ data: own }, { data: named_ }] = await Promise.all([
+    admin
+      .from("media_assets")
+      .select("id, file_name, mime_type")
+      .like("file_name", `${unitId}-%`)
+      .eq("status", "active")
+      .limit(400),
+    tracks.length
+      ? admin
+          .from("media_assets")
+          .select("id, file_name, mime_type")
+          .in("file_name", tracks)
+          .eq("status", "active")
+      : Promise.resolve({ data: [] }),
+  ]);
+  const media = [...(own ?? []), ...(named_ ?? [])];
   const named = (picture: boolean) =>
     Object.fromEntries(
       (media ?? [])

@@ -505,7 +505,8 @@
         "profile": "My profile",
         "rewards": "Rewards",
         "units": "Course units",
-        "step": "STEP Preparation"
+        "step": "STEP Preparation",
+        "mocks": "STEP mock exams"
       }
     },
     "nav": {
@@ -557,7 +558,8 @@
         "profile": "My profile",
         "rewards": "Rewards",
         "units": "Course units",
-        "step": "STEP Preparation"
+        "step": "STEP Preparation",
+        "mocks": "STEP mock exams"
       }
     },
     "widget": {
@@ -1860,6 +1862,46 @@
     "lessonsDone": "{done} of {total} lessons finished",
     "notLoaded": "Not loaded yet",
     "mocks": "Mock exams",
-    "mocksSoon": "30 full mock exams, timed like the real exam. Coming soon."
+    "mocksSoon": "30 full mock exams, timed like the real exam. Coming soon.",
+    "mocksHelp": "30 full exams, timed like the real test."
+  },
+  "Mocks": {
+    "title": "STEP mock exams",
+    "intro": "Full STEP-style exams: 100 questions in four timed sections, as in the real test. Each recording plays once, and a finished section cannot be opened again.",
+    "noneYet": "No mock exams are loaded yet.",
+    "setA": "Set A · Foundation",
+    "setB": "Set B · Intermediate",
+    "setC": "Set C · Exam standard",
+    "underWay": "Under way: carry on",
+    "best": "Best score: {n} / 100",
+    "notTaken": "Not taken yet",
+    "band": "Difficulty: {band}",
+    "place": "Section {n} of {total}",
+    "before": "Before you start",
+    "sectionLine": "{q} questions · {m} minutes",
+    "rule1": "Each section has its own clock. When the time is up, the next section starts.",
+    "rule2": "You can change answers inside a section until you finish it. You cannot go back to a finished section.",
+    "rule3": "Each recording plays once. Read its questions first.",
+    "start": "Start the exam",
+    "again": "Sit this exam again",
+    "timeUp": "Time is up for this section.",
+    "notSaved": "Could not save. Please check your connection.",
+    "cantPlay": "This recording cannot be played.",
+    "palette": "Questions in this section",
+    "played": "Played",
+    "playOnce": "Play the recording (once)",
+    "question": "Question",
+    "finishSection": "Finish this section",
+    "sure": "Finish this section? You cannot come back to it.",
+    "sureEmpty": "{n, plural, one {# question is not answered.} other {# questions are not answered.}} Finish anyway? You cannot come back.",
+    "yesFinish": "Yes, finish",
+    "keepWorking": "Keep working",
+    "score": "{score} / {total}",
+    "guideNote": "The score guide is the series' own guide, not an official STEP conversion.",
+    "review": "Review: {name}",
+    "script": "Show the script",
+    "yours": "Your answer",
+    "none": "no answer",
+    "correct": "Right answer"
   }
 }

@@ -975,6 +975,52 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"mock_attempts": {
+                  Row: {
+                    "answers": NonNullable<Json>,"created_at": string,"exam_id": string,"finished_at": string | null,"id": string,"played": NonNullable<Json>,"school_id": string | null,"score": number | null,"section": number,"section_scores": Json | null,"section_started_at": string,"student_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answers"?: NonNullable<Json>,"created_at"?: string,"exam_id": string,"finished_at"?: string | null,"id"?: string,"played"?: NonNullable<Json>,"school_id"?: string | null,"score"?: number | null,"section"?: number,"section_scores"?: Json | null,"section_started_at"?: string,"student_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "answers"?: NonNullable<Json>,"created_at"?: string,"exam_id"?: string,"finished_at"?: string | null,"id"?: string,"played"?: NonNullable<Json>,"school_id"?: string | null,"score"?: number | null,"section"?: number,"section_scores"?: Json | null,"section_started_at"?: string,"student_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "mock_attempts_exam_id_fkey"
+      columns: ["exam_id"]
+isOneToOne: false
+      referencedRelation: "mock_exams"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mock_attempts_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "mock_attempts_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"mock_exams": {
+                  Row: {
+                    "content": NonNullable<Json>,"created_at": string,"hash": string,"id": string,"set_code": string,"status": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "content": NonNullable<Json>,"created_at"?: string,"hash": string,"id": string,"set_code": string,"status"?: string,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "content"?: NonNullable<Json>,"created_at"?: string,"hash"?: string,"id"?: string,"set_code"?: string,"status"?: string,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"notifications": {
                   Row: {
                     "created_at": string,"href": string | null,"id": string,"kind": string,"params": NonNullable<Json>,"read_at": string | null,"school_id": string | null,"user_id": string
@@ -2220,6 +2266,9 @@ isOneToOne: false
                            },
 "log_audit":
 { Args: { "p_action": string,"p_details"?: Json,"p_school"?: string,"p_target_id"?: string,"p_target_table": string }; Returns: undefined
+                           },
+"mock_set_answer":
+{ Args: { "p_attempt": string,"p_choice": string,"p_question": string }; Returns: undefined
                            },
 "my_school_id":
 { Args: Record<PropertyKey, never>; Returns: string

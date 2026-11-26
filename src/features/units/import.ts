@@ -12,7 +12,9 @@ import { addFolderMedia } from "@/features/content/import/external-media";
 import { findLayoutFolder, listRecursive } from "@/lib/storage/layout";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/db";
-import { STEP_BOOKLET, unitDocsIn } from "./read-file";
+import { mockSchema } from "@/features/mocks/schema";
+import { saveMocks } from "./save-mocks";
+import { STEP_BOOKLET, STEP_MOCK, unitDocsIn } from "./read-file";
 import { unitSchema } from "./schema";
 
 /** Where unit files are looked for when no folder link is given. */
@@ -71,7 +73,9 @@ export async function listUnitFiles(folderInput: string): Promise<ActionResult<U
       throw new ActionError("unitsFolderMissing");
     }
     // The STEP Foundation pack: its booklet part files (Word) hold the lessons.
-    const step = listed.filter((f) => STEP_BOOKLET.test(f.file.name));
+    const step = listed.filter(
+      (f) => STEP_BOOKLET.test(f.file.name) || STEP_MOCK.test(f.file.name),
+    );
     if (step.length > 0) return step.map(({ path, file }) => ({ id: file.id, path }));
     const json = listed.filter((f) => f.file.name.toLowerCase().endsWith(".json"));
     // A course folder also holds other JSON (an index, rubrics, a schema). When its unit files
@@ -109,6 +113,7 @@ export async function importUnitBatch(files: UnitFile[]): Promise<ActionResult<U
       }),
     );
     const units = [];
+    const mocks = [];
     for (const { path, raw } of raws) {
       if (raw === null) {
         problem(path, "could not be read from Drive");
@@ -118,6 +123,11 @@ export async function importUnitBatch(files: UnitFile[]): Promise<ActionResult<U
       if ("problem" in read) {
         problem(path, read.problem);
         continue;
+      }
+      if (read.mock) {
+        const parsed = mockSchema.safeParse(read.mock);
+        if (parsed.success) mocks.push(parsed.data);
+        else problem(path, `mock: ${parsed.error.issues[0]?.message ?? "invalid"}`);
       }
       for (const json of read.docs) {
         const parsed = unitSchema.safeParse(json);
@@ -157,7 +167,7 @@ export async function importUnitBatch(files: UnitFile[]): Promise<ActionResult<U
       check(
         await db.from("course_units").upsert([...rows.values()] as never, { onConflict: "id" }),
       );
-    result.imported = rows.size;
+    result.imported = rows.size + (await saveMocks(db, mocks, result));
     return result;
   });
 }

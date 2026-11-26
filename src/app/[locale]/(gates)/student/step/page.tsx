@@ -62,19 +62,20 @@ export default async function StepPage({ params }: PageProps<"/[locale]/student/
           );
         })}
         <li>
-          <div
+          <Link
+            href="/student/step/mocks"
             data-booklet="mocks"
             data-hue="teal"
-            className="unit-panel flex min-h-28 items-center gap-4 rounded-2xl p-5"
+            className="unit-panel flex min-h-28 items-center gap-4 rounded-2xl p-5 outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span aria-hidden className="icon-tile size-12 rounded-xl">
               <ClipboardList className="size-6" />
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="text-lg font-bold">{t("mocks")}</span>
-              <span className="text-sm text-muted-foreground">{t("mocksSoon")}</span>
+              <span className="text-sm text-muted-foreground">{t("mocksHelp")}</span>
             </span>
-          </div>
+          </Link>
         </li>
       </ul>
     </>

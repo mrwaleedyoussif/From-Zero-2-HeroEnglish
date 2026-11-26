@@ -1,4 +1,4 @@
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, Lock } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
@@ -51,32 +51,49 @@ export default async function UnitsPage({ params }: PageProps<"/[locale]/student
               .filter((u) => u.level === level)
               .map((u) => (
                 <li key={u.id}>
-                  <Link
-                    href={`/student/units/${strand}/${u.id}`}
-                    data-unit={u.id}
-                    className="unit-option flex min-h-20 items-center gap-3 rounded-xl p-3 outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <ProgressRing
-                      size={52}
-                      value={u.total ? (u.correct / u.total) * 100 : u.done ? 100 : 0}
-                      display={u.total ? `${u.correct}/${u.total}` : String(u.unit)}
-                      label={t("unitN", { n: u.unit })}
-                    />
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="font-semibold">{u.title}</span>
-                      {u.title_ar && (
-                        <span lang="ar" dir="rtl" className="text-sm text-muted-foreground">
-                          {u.title_ar}
-                        </span>
-                      )}
-                    </span>
-                    {u.done && (
-                      <CircleCheck
-                        aria-label={t("done")}
-                        className="size-6 shrink-0 text-success"
+                  {u.locked ? (
+                    <div
+                      data-unit={u.id}
+                      data-locked
+                      className="unit-option flex min-h-20 items-center gap-3 rounded-xl p-3 opacity-60"
+                    >
+                      <span className="unit-chip flex size-[52px] shrink-0 items-center justify-center rounded-full">
+                        <Lock aria-hidden className="size-5" />
+                      </span>
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="font-semibold">{u.title}</span>
+                        <span className="text-sm text-muted-foreground">{t("lockedHint")}</span>
+                      </span>
+                      <span className="sr-only">{t("locked")}</span>
+                    </div>
+                  ) : (
+                    <Link
+                      href={`/student/units/${strand}/${u.id}`}
+                      data-unit={u.id}
+                      className="unit-option flex min-h-20 items-center gap-3 rounded-xl p-3 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <ProgressRing
+                        size={52}
+                        value={u.total ? (u.correct / u.total) * 100 : u.done ? 100 : 0}
+                        display={u.total ? `${u.correct}/${u.total}` : String(u.unit)}
+                        label={t("unitN", { n: u.unit })}
                       />
-                    )}
-                  </Link>
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="font-semibold">{u.title}</span>
+                        {u.title_ar && (
+                          <span lang="ar" dir="rtl" className="text-sm text-muted-foreground">
+                            {u.title_ar}
+                          </span>
+                        )}
+                      </span>
+                      {u.done && (
+                        <CircleCheck
+                          aria-label={t("done")}
+                          className="size-6 shrink-0 text-success"
+                        />
+                      )}
+                    </Link>
+                  )}
                 </li>
               ))}
           </ul>

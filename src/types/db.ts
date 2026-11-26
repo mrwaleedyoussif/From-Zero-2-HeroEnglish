@@ -477,6 +477,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"department_states": {
+                  Row: {
+                    "audience": string,"created_at": string,"department": string,"id": string,"state": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "audience": string,"created_at"?: string,"department": string,"id"?: string,"state": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "audience"?: string,"created_at"?: string,"department"?: string,"id"?: string,"state"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"departments": {
                   Row: {
                     "code": string,"created_at": string,"description": string | null,"id": string,"name_ar": string,"name_en": string,"placement_max_items": number,"placement_min_items": number,"placement_target_se": number,"status": string,"updated_at": string

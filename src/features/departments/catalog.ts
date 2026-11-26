@@ -1,7 +1,8 @@
 /**
  * The departments each kind of learner is offered, in the Owner's order. Names live in the
  * "Departments" messages (English and Arabic); `inside` lists what a department contains.
- * A department stays `soon` until its content is loaded: shown, but not yet open.
+ * `soon` here is only the default: the Owner opens, closes or hides each department per audience
+ * (Owner → Departments, table department_states), and `departmentsFor` applies that choice.
  */
 export const HUES = [
   "violet",
@@ -69,8 +70,9 @@ export const CATALOG: Record<Audience, readonly Department[]> = {
     dept("handwriting", "cyan"),
     ...EXAMS,
   ],
+  // Andalus has the same units behind its skill departments; they open when the Owner opens them.
   "andalus-international": [
-    ...SKILLS,
+    ...SKILLS.map((d) => (STRANDS[d.key] ? { ...d, strand: STRANDS[d.key] } : d)),
     dept("ghars", "lime", ["wordLine", "performingArts"]),
     dept("mcgrawHill", "brown", ["grades3to12"]),
     dept("mapTest", "indigo"),
@@ -91,4 +93,19 @@ export function audienceFor(school: { code: string; name_en: string }): Audience
   return name.includes("andalus") && name.includes("international")
     ? "andalus-international"
     : null;
+}
+
+export const DEPARTMENT_STATES = ["open", "soon", "hidden"] as const;
+export type DepartmentState = (typeof DEPARTMENT_STATES)[number];
+
+/** A department as learners of one audience see it, after the Owner's choice. */
+export function applyStates(
+  audience: Audience,
+  chosen: ReadonlyMap<string, DepartmentState>,
+): Department[] {
+  return CATALOG[audience].flatMap((d) => {
+    const state = chosen.get(d.key);
+    if (state === "hidden") return [];
+    return [state ? { ...d, soon: state === "soon" } : d];
+  });
 }

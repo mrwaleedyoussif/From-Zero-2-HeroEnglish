@@ -472,7 +472,8 @@
         "integrations": "Integrations",
         "rewards": "Rewards",
         "insights": "Insights",
-        "learners": "General learners"
+        "learners": "General learners",
+        "departments": "Departments"
       },
       "leadership": {
         "home": "Overview",
@@ -522,7 +523,8 @@
         "integrations": "Integrations",
         "rewards": "Rewards",
         "insights": "Insights",
-        "learners": "General learners"
+        "learners": "General learners",
+        "departments": "Departments"
       },
       "leadership": {
         "home": "Overview",
@@ -609,7 +611,8 @@
       "streaks": "Streaks",
       "kaganTeams": "Kagan teams",
       "webPush": "Web push notifications",
-      "parentGate": "Parent portal"
+      "parentGate": "Parent portal",
+      "unitOrder": "Units one after another"
     },
     "limit": {
       "students": "Max students",
@@ -1817,6 +1820,24 @@
       "unreachable": "The site could not reach the AI service. Try again in a minute.",
       "failed": "The AI reader did not work (error {status}). Tell Claude Code this number."
     },
-    "aiCheckDetail": "Anthropic says:"
+    "aiCheckDetail": "Anthropic says:",
+    "locked": "Locked",
+    "lockedHint": "Opens when you finish the unit before it.",
+    "lockedTitle": "This unit is not open yet",
+    "lockedBody": "Finish the units before it first. Units open one after another, so you always know what comes next.",
+    "toList": "Back to the units"
+  },
+  "OwnerDepartments": {
+    "title": "Departments",
+    "intro": "Choose, for each kind of learner, which departments are open, shown as \"Soon\", or hidden. Changes apply at once and are kept in the audit log.",
+    "state": {
+      "open": "Open",
+      "soon": "Soon",
+      "hidden": "Hidden"
+    },
+    "stateHelp": "Open: learners can enter. Soon: shown, but closed. Hidden: not shown at all.",
+    "saved": "Saved: {name} is now {state} for {audience}.",
+    "notSaved": "Could not save. Please try again.",
+    "changed": "changed by you"
   }
 }

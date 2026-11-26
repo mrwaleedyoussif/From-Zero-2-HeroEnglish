@@ -1,7 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { type Audience, CATALOG } from "../catalog";
+import type { Audience } from "../catalog";
 import { departmentIcon } from "../icons";
+import { departmentsFor } from "../states";
 import "./department-grid.css";
 
 /**
@@ -21,10 +22,11 @@ export async function DepartmentGrid({
   const other = locale === "ar" ? "en" : "ar";
   const t = await getTranslations({ locale, namespace: "Departments" });
   const o = await getTranslations({ locale: other, namespace: "Departments" });
+  const departments = await departmentsFor(audience);
 
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-departments={audience}>
-      {CATALOG[audience].map((d, i) => {
+      {departments.map((d, i) => {
         const Icon = departmentIcon(d.key);
         return (
           <li

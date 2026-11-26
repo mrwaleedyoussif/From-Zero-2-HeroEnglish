@@ -41,6 +41,12 @@ export const ownerGate = defineGate({
       group: "content",
     },
     {
+      key: "nav.owner.departments",
+      href: "/owner/departments",
+      permission: "visibility:manage",
+      group: "content",
+    },
+    {
       key: "nav.owner.rewards",
       href: "/owner/rewards",
       permission: "content:import",

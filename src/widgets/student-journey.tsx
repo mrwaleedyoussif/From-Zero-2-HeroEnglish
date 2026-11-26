@@ -52,9 +52,10 @@ export async function StudentJourneyWidget({ actor }: WidgetProps) {
   const { current, next, progress } = summary.level;
   const first = actor.effective.full_name.split(/\s+/)[0] ?? "";
   const testOn = await isVisible(actor, "module.placement");
-  const next_ = placed || !testOn
-    ? { href: "/student/lessons", title: t("continue"), hint: t("continueHint") }
-    : { href: "/student/placement", title: t("findLevel"), hint: t("findLevelHint") };
+  const next_ =
+    placed || !testOn
+      ? { href: "/student/lessons", title: t("continue"), hint: t("continueHint") }
+      : { href: "/student/placement", title: t("findLevel"), hint: t("findLevelHint") };
 
   return (
     <section

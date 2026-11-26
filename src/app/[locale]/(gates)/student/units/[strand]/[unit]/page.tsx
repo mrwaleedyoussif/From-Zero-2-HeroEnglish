@@ -10,6 +10,7 @@ import {
   UnitSpeaking,
 } from "@/features/units/components/unit-speech-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
+import { UnitLocked } from "@/features/units/components/unit-locked";
 import { UnitWords } from "@/features/units/components/unit-words";
 import { UnitWriting } from "@/features/units/components/unit-writing";
 import { loadUnit, strandUnits } from "@/features/units/queries";
@@ -26,10 +27,12 @@ export default async function UnitPage({
   const { locale, strand, unit: unitId } = await params;
   setRequestLocale(locale);
   const actor = await requirePermission(locale, "learning:self", "page.student.units");
+  const all = await strandUnits(actor, strand);
+  const card = all.find((u) => u.id === unitId);
+  if (card?.locked) return <UnitLocked strand={strand} unit={card.unit} title={card.title} />;
   const loaded = await loadUnit(actor, unitId);
   if (!loaded || loaded.unit.strand !== strand) notFound();
   const { unit, answers, writing, audio, images } = loaded;
-  const all = await strandUnits(actor, strand);
   const next = all[all.findIndex((u) => u.id === unit.id) + 1];
   const t = await getTranslations("Units");
   const skill = unit.writing_skill;

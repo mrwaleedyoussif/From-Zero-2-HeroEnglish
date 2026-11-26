@@ -16,6 +16,7 @@ export const CLIENT_NAMESPACES = [
   "Learner",
   "Learning",
   "LocaleSwitcher",
+  "OwnerDepartments",
   "Placement",
   "Rewards",
   "Roles",

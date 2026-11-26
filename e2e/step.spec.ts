@@ -21,6 +21,7 @@ test("the Owner imports a STEP booklet (Word); a student studies the lesson and 
   writeFileSync(join(folder, "STEP_F_B1_Grammar_Unit1_A1_Part1.docx"), makeDocx(SAMPLE_BOOKLET));
   writeFileSync(join(folder, "STEP_F_B1_Grammar_MASTER.docx"), makeDocx(["not read"]));
   const name = sql("select name_en from schools where code = 'RIY01'");
+  const since = sql("select now()");
   sql("update schools set name_en = 'Andalus International School Riyadh' where code = 'RIY01'");
   try {
     const owner = await (await browser.newContext()).newPage();
@@ -62,6 +63,8 @@ test("the Owner imports a STEP booklet (Word); a student studies the lesson and 
     );
     await expect(quiz.locator("[data-question='SG-A1-L1-1-Q02']")).toContainText("C. are");
   } finally {
+    // Finishing work sends the learner notifications; later tests count them.
+    sql(`delete from notifications where created_at >= '${since}'`);
     sql(`update schools set name_en = '${name.replaceAll("'", "''")}' where code = 'RIY01'`);
     sql("delete from course_units where strand = 'SG'");
     rmSync(folder, { recursive: true, force: true });

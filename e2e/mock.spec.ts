@@ -20,6 +20,7 @@ test("a student sits a timed STEP mock section by section and sees the marked re
   mkdirSync(folder, { recursive: true });
   writeFileSync(join(folder, "STEP_F_Mock_01.docx"), makeDocx(SAMPLE_MOCK));
   const name = sql("select name_en from schools where code = 'RIY01'");
+  const since = sql("select now()");
   sql("update schools set name_en = 'Andalus International School Riyadh' where code = 'RIY01'");
   try {
     const owner = await (await browser.newContext()).newPage();
@@ -74,6 +75,8 @@ test("a student sits a timed STEP mock section by section and sees the marked re
     await page.goto("/en/student/step/mocks");
     await expect(page.locator("[data-mock='M01']")).toContainText("Best score: 2");
   } finally {
+    // Finishing work sends the learner notifications; later tests count them.
+    sql(`delete from notifications where created_at >= '${since}'`);
     sql(`update schools set name_en = '${name.replaceAll("'", "''")}' where code = 'RIY01'`);
     sql("delete from mock_exams");
     rmSync(folder, { recursive: true, force: true });

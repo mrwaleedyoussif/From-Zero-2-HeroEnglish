@@ -32,6 +32,7 @@ async function signInStudent(page: Page) {
 test("the Owner opens a department; its units open one after another", async ({ browser }) => {
   test.setTimeout(120_000);
   const name = sql("select name_en from schools where code = 'RIY01'");
+  const since = sql("select now()");
   sql("update schools set name_en = 'Andalus International School Riyadh' where code = 'RIY01'");
   for (const n of [1, 2])
     sql(`insert into course_units (id, strand, level, unit, title, content, hash)
@@ -74,6 +75,8 @@ test("the Owner opens a department; its units open one after another", async ({ 
     await page.locator("[data-next-unit='RW-A1-U02']").click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Order unit 2");
   } finally {
+    // Finishing work sends the learner notifications; later tests count them.
+    sql(`delete from notifications where created_at >= '${since}'`);
     sql(`update schools set name_en = '${name.replaceAll("'", "''")}' where code = 'RIY01'`);
     sql("delete from department_states where audience = 'andalus-international'");
     sql("delete from course_units where id in ('RW-A1-U01', 'RW-A1-U02')");

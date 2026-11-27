@@ -84,16 +84,16 @@ for (const c of [
     await page.getByRole("link", { name: c.see }).click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText(c.title);
     const cards = page.locator("[data-department]");
-    await expect(cards).toHaveCount(10);
-    // Four unit departments and STEP are open for general learners; the rest say Soon.
-    await expect(page.locator("[data-department][data-soon]")).toHaveCount(5);
+    await expect(cards).toHaveCount(11);
+    // The unit departments, both handwriting ones and STEP are open; the rest say Soon.
+    await expect(page.locator("[data-department][data-soon]")).toHaveCount(4);
     await expect(page.locator('[data-department="step"]')).toContainText(c.step);
     await expect(page.locator('[data-department="step"]')).not.toHaveAttribute("data-soon", /.*/);
     await expect(page.locator("[data-department] a, [data-department] button")).toHaveCount(0);
     await audit(page);
 
     await page.goto(`${c.path}/departments/andalus-international`);
-    await expect(page.locator("[data-department]")).toHaveCount(12);
+    await expect(page.locator("[data-department]")).toHaveCount(14);
     await expect(page.locator('[data-department="ghars"]')).toContainText("غرس");
     await audit(page);
   });
@@ -106,7 +106,8 @@ test("the opening plays after Start and can be skipped", async ({ page }) => {
   await expect(page.locator("main")).toHaveAttribute("inert", "");
   await page.getByRole("button", { name: /Skip/ }).click();
   await expect(page.locator("main")).not.toHaveAttribute("inert", "");
-  // The public menu is beside the page.
+  // The public menu waits behind its button on the right edge.
+  await page.locator("[data-menu-button]").click();
   await expect(page.getByRole("link", { name: "Teachers and staff" })).toHaveAttribute(
     "href",
     "/en/login",

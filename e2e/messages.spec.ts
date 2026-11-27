@@ -65,6 +65,12 @@ test("a teacher writes to a class inside the app; the student reads it and canno
       "data-read",
       "1",
     );
+    // Monitor: the class at a glance, then one student's work.
+    await teacher.goto("/en/teacher/monitor");
+    const line = teacher.locator("[data-student]", { hasText: "Omar" });
+    await expect(line.locator("[data-online='true']")).toContainText("Online now");
+    await line.getByRole("link").click();
+    await expect(teacher.locator("[data-student-work]")).toContainText("Units (0)");
     await teacher.goto("/en/teacher/online");
     await expect(teacher.locator("[data-online='true']", { hasText: "Omar" })).toBeVisible();
   } finally {

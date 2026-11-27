@@ -39,11 +39,13 @@ test("the Owner opens a department; its units open one after another", async ({ 
          values ('RW-A1-U0${n}', 'RW', 'A1', ${n}, 'Order unit ${n}', '${unit(n)}'::jsonb, 'x${n}')
          on conflict (id) do nothing`);
   try {
-    // 1. The Owner opens Reading and Writing for Andalus (it starts as "Soon").
+    // 1. The Owner closes Reading and Writing for Andalus, then opens it again.
     const owner = await (await browser.newContext()).newPage();
     await signInByEmail(owner, "owner@demo.linguapath.test");
     await owner.goto("/en/owner/departments");
     const sw = owner.locator("[data-switch='andalus-international:readingWriting']");
+    await expect(sw).toHaveAttribute("data-state", "open");
+    await sw.getByRole("radio", { name: "Soon" }).click();
     await expect(sw).toHaveAttribute("data-state", "soon");
     await sw.getByRole("radio", { name: "Open" }).click();
     await expect(sw).toHaveAttribute("data-state", "open");

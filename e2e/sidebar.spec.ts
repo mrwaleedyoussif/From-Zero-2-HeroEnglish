@@ -2,23 +2,26 @@ import { expect, test } from "@playwright/test";
 import { signInByEmail } from "./helpers";
 
 // The portal menu (sidebar on a computer, bottom bar on a phone) and adding grades to a school.
-test("owner: the menu folds, becomes a bottom bar on a phone, and grades are easy to add", async ({
+test("owner: the menu is a side button that opens and closes by itself, and grades are easy to add", async ({
   page,
 }) => {
   await signInByEmail(page, "owner@demo.linguapath.test");
   await page.goto("/en/owner");
 
-  const fold = page.getByRole("button", { name: "Fold the menu" });
-  await expect(fold).toHaveAttribute("aria-expanded", "true");
-  await fold.click();
-  const open = page.getByRole("button", { name: "Open the menu" });
-  await expect(open).toHaveAttribute("aria-expanded", "false");
-  // Folded: names are still there for screen readers, and the choice survives a reload.
-  await expect(page.getByRole("link", { name: "Schools" })).toBeVisible();
-  await page.reload();
-  await expect(open).toBeVisible();
-  await open.click();
-
+  // The menu waits as a button on the right edge; it opens, and Escape tucks it away again.
+  const button = page.locator("[data-menu-button]");
+  const menu = page.locator("#side-menu");
+  await expect(button).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByRole("link", { name: "Schools" })).toBeHidden();
+  await button.click();
+  await expect(menu).toHaveAttribute("data-open", "true");
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("data-open", "false");
+  await button.click();
+  await page.getByRole("button", { name: "Fold the menu" }).click();
+  await expect(menu).toHaveAttribute("data-open", "false");
+  // A choice closes it by itself.
+  await button.click();
   await page.getByRole("link", { name: "Schools" }).click();
   await page.getByRole("link", { name: "Riyadh Demo School" }).click();
   await page.getByLabel("From grade").fill("1");
@@ -36,14 +39,14 @@ test("owner: the menu folds, becomes a bottom bar on a phone, and grades are eas
   await page.getByRole("button", { name: "Add grade", exact: true }).click();
   await expect(page.getByText(/grade code must be 1 to 4 letters or digits/)).toBeVisible();
 
-  // Phone: the first items sit in a bar at the bottom; the rest are behind "More".
+  // Phone: the same button; a long menu scrolls inside the panel.
   await page.setViewportSize({ width: 375, height: 740 });
   await page.goto("/en/owner");
-  await expect(page.getByRole("link", { name: "Users", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Audit log", exact: true })).toBeHidden();
-  await page.getByText("More", { exact: true }).click();
+  await button.click();
   await page.getByRole("link", { name: "Audit log", exact: true }).click();
   await expect(page).toHaveURL(/\/en\/owner\/audit$/);
+  await expect(menu).toHaveAttribute("data-open", "false");
   expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(
     false,
   );

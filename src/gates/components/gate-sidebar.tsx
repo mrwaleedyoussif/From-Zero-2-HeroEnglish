@@ -110,13 +110,13 @@ export function GateSidebar({
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls="side-menu"
-        aria-label={labels.expand}
         title={labels.expand}
         data-menu-button
         hidden={open}
         className="side-tab dark fixed top-1/2 right-0 z-40 flex size-12 -translate-y-1/2 items-center justify-center rounded-s-2xl print:hidden"
       >
         <Menu aria-hidden className="size-6" />
+        <span className="sr-only">{labels.expand}</span>
         {waiting > 0 && (
           <span className="absolute -start-1.5 -top-1.5 min-w-5 rounded-full bg-[#be123c] px-1 text-center text-xs leading-5 font-bold text-white">
             {waiting > 99 ? "99+" : waiting}

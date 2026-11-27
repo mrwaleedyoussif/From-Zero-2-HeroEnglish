@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { expect, type Page, test } from "@playwright/test";
 import { signInByEmail } from "./helpers";
 
@@ -77,6 +78,47 @@ test("without a code a learner waits until the Owner approves", async ({ page, b
   await expect(page.getByText("Signed in as Layla Learner")).toBeVisible();
   await page.goto("/en/owner/users");
   await expect(page).toHaveURL(/\/en\/student$/); // a learner never reaches staff pages
+});
+
+test("the Owner gives a free trial: the learner is in for 3 days, then waits again", async ({
+  page,
+  browser,
+}) => {
+  const db =
+    process.env.SUPABASE_DB_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
+  const sql = (q: string) => execFileSync("psql", [db, "-qtAc", q]).toString().trim();
+  const email = `trial.${Date.now()}@example.test`;
+  await reachWelcome(page, email);
+  await page.getByRole("button", { name: "Start learning" }).click();
+  await expect(page).toHaveURL(/\/en\/learner\/pending$/);
+
+  const owner = await (await browser.newContext()).newPage();
+  await signInAsOwner(owner);
+  const row = owner.locator(`[data-request="${email}"]`);
+  await row.locator("[data-start-trial]").click();
+  await expect(row.locator("[data-trial='on']")).toContainText("On a free trial until");
+  const days = sql(
+    `select round(extract(epoch from (r.trial_ends_at - now())) / 86400) from learner_requests r
+     join profiles p on p.id = r.user_id where p.email = '${email}'`,
+  );
+  expect(days).toBe("3");
+
+  await tryCode(page, email);
+  await expect(page).toHaveURL(/\/en\/student$/);
+  // The three days pass: the next page says the trial is over, and the account waits again.
+  sql(`update learner_requests r set trial_ends_at = now() - interval '1 minute'
+       from profiles p where p.id = r.user_id and p.email = '${email}'`);
+  await page.goto("/en/student");
+  await expect(page.getByText("Your free trial has ended")).toBeVisible();
+  await page.goto("/en/student");
+  await expect(page).not.toHaveURL(/\/en\/student$/);
+  await owner.reload();
+  await expect(row.locator("[data-trial='over']")).toBeVisible();
+  // Approving lets them stay for good.
+  await row.getByRole("button", { name: "Approve" }).click();
+  await expect(row).toHaveCount(0);
+  await tryCode(page, email);
+  await expect(page).toHaveURL(/\/en\/student$/);
 });
 
 test("an invitation code lets a learner in at once, until its places run out", async ({

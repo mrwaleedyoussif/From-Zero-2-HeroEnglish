@@ -12,6 +12,7 @@ describe("department catalogue", () => {
       "readingWriting",
       "languageUsage",
       "handwriting",
+      "cursiveHandwriting",
       "step",
       "ielts",
       "sat",
@@ -23,6 +24,8 @@ describe("department catalogue", () => {
       "shadowing",
       "readingWriting",
       "languageUsage",
+      "handwriting",
+      "cursiveHandwriting",
       "ghars",
       "mcgrawHill",
       "mapTest",
@@ -33,7 +36,7 @@ describe("department catalogue", () => {
     ]);
   });
 
-  it("opens general learners' four unit departments and STEP for everyone; the rest say Soon", () => {
+  it("opens the unit departments, handwriting and STEP for everyone; the rest say Soon", () => {
     const open = AUDIENCES.flatMap((a) =>
       CATALOG[a].filter((d) => !d.soon).map((d) => `${a}:${d.key}:${d.strand ?? d.home}`),
     );
@@ -42,7 +45,15 @@ describe("department catalogue", () => {
       "general:shadowing:SH",
       "general:readingWriting:RW",
       "general:languageUsage:LU",
+      "general:handwriting:/student/handwriting/print",
+      "general:cursiveHandwriting:/student/handwriting/cursive",
       "general:step:/student/step",
+      "andalus-international:listeningSpeaking:LS",
+      "andalus-international:shadowing:SH",
+      "andalus-international:readingWriting:RW",
+      "andalus-international:languageUsage:LU",
+      "andalus-international:handwriting:/student/handwriting/print",
+      "andalus-international:cursiveHandwriting:/student/handwriting/cursive",
       "andalus-international:step:/student/step",
     ]);
   });

@@ -64,17 +64,7 @@ export function NavItem({
           </span>
         )}
       </span>
-      <span
-        className={
-          bar
-            ? "w-full truncate text-center"
-            : shape === "side"
-              ? "flex-1 truncate group-data-[collapsed=true]/side:sr-only"
-              : "flex-1 truncate"
-        }
-      >
-        {item.label}
-      </span>
+      <span className={bar ? "w-full truncate text-center" : "flex-1 truncate"}>{item.label}</span>
     </Link>
   );
 }

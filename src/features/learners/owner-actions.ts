@@ -13,6 +13,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { approvedEmail } from "./code-email";
 import { inviteSchema } from "./schema";
+import { trialEnd } from "./trial";
 
 const refresh = () => revalidatePath("/[locale]/owner/learners", "page");
 const idOf = (form: FormData) => z.guid().parse(form.get("id"));
@@ -50,6 +51,7 @@ export async function approveLearner(_p: unknown, form: FormData): Promise<Actio
         .from("learner_requests")
         .update({
           status: "approved",
+          trial_ends_at: null,
           decided_by: actor.real.id,
           decided_at: new Date().toISOString(),
         })
@@ -66,6 +68,43 @@ export async function approveLearner(_p: unknown, form: FormData): Promise<Actio
       const locale = learner.locale === "ar" ? "ar" : "en";
       const url = `${serverEnv().NEXT_PUBLIC_APP_URL}/${locale}/learner`;
       // The approval stands even if the email can't be sent.
+      await (
+        await getMailer()
+      )
+        .send(approvedEmail(learner.email, url, locale))
+        .catch(() => undefined);
+    }
+    refresh();
+  });
+}
+
+/** Give a waiting learner a free trial: in now, and waiting for approval again when it ends. */
+export async function startTrial(_p: unknown, form: FormData): Promise<ActionResult> {
+  return runAction(async () => {
+    const id = idOf(form);
+    await owner("users:edit");
+    const learner = await waiting(id);
+    const db = await createClient();
+    const ends = trialEnd();
+    check(await db.from("profiles").update({ status: "active" }).eq("id", id).select("id"));
+    check(
+      await db
+        .from("learner_requests")
+        .update({ trial_ends_at: ends })
+        .eq("user_id", id)
+        .select("user_id"),
+    );
+    await createAdminClient().auth.admin.updateUserById(id, { ban_duration: "none" });
+    await db.rpc("log_audit", {
+      p_action: "learner.trial",
+      p_target_table: "profiles",
+      p_target_id: id,
+      p_school: learner.school_id ?? undefined,
+      p_details: { ends },
+    });
+    if (learner.email) {
+      const locale = learner.locale === "ar" ? "ar" : "en";
+      const url = `${serverEnv().NEXT_PUBLIC_APP_URL}/${locale}/learner`;
       await (
         await getMailer()
       )

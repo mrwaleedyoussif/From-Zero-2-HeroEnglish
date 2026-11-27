@@ -15,7 +15,10 @@ import {
   LayoutGrid,
   Library,
   type LucideIcon,
+  MessageSquare,
+  MonitorCheck,
   NotebookPen,
+  PenLine,
   Plug,
   ScrollText,
   Trophy,
@@ -23,6 +26,7 @@ import {
   UserRound,
   Users,
   UsersRound,
+  Wifi,
 } from "lucide-react";
 
 /** An icon for each kind of page, by the last part of its registry key. */
@@ -54,6 +58,10 @@ export const ICONS: Record<string, LucideIcon> = {
   staffLogin: Users,
   departments: LayoutGrid,
   units: Library,
+  messages: MessageSquare,
+  online: Wifi,
+  monitor: MonitorCheck,
+  handwriting: PenLine,
 };
 
 /** Every icon gets a colour of its own, the same on every visit (by its position in the list). */

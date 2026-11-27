@@ -6,14 +6,17 @@ import { serverEnv } from "@/lib/env";
 import { getMailer } from "@/lib/mail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isVisibleTo } from "@/lib/visibility/server";
 import { requestEmail } from "./code-email";
 import { generalSchoolId, learnersOpen, randomUsername, signupsToday } from "./general";
 import { welcomeSchema } from "./schema";
+import { trialEnd } from "./trial";
 
 /**
  * First visit after the code: create the learner in the general learners group, with the
  * student role and their consent. The Owner decides who gets in: a valid invitation code opens
- * the account at once; without one it stays switched off until the Owner approves the request.
+ * the account at once; without one it stays switched off until the Owner approves the request
+ * (or, with the free-trial switch on, it is open for the trial days first).
  */
 export async function completeProfile(
   _p: { error?: string },
@@ -86,9 +89,18 @@ export async function completeProfile(
       p_school: schoolId,
       p_details: { invite_id: inviteId },
     });
+    // A free trial (the Owner's switch): in at once, for a few days, still waiting for approval.
+    const waits = !open;
+    if (waits && (await isVisibleTo(user.id, "feature.learnerTrial"))) {
+      await admin
+        .from("learner_requests")
+        .update({ trial_ends_at: trialEnd() })
+        .eq("user_id", user.id);
+      open = !(await admin.from("profiles").update({ status: "active" }).eq("id", user.id)).error;
+    }
     // Let the Owner know someone is waiting (never a reason for the sign-up to fail).
     const ownerEmail = serverEnv().OWNER_NOTIFY_EMAIL;
-    if (!open && ownerEmail)
+    if (waits && ownerEmail)
       await getMailer()
         .then((mailer) =>
           mailer.send(

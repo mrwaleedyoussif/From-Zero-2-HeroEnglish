@@ -18,6 +18,7 @@ export const HUES = [
   "lime",
   "fuchsia",
   "brown",
+  "slate",
 ] as const;
 export type Hue = (typeof HUES)[number];
 
@@ -65,6 +66,13 @@ const EXAMS = [
   dept("gat", "fuchsia", PREP),
 ];
 
+// Two handwriting departments: print letters and a joined (cursive) hand, each from letters to
+// paragraphs with tracing and writing that are marked (see features/handwriting).
+const HANDWRITING: Department[] = [
+  { ...dept("handwriting", "cyan"), soon: false, home: "/student/handwriting/print" },
+  { ...dept("cursiveHandwriting", "slate"), soon: false, home: "/student/handwriting/cursive" },
+];
+
 /** The course-unit strand behind a department, where general learners have one. */
 const STRANDS: Partial<Record<string, string>> = {
   readingWriting: "RW",
@@ -80,12 +88,13 @@ export const CATALOG: Record<Audience, readonly Department[]> = {
   // General learners' four skill departments are open: their units are loaded (see STRANDS).
   general: [
     ...SKILLS.map((d) => (STRANDS[d.key] ? { ...d, soon: false, strand: STRANDS[d.key] } : d)),
-    dept("handwriting", "cyan"),
+    ...HANDWRITING,
     ...EXAMS,
   ],
-  // Andalus has the same units behind its skill departments; they open when the Owner opens them.
+  // School students get the same units as general learners, open unless the Owner closes them.
   "andalus-international": [
-    ...SKILLS.map((d) => (STRANDS[d.key] ? { ...d, strand: STRANDS[d.key] } : d)),
+    ...SKILLS.map((d) => (STRANDS[d.key] ? { ...d, soon: false, strand: STRANDS[d.key] } : d)),
+    ...HANDWRITING,
     dept("ghars", "lime", ["wordLine", "performingArts"]),
     dept("mcgrawHill", "brown", ["grades3to12"]),
     dept("mapTest", "indigo"),

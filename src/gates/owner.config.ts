@@ -23,6 +23,18 @@ export const ownerGate = defineGate({
     },
     { key: "nav.owner.roles", href: "/owner/roles", permission: "roles:view", group: "people" },
     {
+      key: "nav.owner.messages",
+      href: "/owner/messages",
+      permission: "messages:monitor",
+      group: "people",
+    },
+    {
+      key: "nav.owner.online",
+      href: "/owner/online",
+      permission: "presence:view",
+      group: "people",
+    },
+    {
       key: "nav.owner.supervision",
       href: "/owner/supervision",
       permission: "supervision:view",

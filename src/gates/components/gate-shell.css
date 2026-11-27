@@ -89,8 +89,8 @@
 
 /* ---- Sidebar ---- */
 .side {
-  position: relative;
   isolation: isolate;
+  overflow: hidden;
   color: #f1f5f9;
   background: linear-gradient(180deg, #0e223d 0%, #152c5b 55%, #2a1f63 100%);
   border-inline-end: 1px solid rgb(255 255 255 / 0.08);
@@ -190,28 +190,28 @@
   animation: side-pulse 2s ease-out infinite;
 }
 
-/* Phone: the same navy as a bar at the bottom; the open page is gold with a mark above it. */
-.side-bar {
-  color: #e2e8f0;
-  background: linear-gradient(100deg, #0e223d, #16356b 55%, #3b2a7a);
-  border-top: 2px solid #e2bd72;
-}
-.side-bar-item {
-  position: relative;
-  color: #e2e8f0;
-}
-.side-bar-item[aria-current="page"] {
+/* The menu's button: a gold-edged navy tab on the middle of the right edge. */
+.side-tab {
   color: #f6dc9c;
-  font-weight: 700;
+  background: linear-gradient(160deg, #0e223d, #2a1f63);
+  border: 2px solid #e2bd72;
+  border-inline-end: 0;
+  box-shadow: -4px 4px 16px rgb(14 34 61 / 0.35);
+  opacity: 0.92;
+  transition:
+    opacity 0.2s,
+    width 0.2s;
 }
-.side-bar-item[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 1.75rem;
-  height: 3px;
-  border-radius: 9999px;
-  background: #f6dc9c;
+.side-tab:hover,
+.side-tab:focus-visible {
+  opacity: 1;
+  width: 3.5rem;
+}
+.side[data-open="false"] {
+  visibility: hidden;
+  transition:
+    transform 0.3s,
+    visibility 0s 0.3s;
 }
 
 @keyframes gate-rise {

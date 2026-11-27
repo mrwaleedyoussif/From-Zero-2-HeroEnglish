@@ -10,6 +10,7 @@ import {
   cancelInvite,
   createInvite,
   rejectLearner,
+  startTrial,
 } from "@/features/learners/owner-actions";
 import { inviteState } from "@/features/learners/invite-state";
 import { requirePermission } from "@/lib/auth/guard";
@@ -26,7 +27,9 @@ export default async function OwnerLearnersPage({ params }: PageProps<"/[locale]
   const [{ data: waiting }, { data: invites }] = await Promise.all([
     db
       .from("learner_requests")
-      .select("user_id, created_at, profiles!learner_requests_user_id_fkey(full_name, email)")
+      .select(
+        "user_id, created_at, trial_ends_at, profiles!learner_requests_user_id_fkey(full_name, email)",
+      )
       .eq("status", "pending")
       .order("created_at")
       .limit(200),
@@ -52,15 +55,34 @@ export default async function OwnerLearnersPage({ params }: PageProps<"/[locale]
                 <span dir="ltr" className="text-sm text-muted-foreground">
                   {w.profiles?.email} · {formatDate(w.created_at, locale)}
                 </span>
+                {w.trial_ends_at && (
+                  <Badge
+                    variant="outline"
+                    className="mt-1 self-start"
+                    data-trial={new Date(w.trial_ends_at) > new Date() ? "on" : "over"}
+                  >
+                    {new Date(w.trial_ends_at) > new Date()
+                      ? t("trialUntil", { date: formatDate(w.trial_ends_at, locale) })
+                      : t("trialOver")}
+                  </Badge>
+                )}
               </div>
               {!actor.viewAs && (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <ActionForm action={approveLearner}>
                     <input type="hidden" name="id" value={w.user_id} />
                     <Button type="submit" size="sm">
                       {t("approve")}
                     </Button>
                   </ActionForm>
+                  {!w.trial_ends_at && (
+                    <ActionForm action={startTrial}>
+                      <input type="hidden" name="id" value={w.user_id} />
+                      <Button type="submit" size="sm" variant="secondary" data-start-trial>
+                        {t("startTrial")}
+                      </Button>
+                    </ActionForm>
+                  )}
                   <ActionForm action={rejectLearner} successMessage="removed">
                     <input type="hidden" name="id" value={w.user_id} />
                     <Button type="submit" size="sm" variant="outline">

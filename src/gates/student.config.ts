@@ -9,6 +9,7 @@ export const studentGate = defineGate({
   nav: [
     { key: "nav.student.home", href: "/student" },
     { key: "nav.student.lessons", href: "/student/lessons", permission: "learning:self" },
+    { key: "nav.student.messages", href: "/student/messages" },
     { key: "nav.student.placement", href: "/student/placement", permission: "placement:take" },
     { key: "nav.student.rewards", href: "/student/rewards", permission: "rewards:view" },
     { key: "nav.student.profile", href: "/student/profile", permission: "learning:self" },

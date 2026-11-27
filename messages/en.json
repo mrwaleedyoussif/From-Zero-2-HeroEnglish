@@ -160,7 +160,9 @@
     "unitsTooMany": "Too many files in one go (400 at most). Import one level's folder at a time.",
     "emailNotSent": "The account could not be created because the invitation email was not sent. Check the email service (Resend key and sender address in Vercel), then try again.",
     "aiOff": "AI feedback is switched off.",
-    "aiFailed": "The AI reader did not answer. Wait a minute and try again."
+    "aiFailed": "The AI reader did not answer. Wait a minute and try again.",
+    "messageNobody": "Choose who to send the message to.",
+    "messageTooMany": "You have sent many messages this hour. Please wait a little."
   },
   "Done": {
     "saved": "Saved",
@@ -171,7 +173,8 @@
     "assigned": "Assigned",
     "requested": "Request sent to your teacher",
     "redeemed": "It's yours!",
-    "kudosSent": "Kudos sent"
+    "kudosSent": "Kudos sent",
+    "messageSent": "Message sent"
   },
   "Scopes": {
     "platform": "Whole platform",
@@ -473,19 +476,24 @@
         "rewards": "Rewards",
         "insights": "Insights",
         "learners": "General learners",
-        "departments": "Departments"
+        "departments": "Departments",
+        "messages": "Messages",
+        "online": "Online now"
       },
       "leadership": {
         "home": "Overview",
         "supervision": "Supervision",
         "reports": "Reports",
-        "insights": "Insights"
+        "insights": "Insights",
+        "messages": "Messages",
+        "online": "Online now"
       },
       "coach": {
         "home": "Overview",
         "coachingLog": "Coaching log",
         "insights": "Insights",
-        "reports": "Reports"
+        "reports": "Reports",
+        "messages": "Messages"
       },
       "teacher": {
         "home": "My classes",
@@ -496,7 +504,10 @@
         "rewards": "Rewards",
         "insights": "Insights",
         "reports": "Reports",
-        "units": "Course units"
+        "units": "Course units",
+        "messages": "Messages",
+        "online": "Online now",
+        "monitor": "Monitor"
       },
       "student": {
         "home": "Home",
@@ -506,7 +517,9 @@
         "rewards": "Rewards",
         "units": "Course units",
         "step": "STEP Preparation",
-        "mocks": "STEP mock exams"
+        "mocks": "STEP mock exams",
+        "messages": "Messages",
+        "handwriting": "Handwriting"
       }
     },
     "nav": {
@@ -526,19 +539,24 @@
         "rewards": "Rewards",
         "insights": "Insights",
         "learners": "General learners",
-        "departments": "Departments"
+        "departments": "Departments",
+        "messages": "Messages",
+        "online": "Online now"
       },
       "leadership": {
         "home": "Overview",
         "supervision": "Supervision",
         "reports": "Reports",
-        "insights": "Insights"
+        "insights": "Insights",
+        "messages": "Messages",
+        "online": "Online now"
       },
       "coach": {
         "home": "Overview",
         "coachingLog": "Coaching log",
         "insights": "Insights",
-        "reports": "Reports"
+        "reports": "Reports",
+        "messages": "Messages"
       },
       "teacher": {
         "home": "My classes",
@@ -549,7 +567,10 @@
         "rewards": "Rewards",
         "insights": "Insights",
         "reports": "Reports",
-        "units": "Course units"
+        "units": "Course units",
+        "messages": "Messages",
+        "online": "Online now",
+        "monitor": "Monitor"
       },
       "student": {
         "home": "Home",
@@ -559,7 +580,9 @@
         "rewards": "Rewards",
         "units": "Course units",
         "step": "STEP Preparation",
-        "mocks": "STEP mock exams"
+        "mocks": "STEP mock exams",
+        "messages": "Messages",
+        "handwriting": "Handwriting"
       }
     },
     "widget": {
@@ -616,7 +639,8 @@
       "kaganTeams": "Kagan teams",
       "webPush": "Web push notifications",
       "parentGate": "Parent portal",
-      "unitOrder": "Units one after another"
+      "unitOrder": "Units one after another",
+      "learnerTrial": "Free trial for new learners"
     },
     "limit": {
       "students": "Max students",
@@ -1107,7 +1131,8 @@
     "kudos": "Kudos from {from}! 👏",
     "due": "due {date}",
     "level_up": "Level up! You are now a {name} 🚀",
-    "redemption": "{approved, select, yes {Your reward request was approved} other {Your reward request was declined; coins returned}}"
+    "redemption": "{approved, select, yes {Your reward request was approved} other {Your reward request was declined; coins returned}}",
+    "message": "New message from {from}"
   },
   "Rewards": {
     "title": "My rewards",
@@ -1547,7 +1572,9 @@
     "pendingTitle": "Request sent",
     "pendingIntro": "Thank you! Your request to join is waiting for approval.",
     "pendingNext": "We will email you when it is approved. Then sign in again with your email and a new code.",
-    "backHome": "Back to the home page"
+    "backHome": "Back to the home page",
+    "trialOverTitle": "Your free trial has ended",
+    "trialOverIntro": "Thank you for trying Zero-2-Hero English. Your account is waiting for approval to continue."
   },
   "OwnerLearners": {
     "title": "General learners",
@@ -1578,7 +1605,10 @@
       "expired": "Expired",
       "full": "Used up"
     },
-    "noEnd": "No end date"
+    "noEnd": "No end date",
+    "startTrial": "Start free trial",
+    "trialUntil": "On a free trial until {date}",
+    "trialOver": "Free trial ended"
   },
   "Journey": {
     "morning": "Good morning, {name}",
@@ -1644,7 +1674,8 @@
       "step": "STEP Preparation",
       "ielts": "IELTS Preparation",
       "sat": "SAT Preparation",
-      "gat": "GAT Preparation"
+      "gat": "GAT Preparation",
+      "cursiveHandwriting": "Cursive Handwriting"
     },
     "parts": {
       "grammar": "Grammar",
@@ -1678,6 +1709,7 @@
     "yourAnswer": "Your answer",
     "orderHelp": "Click the sentences in the right order: the first one you click becomes 1, the next 2. Click again to take a number away.",
     "right": "Well done! That is right.",
+    "wrong": "Incorrect.",
     "tryAgain": "Not yet. Try again, you are close!",
     "answer": "Answer",
     "model": "A good answer",
@@ -1715,6 +1747,8 @@
     "speechStop": "Stop",
     "speechListening": "Listening… speak now.",
     "speechHeard": "We heard:",
+    "speechWords": "Word by word:",
+    "speechExtra": "Words you added:",
     "speechGood": "Great! {n}% matched.",
     "speechAgain": "{n}% matched. Listen once more and try again, you are close!",
     "speechBest": "Best: {n}%",
@@ -1903,5 +1937,129 @@
     "yours": "Your answer",
     "none": "no answer",
     "correct": "Right answer"
+  },
+  "Messages": {
+    "title": "Messages",
+    "introStaff": "Write to your students or read what was sent to you. Messages stay inside the app; no email is used.",
+    "introStudent": "Messages from your teachers and school. You can read them here.",
+    "introMonitor": "Every message sent inside the app, newest first.",
+    "toStudents": "Write to students",
+    "toTeachers": "Write to teachers",
+    "pickClass": "Choose a class",
+    "noClasses": "You have no classes to write to yet.",
+    "noTeachers": "There are no teachers to write to yet.",
+    "wholeClass": "The whole class {name}",
+    "groups": "Groups",
+    "students": "Students",
+    "allTeachers": "All teachers",
+    "message": "Your message",
+    "send": "Send message",
+    "inbox": "Received",
+    "inboxEmpty": "No messages yet.",
+    "sent": "Sent",
+    "all": "All messages",
+    "sentEmpty": "Nothing has been sent yet.",
+    "from": "From {name}",
+    "to": "To: {names}",
+    "new": "New",
+    "readBy": "Read by {read} of {total}"
+  },
+  "Presence": {
+    "title": "Online now",
+    "intro": "People with the app open in the last 5 minutes, then everyone who was here in the last day.",
+    "now": "Online now ({count})",
+    "today": "Earlier today ({count})",
+    "nobody": "Nobody is online right now.",
+    "student": "Student",
+    "staff": "Staff"
+  },
+  "Monitor": {
+    "title": "Monitor",
+    "intro": "Follow a class, one of its groups or one student: who is online, and their work in units, speaking, mock exams and handwriting.",
+    "noClasses": "You have no classes yet.",
+    "classes": "Classes",
+    "groups": "Groups",
+    "wholeClass": "Whole class",
+    "noStudents": "No students here yet.",
+    "summary": "{students} students · {online} online now",
+    "online": "Online now",
+    "never": "Not seen yet",
+    "unitsDone": "{done} finished of {started} started",
+    "mockBest": "Best {best}/100 ({n})",
+    "handDone": "{avg}% ({n} steps)",
+    "col": {
+      "student": "Student",
+      "seen": "Last seen",
+      "units": "Units",
+      "accuracy": "First-try score",
+      "speaking": "Speaking",
+      "mocks": "Mock exams",
+      "handwriting": "Handwriting"
+    },
+    "profile": "Open profile",
+    "unitsTitle": "Units ({count})",
+    "mocksTitle": "Mock exams ({count})",
+    "noWork": "No unit started yet.",
+    "noMocks": "No mock exam finished yet."
+  },
+  "Handwriting": {
+    "title": "Handwriting",
+    "intro": "Learn to write clearly, step by step: letters first, then words, sentences and paragraphs.",
+    "styles": {
+      "print": "Handwriting",
+      "cursive": "Cursive handwriting"
+    },
+    "styleHelp": {
+      "print": "Clear separate letters, the way they are printed.",
+      "cursive": "Joined letters that flow from one to the next."
+    },
+    "stages": {
+      "letters": "Letters",
+      "joins": "Joined letters",
+      "words": "Words",
+      "sentences": "Sentences",
+      "paragraphs": "Paragraphs"
+    },
+    "progress": "{done} of {total} steps done",
+    "start": "Start",
+    "next": "Next step",
+    "back": "All steps",
+    "stepOf": "Step {n} of {total}",
+    "howTitle": "How to learn here",
+    "how": {
+      "watch": "Watch: press Watch to see how it is written.",
+      "trace": "Trace: write over the grey letters with your finger, pen or mouse.",
+      "write": "Write: now write it yourself on the empty lines, like the example.",
+      "check": "Check: press Check to get your mark and a tip. Try again to beat your best."
+    },
+    "modes": "Ways to practise",
+    "trace": "Trace",
+    "write": "Write",
+    "best": "best {n}%",
+    "traceHelp": "Write over the grey letters. Stay on the lines.",
+    "writeHelp": "Copy the example on the empty lines below it. Sit your letters on the blue line.",
+    "watch": "Watch",
+    "clear": "Clear",
+    "check": "Check",
+    "padTrace": "Tracing page: {text}",
+    "padWrite": "Writing page: {text}",
+    "score": "Your mark: {n}%",
+    "crit": {
+      "shape": "Letter shapes",
+      "size": "Size",
+      "line": "On the line"
+    },
+    "tip": {
+      "empty": "Write on the page first, then press Check.",
+      "missed": "Some parts of the letters are missing. Write every part.",
+      "outside": "Some lines went outside the letters. Go slowly and stay on them.",
+      "small": "Your writing is small. Make the tall letters reach the top line.",
+      "big": "Your writing is too big. Keep it between the lines.",
+      "offLine": "Sit your letters on the blue line.",
+      "good": "Well done! Clear and neat."
+    },
+    "none": "The handwriting steps are not loaded yet.",
+    "done": "Done",
+    "notYet": "Not yet"
   }
 }

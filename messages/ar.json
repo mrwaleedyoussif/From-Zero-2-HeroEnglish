@@ -338,7 +338,8 @@
       "newClass": "سيُنشأ الفصل {value}",
       "newGrade": "سيُنشأ الصف {value}",
       "newSchool": "سيُنشئ المدرسة {value}",
-      "newYear": "سيبدأ العام الدراسي الحالي"
+      "newYear": "سيبدأ العام الدراسي الحالي",
+      "codeFixed": "تم تصحيح رمز المدرسة (كان في الملف {value})"
     },
     "fileErrors": {
       "missingColumn": "عمود مفقود: {value}",

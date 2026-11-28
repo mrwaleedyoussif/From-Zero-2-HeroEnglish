@@ -9,7 +9,8 @@ const SHOTS = process.env.SHOTS_DIR;
 const CSV = [
   "school_name,school_code,full_name,role,class",
   "Jeddah New School,JED77,Sara Khalid,Student,4B",
-  "Jeddah New School,JED77,Sami Khalid,student,4B",
+  // A spreadsheet counted the code upwards when it was dragged down: the import puts it back.
+  "Jeddah New School,JED78,Sami Khalid,student,4B",
   "Jeddah New School,JED77,Mona Ali,Teacher,4B",
   "Jeddah New School,JED77,Huda Saleh,Vice Principal,",
   "Jeddah New School,JED77,No Grade,student,B",
@@ -55,6 +56,7 @@ test("a five-column users file makes the school, classes, usernames and PINs; st
     await expect(page.getByRole("cell", { name: "JED77 · student · sara.k" })).toBeVisible();
     await expect(page.getByRole("cell", { name: "JED77 · student · sami.k" })).toBeVisible();
     await expect(page.getByText(/will start the current school year/)).toBeVisible();
+    await expect(page.getByText(/school code corrected \(the file said JED78\)/)).toBeVisible();
     await page.getByRole("button", { name: "Create 5 accounts" }).click();
     await expect(page.getByText("Done: 5 created, 0 failed.")).toBeVisible();
     expect(
@@ -65,6 +67,7 @@ test("a five-column users file makes the school, classes, usernames and PINs; st
     if (SHOTS) await page.screenshot({ path: `${SHOTS}/imp-cards.png`, fullPage: true });
 
     expect(sql("select name_en from schools where code = 'JED77'")).toBe("Jeddah New School");
+    expect(sql("select count(*) from schools where code = 'JED78'")).toBe("0");
     expect(
       sql(
         "select count(*) from classes c join schools s on s.id = c.school_id where s.code = 'JED77'",

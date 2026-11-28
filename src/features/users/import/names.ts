@@ -101,3 +101,31 @@ export function schoolYear(today = new Date()) {
   const y = today.getUTCMonth() >= 7 ? today.getUTCFullYear() : today.getUTCFullYear() - 1;
   return { name: `${y}-${y + 1}`, starts_on: `${y}-09-01`, ends_on: `${y + 1}-08-31` };
 }
+
+/**
+ * Spreadsheets count upwards when a cell is dragged down, so one school's code turns into
+ * AB100, AB101, AB102… on the rows below. A code that is not a school, and is the code of the
+ * row above plus a little, is put back to that row's school. Returns what each fixed row said.
+ */
+export function repairFilledCodes<R extends { school_code: string; school_name?: string }>(
+  rows: R[],
+  known: (code: string) => boolean,
+): Map<R, string> {
+  const fixed = new Map<R, string>();
+  const split = (c: string) => /^(.*?)(\d+)$/.exec(c);
+  let prev: { raw: string; use: string; name?: string } | undefined;
+  for (const r of rows) {
+    const raw = r.school_code;
+    const a = prev && split(prev.raw);
+    const b = split(raw);
+    const step = a && b && a[1] === b[1] ? Number(b[2]) - Number(a[2]) : 0;
+    const sameName =
+      !r.school_name || !prev?.name || r.school_name.toLowerCase() === prev.name.toLowerCase();
+    if (prev && !known(raw) && step >= 1 && step <= 5 && sameName) {
+      r.school_code = prev.use;
+      fixed.set(r, raw);
+    }
+    prev = { raw, use: r.school_code, name: r.school_name ?? prev?.name };
+  }
+  return fixed;
+}

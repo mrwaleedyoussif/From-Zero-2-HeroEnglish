@@ -338,7 +338,8 @@
       "newClass": "will create class {value}",
       "newGrade": "will create grade {value}",
       "newSchool": "will create the school {value}",
-      "newYear": "will start the current school year"
+      "newYear": "will start the current school year",
+      "codeFixed": "school code corrected (the file said {value})"
     },
     "fileErrors": {
       "missingColumn": "Missing column: {value}",

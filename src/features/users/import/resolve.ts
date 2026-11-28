@@ -1,6 +1,6 @@
 import "server-only";
 import type { createClient } from "@/lib/supabase/server";
-import { gradeOfClass, usernameFor } from "./names";
+import { gradeOfClass, repairFilledCodes, usernameFor } from "./names";
 import { type ImportRow, parseImportCsv } from "./parse";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
@@ -75,7 +75,7 @@ async function loadContext(db: Db, rows: ImportRow[]) {
 
 export type ImportContext = Awaited<ReturnType<typeof loadContext>>;
 
-function planRow(ctx: ImportContext, line: number, d: ImportRow): PlannedRow {
+function planRow(ctx: ImportContext, line: number, d: ImportRow, was?: string): PlannedRow {
   const base = {
     line,
     fullName: d.full_name,
@@ -85,7 +85,7 @@ function planRow(ctx: ImportContext, line: number, d: ImportRow): PlannedRow {
     data: d,
   };
   const errors: string[] = [];
-  const notes: string[] = [];
+  const notes: string[] = was ? [`codeFixed:${was}`] : [];
   const school = ctx.school.get(d.school_code);
   const role = ctx.role.get(d.role);
   // A school that is not there yet is created from its name and code (see apply.ts).
@@ -135,10 +135,18 @@ export async function planImport(
   const counts = { create: 0, exists: 0, error: 0 };
   if (parsed.fileErrors.length) return { rows: [], fileErrors: parsed.fileErrors, counts };
   const valid = parsed.rows.flatMap((r) => (r.ok ? [r.data] : []));
+  // Codes a spreadsheet counted upwards go back to the school of the row above.
+  const codes = [...new Set(valid.map((r) => r.school_code))];
+  const { data: real } = await db
+    .from("schools")
+    .select("code")
+    .in("code", codes.length ? codes : ["-"]);
+  const known = new Set((real ?? []).map((s) => s.code));
+  const fixed = repairFilledCodes(valid, (c) => known.has(c));
   const ctx = await loadContext(db, valid);
   const rows = parsed.rows.map((r): PlannedRow =>
     r.ok
-      ? planRow(ctx, r.line, r.data)
+      ? planRow(ctx, r.line, r.data, fixed.get(r.data))
       : {
           line: r.line,
           status: "error",

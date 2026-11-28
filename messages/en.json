@@ -2006,7 +2006,9 @@
     "nobody": "Nobody is online right now.",
     "student": "Student",
     "staff": "Staff",
-    "badge": "{count} online"
+    "badgeLabel": "Here now:",
+    "badgeNone": "No one else is here",
+    "comma": ", "
   },
   "Monitor": {
     "title": "Monitor",

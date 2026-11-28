@@ -2006,7 +2006,9 @@
     "nobody": "لا أحد متصل الآن.",
     "student": "طالب",
     "staff": "موظف",
-    "badge": "{count} متصل الآن"
+    "badgeLabel": "موجودون الآن:",
+    "badgeNone": "لا أحد غيرك هنا",
+    "comma": "، "
   },
   "Monitor": {
     "title": "المتابعة",

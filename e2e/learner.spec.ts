@@ -96,6 +96,7 @@ test("the Owner gives a free trial: the learner is in for 3 days, then waits aga
   page,
   browser,
 }) => {
+  test.setTimeout(90_000); // several sign-ins and redirects
   const db =
     process.env.SUPABASE_DB_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
   const sql = (q: string) => execFileSync("psql", [db, "-qtAc", q]).toString().trim();

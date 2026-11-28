@@ -50,10 +50,9 @@ test("the Owner opens a department; its units open one after another", async ({ 
     await sw.getByRole("radio", { name: "Open" }).click();
     await expect(sw).toHaveAttribute("data-state", "open");
     // Hiding one takes it off the public list.
-    await owner
-      .locator("[data-switch='andalus-international:phonics']")
-      .getByRole("radio", { name: "Hidden" })
-      .click();
+    const phonics = owner.locator("[data-switch='andalus-international:phonics']");
+    await phonics.getByRole("radio", { name: "Hidden" }).click();
+    await expect(phonics).toHaveAttribute("data-state", "hidden"); // saved before leaving
     await owner.goto("/en/departments/andalus-international");
     await expect(owner.locator("[data-department='phonics']")).toHaveCount(0);
     await expect(owner.locator("[data-department='readingWriting']")).not.toHaveAttribute(
@@ -61,7 +60,7 @@ test("the Owner opens a department; its units open one after another", async ({ 
       /.*/,
     );
 
-    // 2. The student sees unit 1 open and unit 2 locked until unit 1 is finished.
+    // 2. The student sees unit 1 open and unit 2 locked.
     const page = await (await browser.newContext()).newPage();
     await signInStudent(page);
     await page.goto("/en/student/units/RW");
@@ -69,6 +68,30 @@ test("the Owner opens a department; its units open one after another", async ({ 
     await expect(page.locator("[data-unit='RW-A1-U02'][data-locked]")).toBeVisible();
     await page.goto("/en/student/units/RW/RW-A1-U02");
     await expect(page.locator("[data-unit-locked]")).toContainText("not open yet");
+
+    // 3. The teacher recommends unit 2 to the class: it opens for the student at once.
+    const teacher = await (await browser.newContext()).newPage();
+    await signInByEmail(teacher, "teacher@demo.linguapath.test");
+    await teacher.goto("/en/student/units/RW/RW-A1-U02");
+    const panel = teacher.locator("[data-part='recommend']");
+    await panel
+      .getByRole("navigation", { name: "Choose a class" })
+      .getByRole("link")
+      .first()
+      .click();
+    await panel.getByRole("checkbox", { name: /The whole class/ }).check();
+    await panel.getByLabel("A short note (optional)").fill("Read it before Sunday");
+    await panel.locator("[data-recommend]").click();
+    await expect(teacher.getByText("Recommended", { exact: true })).toBeVisible();
+    await page.goto("/en/student");
+    const pick = page.locator("[data-recommended='RW-A1-U02']");
+    await expect(pick).toContainText("Order unit 2");
+    await expect(pick).toContainText("Read it before Sunday");
+    await page.goto("/en/student/units/RW");
+    await expect(page.locator("[data-unit='RW-A1-U02']:not([data-locked])")).toContainText(
+      "Recommended by your teacher",
+    );
+    await expect(page.locator("[data-part='recommend']")).toHaveCount(0); // never for a learner
 
     await page.goto("/en/student/units/RW/RW-A1-U01");
     await page.locator("[data-question='Q1']").getByRole("button", { name: "True" }).click();

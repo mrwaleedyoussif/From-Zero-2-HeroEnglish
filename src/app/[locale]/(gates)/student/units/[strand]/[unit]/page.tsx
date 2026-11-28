@@ -10,6 +10,7 @@ import {
   UnitSpeaking,
 } from "@/features/units/components/unit-speech-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
+import { RecommendUnit } from "@/features/units/components/recommend-unit";
 import { UnitLocked } from "@/features/units/components/unit-locked";
 import { UnitNav } from "@/features/units/components/unit-nav";
 import { UnitNotes } from "@/features/units/components/unit-notes";
@@ -27,8 +28,10 @@ export const maxDuration = 60;
 /** One unit, in its author's order: aims, words, reading, questions, writing lesson and task. */
 export default async function UnitPage({
   params,
+  searchParams,
 }: PageProps<"/[locale]/student/units/[strand]/[unit]">) {
   const { locale, strand, unit: unitId } = await params;
+  const { class: classId } = await searchParams;
   setRequestLocale(locale);
   const actor = await requirePermission(locale, "learning:self", "page.student.units");
   const all = await strandUnits(actor, strand);
@@ -175,6 +178,12 @@ export default async function UnitPage({
           )}
         </UnitPanel>
       )}
+      <RecommendUnit
+        actor={actor}
+        unitId={unit.id}
+        here={`/student/units/${strand}/${unit.id}`}
+        classId={typeof classId === "string" ? classId : undefined}
+      />
       <UnitNav strand={strand} next={next} />
     </>
   );

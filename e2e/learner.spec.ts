@@ -56,6 +56,7 @@ const tryCode = async (page: Page, email: string) => {
 };
 
 test("without a code a learner waits until the Owner approves", async ({ page, browser }) => {
+  test.setTimeout(90_000);
   const email = `wait.${Date.now()}@example.test`;
   await reachWelcome(page, email);
   await page.getByRole("button", { name: "Start learning" }).click();
@@ -76,6 +77,17 @@ test("without a code a learner waits until the Owner approves", async ({ page, b
   await tryCode(page, email);
   await expect(page).toHaveURL(/\/en\/student$/);
   await expect(page.getByText("Signed in as Layla Learner")).toBeVisible();
+
+  // The learner is the Owner's alone until the Owner gives them to a teacher, and can be taken back.
+  await owner.reload();
+  const mine = owner.locator(`[data-learner="${email}"]`);
+  await expect(mine).toContainText("Seen by you only");
+  await mine.getByRole("checkbox").check();
+  await owner.locator("select[name='teacher']").selectOption({ index: 1 });
+  await owner.locator("[data-assign-teacher]").click();
+  await expect(mine.locator("[data-teachers='1']")).toContainText("Teacher:");
+  await owner.locator("[data-unassign]").first().click();
+  await expect(mine).toContainText("Seen by you only");
   await page.goto("/en/owner/users");
   await expect(page).toHaveURL(/\/en\/student$/); // a learner never reaches staff pages
 });

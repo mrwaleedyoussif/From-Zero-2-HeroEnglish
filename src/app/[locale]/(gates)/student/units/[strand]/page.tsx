@@ -94,6 +94,14 @@ export default async function UnitsPage({ params }: PageProps<"/[locale]/student
                             {u.title_ar}
                           </span>
                         )}
+                        {u.recommended && (
+                          <span
+                            data-recommended-unit
+                            className="unit-chip mt-1 self-start rounded-full px-2 text-xs font-bold"
+                          >
+                            ⭐ {t("recommend.badge")}
+                          </span>
+                        )}
                       </span>
                       {u.done && (
                         <CircleCheck

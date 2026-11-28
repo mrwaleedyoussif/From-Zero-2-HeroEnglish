@@ -19,6 +19,7 @@ async function student(page: Page, username: string) {
 test("acceptance: assign to a group → students see it → completion updates the tracker", async ({
   browser,
 }) => {
+  test.setTimeout(90_000); // three people, six steps
   const teacher = await (await browser.newContext()).newPage();
   await signInByEmail(teacher, "teacher@demo.linguapath.test");
 

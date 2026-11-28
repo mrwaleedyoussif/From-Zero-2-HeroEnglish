@@ -338,7 +338,8 @@
       "newClass": "will create class {value}",
       "newGrade": "will create grade {value}",
       "newSchool": "will create the school {value}",
-      "newYear": "will start the current school year"
+      "newYear": "will start the current school year",
+      "codeFixed": "school code corrected (the file said {value})"
     },
     "fileErrors": {
       "missingColumn": "Missing column: {value}",
@@ -1694,8 +1695,7 @@
       "step": "STEP Preparation",
       "ielts": "IELTS Preparation",
       "sat": "SAT Preparation",
-      "gat": "GAT Preparation",
-      "cursiveHandwriting": "Cursive Handwriting"
+      "gat": "GAT Preparation"
     },
     "parts": {
       "grammar": "Grammar",
@@ -2006,7 +2006,9 @@
     "nobody": "Nobody is online right now.",
     "student": "Student",
     "staff": "Staff",
-    "badge": "{count} online"
+    "badgeLabel": "Here now:",
+    "badgeNone": "No one else is here",
+    "comma": ", "
   },
   "Monitor": {
     "title": "Monitor",
@@ -2041,7 +2043,7 @@
     "title": "Handwriting",
     "intro": "Learn to write clearly, step by step: letters first, then words, sentences and paragraphs.",
     "styles": {
-      "print": "Handwriting",
+      "print": "Regular handwriting",
       "cursive": "Cursive handwriting"
     },
     "styleHelp": {

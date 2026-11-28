@@ -2,19 +2,23 @@ import { expect, test } from "@playwright/test";
 import { signInByEmail } from "./helpers";
 
 // The portal menu (sidebar on a computer, bottom bar on a phone) and adding grades to a school.
-test("owner: the menu is a side button that opens and closes by itself, and grades are easy to add", async ({
+test("owner: a task bar of icons, a short side menu that closes by itself, and grades are easy to add", async ({
   page,
 }) => {
   await signInByEmail(page, "owner@demo.linguapath.test");
   await page.goto("/en/owner");
 
-  // The menu waits as a button on the right edge; it opens, and Escape tucks it away again.
+  // Every page has an icon on the task bar along the bottom.
+  const bar = page.locator("[data-taskbar]");
+  await expect(bar.getByRole("link", { name: "Audit log", exact: true })).toBeAttached();
+  // The side button opens a short menu of the main pages; Escape tucks it away again.
   const button = page.locator("[data-menu-button]");
   const menu = page.locator("#side-menu");
   await expect(button).toHaveAttribute("aria-expanded", "false");
-  await expect(page.getByRole("link", { name: "Schools" })).toBeHidden();
   await button.click();
   await expect(menu).toHaveAttribute("data-open", "true");
+  expect(await menu.getByRole("link").count()).toBeLessThanOrEqual(6);
+  await expect(menu.getByRole("link", { name: "Audit log" })).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(menu).toHaveAttribute("data-open", "false");
   await button.click();
@@ -22,7 +26,7 @@ test("owner: the menu is a side button that opens and closes by itself, and grad
   await expect(menu).toHaveAttribute("data-open", "false");
   // A choice closes it by itself.
   await button.click();
-  await page.getByRole("link", { name: "Schools" }).click();
+  await menu.getByRole("link", { name: "Schools" }).click();
   await page.getByRole("link", { name: "Riyadh Demo School" }).click();
   await page.getByLabel("From grade").fill("1");
   await page.getByLabel("To grade").fill("3");
@@ -39,14 +43,13 @@ test("owner: the menu is a side button that opens and closes by itself, and grad
   await page.getByRole("button", { name: "Add grade", exact: true }).click();
   await expect(page.getByText(/grade code must be 1 to 4 letters or digits/)).toBeVisible();
 
-  // Phone: the same button; a long menu scrolls inside the panel.
+  // Phone: the task bar scrolls sideways to reach every page.
   await page.setViewportSize({ width: 375, height: 740 });
   await page.goto("/en/owner");
-  await expect(page.getByRole("link", { name: "Audit log", exact: true })).toBeHidden();
-  await button.click();
-  await page.getByRole("link", { name: "Audit log", exact: true }).click();
+  const audit = bar.getByRole("link", { name: "Audit log", exact: true });
+  await audit.scrollIntoViewIfNeeded();
+  await audit.click();
   await expect(page).toHaveURL(/\/en\/owner\/audit$/);
-  await expect(menu).toHaveAttribute("data-open", "false");
   expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(
     false,
   );

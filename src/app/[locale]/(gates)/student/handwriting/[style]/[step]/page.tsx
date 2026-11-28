@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { Practice } from "@/features/handwriting/components/practice";
-import { familyOf, isStyle } from "@/features/handwriting/fonts";
+import { isStyle } from "@/features/handwriting/types";
 import { mayOpenHandwriting, stepsFor } from "@/features/handwriting/queries";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
@@ -33,8 +33,6 @@ export default async function HandwritingStepPage({
         key={here.id}
         step={here.id}
         style={style}
-        family={familyOf(style)}
-        stage={here.stage}
         text={here.text}
         best={{ trace: here.trace, write: here.write }}
       />

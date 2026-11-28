@@ -4,8 +4,7 @@ import { departmentsFor } from "@/features/departments/states";
 import { canSomewhere } from "@/lib/auth/can";
 import type { Actor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import type { Style } from "./fonts";
-import type { Mode, Stage } from "./pad-draw";
+import type { Mode, Stage, Style } from "./types";
 
 export const STAGES: readonly Stage[] = ["letters", "joins", "words", "sentences", "paragraphs"];
 export const homeOf = (style: Style) => `/student/handwriting/${style}`;

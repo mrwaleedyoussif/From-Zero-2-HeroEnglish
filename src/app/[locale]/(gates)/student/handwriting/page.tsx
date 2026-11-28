@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { HowTo } from "@/features/handwriting/components/how-to";
-import { familyOf, STYLES } from "@/features/handwriting/fonts";
+import { STYLES } from "@/features/handwriting/types";
 import { mayOpenHandwriting } from "@/features/handwriting/queries";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
@@ -25,7 +25,7 @@ export default async function HandwritingPage({
   return (
     <>
       <PageHeader title={t("title")} description={t("intro")} />
-      <HowTo family={familyOf(first)} sample="Hello" />
+      <HowTo style={first} sample="Hello" />
       <ul className="grid gap-4 sm:grid-cols-2">
         {open.map((s) => {
           const Icon = s === "print" ? PenLine : Signature;

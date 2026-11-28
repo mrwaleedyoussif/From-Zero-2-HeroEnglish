@@ -2062,39 +2062,66 @@
     "stepOf": "Step {n} of {total}",
     "howTitle": "How to learn here",
     "how": {
-      "watch": "Watch: press Watch to see how it is written.",
-      "trace": "Trace: write over the grey letters with your finger, pen or mouse.",
-      "write": "Write: now write it yourself on the empty lines, like the example.",
-      "check": "Check: press Check to get your mark and a tip. Try again to beat your best."
+      "watch": "Watch: the app writes it. A green dot shows where to start and arrows show the way.",
+      "trace": "Trace: write over the model with your finger, pen or mouse.",
+      "write": "Write: now write it alone on the lines, like the example.",
+      "check": "Check: get your mark, see the correct parts in green and the parts to fix in red, then try to beat your best."
     },
     "modes": "Ways to practise",
     "trace": "Trace",
     "write": "Write",
     "best": "best {n}%",
-    "traceHelp": "Write over the grey letters. Stay on the lines.",
-    "writeHelp": "Copy the example on the empty lines below it. Sit your letters on the blue line.",
     "watch": "Watch",
     "clear": "Clear",
     "check": "Check",
     "padTrace": "Tracing page: {text}",
     "padWrite": "Writing page: {text}",
-    "score": "Your mark: {n}%",
     "crit": {
-      "shape": "Letter shapes",
-      "size": "Size",
-      "line": "On the line"
+      "coverage": "Shape completed",
+      "match": {
+        "trace": "Stayed on the line",
+        "write": "Matches the model"
+      },
+      "direction": "Direction"
     },
     "tip": {
-      "empty": "Write on the page first, then press Check.",
-      "missed": "Some parts of the letters are missing. Write every part.",
-      "outside": "Some lines went outside the letters. Go slowly and stay on them.",
-      "small": "Your writing is small. Make the tall letters reach the top line.",
-      "big": "Your writing is too big. Keep it between the lines.",
-      "offLine": "Sit your letters on the blue line.",
-      "good": "Well done! Clear and neat."
+      "empty": "Write on the lines first, then press Check.",
+      "missed": "Some parts are missing: they are shown in red. Write the whole shape.",
+      "offPath": "Your line left the path in the orange places. Go slowly and stay on the line.",
+      "shape": "The shape does not match the model closely yet. Look at the example again and copy each part in the same order.",
+      "direction": "Check the direction: start at the green dot number 1 and follow the arrows.",
+      "small": "Your writing is too small. Tall letters touch the top line; small letters reach the dashed line.",
+      "big": "Your writing is too big. Keep small letters between the red line and the dashed line.",
+      "offLine": "Sit your letters on the red base line.",
+      "good": "Beautiful writing! Every part is in the right place."
     },
     "none": "The handwriting steps are not loaded yet.",
     "done": "Done",
-    "notYet": "Not yet"
+    "notYet": "Not yet",
+    "stepHelp": {
+      "watch": "See where to start and which way to go",
+      "trace": "Write over the grey model",
+      "write": "Write it alone on the lines"
+    },
+    "help": {
+      "watch": "Start at the green dot number 1 and follow the orange arrows.",
+      "trace": "Use your finger, a pen or the mouse. Start at the green dot and follow the arrows.",
+      "write": "Look at the example, then write it on the lines: sit on the red line; small letters reach the dashed line."
+    },
+    "watchAgain": "Watch again",
+    "showMe": "Show me",
+    "example": "Example",
+    "nowTrace": "Now trace it",
+    "nowWrite": "Now write it alone",
+    "undo": "Undo",
+    "scoreTrace": "Tracing mark: {n}%",
+    "scoreWrite": "Writing mark: {n}%",
+    "stars": "{n} of 3 stars",
+    "newBest": "New best!",
+    "key": {
+      "written": "written correctly",
+      "missed": "missed",
+      "off": "off the line"
+    }
   }
 }

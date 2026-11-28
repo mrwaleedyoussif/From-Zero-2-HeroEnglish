@@ -60,6 +60,10 @@ test("teacher: report in the archive and the bell; the report shows their class"
   const pdf = await page.request.get((await page.locator("[data-pdf]").getAttribute("href")) ?? "");
   expect(pdf.headers()["content-type"]).toBe("application/pdf");
   await page.goto("/en/teacher");
-  await page.locator("[data-notifications] summary").click();
-  await expect(page.getByText("A report is ready").first()).toBeVisible();
+  // The bell may still be loading when it is pressed: press again until the list is open.
+  await expect(async () => {
+    if (!(await page.locator("[data-notifications][open]").count()))
+      await page.locator("[data-notifications] summary").click();
+    await expect(page.getByText("A report is ready").first()).toBeVisible({ timeout: 2_000 });
+  }).toPass({ timeout: 15_000 });
 });

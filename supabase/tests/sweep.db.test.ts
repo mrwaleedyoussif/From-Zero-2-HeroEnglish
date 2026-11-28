@@ -71,7 +71,10 @@ describe("security sweep (Phase 9)", () => {
   it("migrations carry reference data only — no demo schools or people (seed-free production)", () => {
     const dir = join(__dirname, "../migrations");
     for (const f of readdirSync(dir)) {
-      const sql = readFileSync(join(dir, f), "utf8").toLowerCase();
+      // Function bodies run later, for a real person; top-level statements and do-blocks are seed data.
+      const sql = readFileSync(join(dir, f), "utf8")
+        .toLowerCase()
+        .replace(/\bas \$\$[\s\S]*?\$\$/g, "");
       expect(sql, f).not.toMatch(/insert into public\.(schools|profiles|classes|enrolments)\b/);
       expect(sql, f).not.toContain("demo.linguapath");
     }

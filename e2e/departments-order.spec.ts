@@ -72,6 +72,8 @@ test("the Owner opens a department; its units open one after another", async ({ 
     // 3. The teacher recommends unit 2 to the class: it opens for the student at once.
     const teacher = await (await browser.newContext()).newPage();
     await signInByEmail(teacher, "teacher@demo.linguapath.test");
+    await teacher.goto("/en/student/units/RW");
+    await expect(teacher.locator("[data-recommend-hint]")).toBeVisible();
     await teacher.goto("/en/student/units/RW/RW-A1-U02");
     const panel = teacher.locator("[data-part='recommend']");
     await panel

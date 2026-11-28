@@ -32,7 +32,14 @@ export async function RecommendUnit({
   if (actor.viewAs || !(await canSomewhere(actor, "lessons:assign"))) return null;
   const t = await getTranslations("Units");
   const classes = await myClasses(actor, "lessons:assign");
-  if (classes.length === 0) return null;
+  if (classes.length === 0)
+    return (
+      <UnitPanel hue="violet" icon={Send} title={t("recommend.title")} part="recommend">
+        <p className="text-sm text-muted-foreground" data-no-class>
+          {t("recommend.noClass")}
+        </p>
+      </UnitPanel>
+    );
   const chosen =
     classes.find((c) => c.id === classId) ?? (classes.length === 1 ? classes[0] : null);
   const [students, sets, already] = await Promise.all([

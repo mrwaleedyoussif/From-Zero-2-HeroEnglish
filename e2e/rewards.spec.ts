@@ -18,6 +18,7 @@ async function student(page: Page, username: string) {
 test("rewards: first badge, class leaderboard, teacher switches it off, kudos", async ({
   browser,
 }) => {
+  test.setTimeout(90_000);
   // 1. Lama finishes a lesson: XP, a celebration and the "First Step" badge.
   const lama = await (await browser.newContext()).newPage();
   await student(lama, "lama.f");

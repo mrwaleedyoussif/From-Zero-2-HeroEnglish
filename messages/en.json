@@ -334,7 +334,8 @@
     "notes": {
       "newClass": "will create class {value}",
       "newGrade": "will create grade {value}",
-      "newSchool": "will create the school {value}"
+      "newSchool": "will create the school {value}",
+      "newYear": "will start the current school year"
     },
     "fileErrors": {
       "missingColumn": "Missing column: {value}",

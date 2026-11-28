@@ -334,7 +334,8 @@
     "notes": {
       "newClass": "سيُنشأ الفصل {value}",
       "newGrade": "سيُنشأ الصف {value}",
-      "newSchool": "سيُنشئ المدرسة {value}"
+      "newSchool": "سيُنشئ المدرسة {value}",
+      "newYear": "سيبدأ العام الدراسي الحالي"
     },
     "fileErrors": {
       "missingColumn": "عمود مفقود: {value}",

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { schoolYear } from "@/features/users/import/names";
 import { ActionError, type ActionResult, check, runAction } from "@/lib/action-result";
 import { assertCanWrite } from "@/lib/auth/can";
 import { platformTarget, schoolTarget } from "@/lib/auth/scope";
@@ -28,7 +29,16 @@ export async function createSchool(_p: unknown, form: FormData): Promise<ActionR
     const input = schoolSchema.parse(formObject(form));
     await assertCanWrite(await actor(), "schools:manage", platformTarget);
     const supabase = await createClient();
-    check(await supabase.from("schools").insert(input));
+    const { data: school } = check(
+      await supabase.from("schools").insert(input).select("id").single(),
+    );
+    // A new school starts with its current school year, so classes can be added at once.
+    if (school)
+      check(
+        await supabase
+          .from("academic_years")
+          .insert({ school_id: school.id, ...schoolYear(), is_current: true }),
+      );
     revalidatePath("/[locale]/owner/schools", "page");
   });
 }

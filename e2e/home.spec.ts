@@ -84,8 +84,8 @@ for (const c of [
     await page.getByRole("link", { name: c.see }).click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText(c.title);
     const cards = page.locator("[data-department]");
-    await expect(cards).toHaveCount(11);
-    // The unit departments, both handwriting ones and STEP are open; the rest say Soon.
+    await expect(cards).toHaveCount(10);
+    // The unit departments, handwriting and STEP are open; the rest say Soon.
     await expect(page.locator("[data-department][data-soon]")).toHaveCount(4);
     await expect(page.locator('[data-department="step"]')).toContainText(c.step);
     await expect(page.locator('[data-department="step"]')).not.toHaveAttribute("data-soon", /.*/);
@@ -93,7 +93,7 @@ for (const c of [
     await audit(page);
 
     await page.goto(`${c.path}/departments/andalus-international`);
-    await expect(page.locator("[data-department]")).toHaveCount(14);
+    await expect(page.locator("[data-department]")).toHaveCount(13);
     await expect(page.locator('[data-department="ghars"]')).toContainText("غرس");
     await audit(page);
   });

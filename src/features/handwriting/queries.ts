@@ -7,10 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { Mode, Stage, Style } from "./types";
 
 export const STAGES: readonly Stage[] = ["letters", "joins", "words", "sentences", "paragraphs"];
-export const homeOf = (style: Style) => `/student/handwriting/${style}`;
+/** The one Handwriting department opens both hands. */
+export const HOME = "/student/handwriting";
 
-/** Open when the person's department list offers this handwriting department (staff preview). */
-export async function mayOpenHandwriting(actor: Actor, style: Style): Promise<boolean> {
+/** Open when the person's department list offers the Handwriting department (staff preview). */
+export async function mayOpenHandwriting(actor: Actor, _style?: Style): Promise<boolean> {
   if (await canSomewhere(actor, "content:view")) return true;
   const schoolId = actor.effective.school_id;
   if (!schoolId) return false;
@@ -21,9 +22,7 @@ export async function mayOpenHandwriting(actor: Actor, style: Style): Promise<bo
     .eq("id", schoolId)
     .maybeSingle();
   const audience = school && audienceFor(school);
-  return (
-    !!audience && (await departmentsFor(audience)).some((d) => !d.soon && d.home === homeOf(style))
-  );
+  return !!audience && (await departmentsFor(audience)).some((d) => !d.soon && d.home === HOME);
 }
 
 export interface Step {

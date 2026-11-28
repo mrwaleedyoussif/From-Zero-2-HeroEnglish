@@ -81,9 +81,12 @@ test("a teacher writes to a class inside the app; the student reads it and canno
       .click();
     await expect(teacher).toHaveURL(/\/en\/student$/);
     const all = teacher.locator("[data-departments='all']");
-    await expect(all.locator("[data-department]")).toHaveCount(14);
-    await all.locator("[data-department='cursiveHandwriting']").getByRole("link").click();
-    await expect(teacher).toHaveURL(/\/en\/student\/handwriting\/cursive$/);
+    await expect(all.locator("[data-department]")).toHaveCount(13);
+    // One Handwriting department holds both hands.
+    await all.locator("[data-department='handwriting']").getByRole("link").click();
+    await expect(teacher).toHaveURL(/\/en\/student\/handwriting$/);
+    await expect(teacher.locator("[data-style='print']")).toBeVisible();
+    await teacher.locator("[data-style='cursive']").click();
     await expect(teacher.locator("[data-step='L-a']")).toBeVisible();
     await teacher.goto("/en/student/step");
     await expect(teacher.locator("[data-booklet='mocks']")).toBeVisible();

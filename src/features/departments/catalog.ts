@@ -66,11 +66,11 @@ const EXAMS = [
   dept("gat", "fuchsia", PREP),
 ];
 
-// Two handwriting departments: print letters and a joined (cursive) hand, each from letters to
-// paragraphs with tracing and writing that are marked (see features/handwriting).
+// One handwriting department holding both hands, regular (print) letters and joined (cursive):
+// each goes from letters to paragraphs with watching, tracing and writing that are marked
+// (see features/handwriting).
 const HANDWRITING: Department[] = [
-  { ...dept("handwriting", "cyan"), soon: false, home: "/student/handwriting/print" },
-  { ...dept("cursiveHandwriting", "slate"), soon: false, home: "/student/handwriting/cursive" },
+  { ...dept("handwriting", "cyan"), soon: false, home: "/student/handwriting" },
 ];
 
 /** The course-unit strand behind a department, where general learners have one. */

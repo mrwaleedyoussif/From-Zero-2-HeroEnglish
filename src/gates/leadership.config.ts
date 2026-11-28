@@ -21,12 +21,6 @@ export const leadershipGate = defineGate({
     },
     { key: "nav.leadership.reports", href: "/leadership/reports", permission: "reports:view" },
     { key: "nav.leadership.messages", main: true, href: "/leadership/messages" },
-    {
-      key: "nav.leadership.online",
-      main: true,
-      href: "/leadership/online",
-      permission: "presence:view",
-    },
   ],
   homeWidgets: [
     "widget.leadership.headline",

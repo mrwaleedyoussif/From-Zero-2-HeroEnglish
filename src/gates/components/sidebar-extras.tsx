@@ -1,9 +1,10 @@
 import { ArrowRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { audienceFor, departmentHref } from "@/features/departments/catalog";
-import { departmentsFor } from "@/features/departments/states";
+import { allDepartments, departmentsFor } from "@/features/departments/states";
 import { departmentIcon } from "@/features/departments/icons";
 import { Link } from "@/i18n/navigation";
+import { canSomewhere } from "@/lib/auth/can";
 import type { Actor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { isVisible } from "@/lib/visibility/server";
@@ -34,16 +35,16 @@ async function Continue({ actor }: { actor: Actor }) {
 
 /** The person's departments, each in its colour; "Soon" until it opens. */
 async function Departments({ actor }: { actor: Actor }) {
+  const staff = await canSomewhere(actor, "content:view");
   const schoolId = actor.effective.school_id;
-  if (!schoolId) return null;
   const db = await createClient();
-  const { data: school } = await db
-    .from("schools")
-    .select("code, name_en")
-    .eq("id", schoolId)
-    .maybeSingle();
+  const { data: school } =
+    staff || !schoolId
+      ? { data: null }
+      : await db.from("schools").select("code, name_en").eq("id", schoolId).maybeSingle();
   const audience = school && audienceFor(school);
-  if (!audience) return null;
+  if (!staff && !audience) return null;
+  const list = staff ? allDepartments() : audience ? await departmentsFor(audience) : [];
   const locale = (await getLocale()) === "ar" ? "ar" : "en";
   const t = await getTranslations({ locale, namespace: "Departments" });
   return (
@@ -52,7 +53,7 @@ async function Departments({ actor }: { actor: Actor }) {
         {t("mine")}
       </summary>
       <ul className="flex flex-col gap-0.5 p-1.5 pt-0">
-        {(await departmentsFor(audience)).map((d) => {
+        {list.map((d) => {
           const Icon = departmentIcon(d.key);
           return (
             <li key={d.key} data-hue={d.hue} className="flex items-center gap-2 px-1 py-1 text-sm">

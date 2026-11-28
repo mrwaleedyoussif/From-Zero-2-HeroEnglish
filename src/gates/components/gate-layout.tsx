@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { SignedInHeader } from "@/features/auth/components/signed-in-header";
 import { trialIsOver } from "@/features/learners/trial";
+import { OnlineBadge } from "@/features/presence/components/online-badge";
 import { Heartbeat } from "@/features/presence/components/heartbeat";
 import { NotificationBell } from "@/features/learning/notifications/bell";
 import { enterableGates, requireGate } from "../access";
@@ -40,6 +41,7 @@ export async function GateLayout({
       {gate.theme === "staff" && schoolId && <SchoolThemeStyle schoolId={schoolId} />}
       <SignedInHeader
         actor={actor}
+        under={<OnlineBadge actor={actor} gate={gate.key} />}
         extra={
           <>
             <NotificationBell actor={actor} />

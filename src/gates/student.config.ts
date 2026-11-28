@@ -7,12 +7,27 @@ export const studentGate = defineGate({
   priority: 50,
   theme: "student",
   nav: [
-    { key: "nav.student.home", href: "/student" },
-    { key: "nav.student.lessons", href: "/student/lessons", permission: "learning:self" },
-    { key: "nav.student.messages", href: "/student/messages" },
+    { key: "nav.student.home", main: true, href: "/student" },
+    {
+      key: "nav.student.lessons",
+      main: true,
+      href: "/student/lessons",
+      permission: "learning:self",
+    },
+    { key: "nav.student.messages", main: true, href: "/student/messages" },
     { key: "nav.student.placement", href: "/student/placement", permission: "placement:take" },
-    { key: "nav.student.rewards", href: "/student/rewards", permission: "rewards:view" },
-    { key: "nav.student.profile", href: "/student/profile", permission: "learning:self" },
+    {
+      key: "nav.student.rewards",
+      main: true,
+      href: "/student/rewards",
+      permission: "rewards:view",
+    },
+    {
+      key: "nav.student.profile",
+      main: true,
+      href: "/student/profile",
+      permission: "learning:self",
+    },
   ],
   sidebar: ["continue", "departments"],
   homeWidgets: [

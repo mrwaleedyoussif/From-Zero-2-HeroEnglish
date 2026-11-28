@@ -22,13 +22,15 @@ test("a teacher writes to a class inside the app; the student reads it and canno
   try {
     const teacher = await (await browser.newContext()).newPage();
     await signInByEmail(teacher, "teacher@demo.linguapath.test");
-    // The menu is a button on the right edge; it opens, and closes after a choice.
+    // Every page is an icon on the task bar; the side button opens the main shortcuts.
     await teacher.goto("/en/teacher");
-    const menu = teacher.locator("[data-menu-button]");
-    await expect(menu).toHaveAttribute("aria-expanded", "false");
-    await expect(teacher.getByRole("link", { name: "Messages", exact: true })).toBeHidden();
-    await menu.click();
-    await teacher.getByRole("link", { name: "Messages", exact: true }).click();
+    const bar = teacher.locator("[data-taskbar]");
+    const short = teacher.locator("#side-menu");
+    await expect(bar.getByRole("link", { name: "Messages", exact: true })).toBeVisible();
+    await expect(bar.getByRole("link")).toHaveCount(await bar.locator("a").count());
+    await teacher.locator("[data-menu-button]").click();
+    await expect(short.getByRole("link", { name: "Reports" })).toHaveCount(0); // not a main page
+    await short.getByRole("link", { name: "Messages", exact: true }).click();
     await expect(teacher).toHaveURL(/\/en\/teacher\/messages/);
     await expect(teacher.locator("#side-menu")).toHaveAttribute("data-open", "false");
 

@@ -7,16 +7,26 @@ export const leadershipGate = defineGate({
   priority: 20,
   theme: "staff",
   nav: [
-    { key: "nav.leadership.home", href: "/leadership" },
-    { key: "nav.leadership.insights", href: "/leadership/insights", permission: "students:view" },
+    { key: "nav.leadership.home", main: true, href: "/leadership" },
+    {
+      key: "nav.leadership.insights",
+      main: true,
+      href: "/leadership/insights",
+      permission: "students:view",
+    },
     {
       key: "nav.leadership.supervision",
       href: "/leadership/supervision",
       permission: "supervision:view",
     },
     { key: "nav.leadership.reports", href: "/leadership/reports", permission: "reports:view" },
-    { key: "nav.leadership.messages", href: "/leadership/messages" },
-    { key: "nav.leadership.online", href: "/leadership/online", permission: "presence:view" },
+    { key: "nav.leadership.messages", main: true, href: "/leadership/messages" },
+    {
+      key: "nav.leadership.online",
+      main: true,
+      href: "/leadership/online",
+      permission: "presence:view",
+    },
   ],
   homeWidgets: [
     "widget.leadership.headline",

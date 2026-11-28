@@ -12,6 +12,8 @@ export interface GateNavItem {
   permission?: string;
   /** Optional menu section (label key `Gates.groups.<group>`); consecutive items share one. */
   group?: string;
+  /** A main page: one of the few shortcuts in the side menu (the task bar holds every page). */
+  main?: boolean;
 }
 
 /** Blocks a gate may show above its menu (see gates/components/sidebar-extras.tsx). */

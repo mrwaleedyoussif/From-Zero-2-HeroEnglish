@@ -1,5 +1,6 @@
 import "server-only";
 import type { createClient } from "@/lib/supabase/server";
+import { gradeOfClass, usernameFor } from "./names";
 import { type ImportRow, parseImportCsv } from "./parse";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
@@ -17,6 +18,9 @@ export interface PlannedRow {
   classCode?: string;
   data?: ImportRow;
   isStudent?: boolean;
+  /** Signs in with school code + username + PIN (students, and staff without an email). */
+  username?: string;
+  grade?: string;
 }
 
 export interface ImportPlan {
@@ -47,13 +51,20 @@ async function loadContext(db: Db, rows: ImportRow[]) {
       .in("school_id", ids)
       .eq("academic_years.is_current", true),
     db.from("academic_years").select("id, school_id").in("school_id", ids).eq("is_current", true),
-    db.from("profiles").select("username, email, school_id").in("school_id", ids),
+    db.from("profiles").select("username, email, full_name, school_id").in("school_id", ids),
   ]);
+  const gradeCode = new Map((grades.data ?? []).map((g) => [g.id, g.code]));
   return {
     school: new Map((schools ?? []).map((s) => [s.code, s])),
     role: new Map((roles.data ?? []).map((r) => [r.key, r])),
     grade: new Map((grades.data ?? []).map((g) => [`${g.school_id}/${g.code}`, g])),
     klass: new Map((classes.data ?? []).map((c) => [`${c.school_id}/${c.code}`, c])),
+    gradeOf: new Map(
+      (classes.data ?? []).map((c) => [`${c.school_id}/${c.code}`, gradeCode.get(c.grade_id)]),
+    ),
+    names: new Set(
+      (profiles.data ?? []).map((p) => `${p.school_id}/${p.full_name.trim().toLowerCase()}`),
+    ),
     year: new Map((years.data ?? []).map((y) => [y.school_id, y])),
     usernames: new Set(
       (profiles.data ?? []).flatMap((p) => (p.username ? [`${p.school_id}/${p.username}`] : [])),
@@ -77,28 +88,42 @@ function planRow(ctx: ImportContext, line: number, d: ImportRow): PlannedRow {
   const notes: string[] = [];
   const school = ctx.school.get(d.school_code);
   const role = ctx.role.get(d.role);
-  if (!school) errors.push("school_code");
+  // A school that is not there yet is created from its name and code (see apply.ts).
+  const schoolId = school?.id ?? `new:${d.school_code}`;
+  if (!school) {
+    if (d.school_name) notes.push(`newSchool:${d.school_name}`);
+    else errors.push("school_code");
+  }
   if (!role || role.status !== "active") errors.push("role");
   // The role's scope type decides the account type: self-scoped roles are learner accounts.
   const isStudent = role?.default_scope_type === "self";
   if (role?.default_scope_type === "platform") errors.push("roleNotImportable");
-  if (role && isStudent && !d.username) errors.push("username");
-  if (role && !isStudent && !d.email) errors.push("email");
   if (role?.default_scope_type === "class" && !d.class) errors.push("class");
-  if (role?.default_scope_type === "grade" && !d.grade) errors.push("grade");
-  if (school && (d.class || d.grade)) {
-    if (d.grade && !ctx.grade.has(`${school.id}/${d.grade}`)) notes.push(`newGrade:${d.grade}`);
-    if (d.class && !ctx.klass.has(`${school.id}/${d.class}`)) {
-      if (!ctx.year.has(school.id)) errors.push("noCurrentYear");
-      else notes.push(`newClass:${d.class}`);
-    }
+  const grade =
+    d.grade ??
+    (d.class ? (ctx.gradeOf.get(`${schoolId}/${d.class}`) ?? gradeOfClass(d.class)) : undefined);
+  if ((d.class || role?.default_scope_type === "grade") && !grade) errors.push("grade");
+  if (grade && school && !ctx.grade.has(`${schoolId}/${grade}`)) notes.push(`newGrade:${grade}`);
+  if (d.class && !ctx.klass.has(`${schoolId}/${d.class}`)) {
+    if (school && !ctx.year.has(schoolId)) errors.push("noCurrentYear");
+    else if (school) notes.push(`newClass:${d.class}`);
   }
-  const login = isStudent ? (d.username ?? "") : (d.email ?? "");
-  if (errors.length) return { ...base, login, status: "error", errors, notes };
-  const exists = isStudent
-    ? ctx.usernames.has(`${school?.id}/${d.username}`)
-    : ctx.emails.has(d.email ?? "");
-  return { ...base, login, status: exists ? "exists" : "create", errors, notes, isStudent };
+  const byCode = isStudent || !d.email;
+  const named = `${schoolId}/${d.full_name.toLowerCase()}`;
+  const exists = d.username
+    ? ctx.usernames.has(`${schoolId}/${d.username}`)
+    : d.email && !isStudent
+      ? ctx.emails.has(d.email)
+      : ctx.names.has(named);
+  let username = byCode ? d.username : undefined;
+  if (byCode && !username && !exists && errors.length === 0) {
+    username = usernameFor(d.full_name, (u) => ctx.usernames.has(`${schoolId}/${u}`));
+    ctx.usernames.add(`${schoolId}/${username}`);
+  }
+  const login = byCode ? (username ?? "") : (d.email ?? "");
+  const row = { ...base, login, errors, notes, isStudent, username, grade };
+  if (errors.length) return { ...row, status: "error" };
+  return { ...row, status: exists ? "exists" : "create" };
 }
 
 export async function planImport(

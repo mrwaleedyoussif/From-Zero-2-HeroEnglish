@@ -11,6 +11,8 @@ export interface NavLink {
   icon: string;
   group?: string;
   badge?: NavBadge;
+  /** One of the gate's main pages: a shortcut in the side menu. */
+  main?: boolean;
 }
 
 /** The item whose page (or a page beneath it) is open. */
@@ -47,7 +49,7 @@ export function NavItem({
       data-nav={item.icon}
       className={
         bar
-          ? "side-bar-item group flex min-h-14 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] leading-tight"
+          ? "side-bar-item group flex min-h-14 w-[4.75rem] shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] leading-tight"
           : "side-item group flex min-h-11 items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-sm"
       }
     >

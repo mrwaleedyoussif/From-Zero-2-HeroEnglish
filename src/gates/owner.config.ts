@@ -7,8 +7,14 @@ export const ownerGate = defineGate({
   priority: 10,
   theme: "staff",
   nav: [
-    { key: "nav.owner.home", href: "/owner" },
-    { key: "nav.owner.users", href: "/owner/users", permission: "users:view", group: "people" },
+    { key: "nav.owner.home", main: true, href: "/owner" },
+    {
+      key: "nav.owner.users",
+      main: true,
+      href: "/owner/users",
+      permission: "users:view",
+      group: "people",
+    },
     {
       key: "nav.owner.import",
       href: "/owner/users/import",
@@ -24,12 +30,14 @@ export const ownerGate = defineGate({
     { key: "nav.owner.roles", href: "/owner/roles", permission: "roles:view", group: "people" },
     {
       key: "nav.owner.messages",
+      main: true,
       href: "/owner/messages",
       permission: "messages:monitor",
       group: "people",
     },
     {
       key: "nav.owner.online",
+      main: true,
       href: "/owner/online",
       permission: "presence:view",
       group: "people",
@@ -42,12 +50,14 @@ export const ownerGate = defineGate({
     },
     {
       key: "nav.owner.schools",
+      main: true,
       href: "/owner/schools",
       permission: "schools:view",
       group: "school",
     },
     {
       key: "nav.owner.content",
+      main: true,
       href: "/owner/content",
       permission: "content:import",
       group: "content",

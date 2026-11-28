@@ -70,6 +70,9 @@ export interface NewStudent {
   username: string;
   consent: boolean;
   studentRoleId: string;
+  locale?: "en" | "ar";
+  /** A member of staff without an email: the same sign-in (school code, username, PIN). */
+  staffScope?: Scope;
 }
 
 export async function provisionStudent(
@@ -95,10 +98,10 @@ export async function provisionStudent(
         await db.from("profiles").insert({
           id: uid,
           school_id: s.schoolId,
-          kind: "student",
+          kind: s.staffScope ? "staff" : "student",
           username: s.username,
           full_name: s.fullName,
-          locale: "ar",
+          locale: s.locale ?? "ar",
           consent: s.consent,
           consent_at: s.consent ? new Date().toISOString() : null,
         }),
@@ -119,7 +122,13 @@ export async function provisionStudent(
           }),
         );
       }
-      await grantRole(db, uid, s.studentRoleId, { type: "self", id: null }, false);
+      await grantRole(
+        db,
+        uid,
+        s.studentRoleId,
+        s.staffScope ?? { type: "self", id: null },
+        !!s.staffScope,
+      );
       return uid;
     },
   );

@@ -45,6 +45,7 @@ export async function GateNav({ gate, actor }: { gate: GateConfig; actor: Actor 
         collapse: tg("collapse"),
         expand: tg("expand"),
         more: tg("more"),
+        shortcuts: tg("shortcuts"),
       }}
       profile={{ initials: initials(name), name, line: t(`gate.${gate.key}`) }}
       extra={{
@@ -57,6 +58,7 @@ export async function GateNav({ gate, actor }: { gate: GateConfig; actor: Actor 
         icon: item.key.split(".").at(-1) ?? "",
         group: item.group ? tg(`groups.${item.group}`) : undefined,
         badge: badges[item.key],
+        main: item.main,
       }))}
     />
   );

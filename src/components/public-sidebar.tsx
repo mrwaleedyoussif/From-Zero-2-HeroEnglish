@@ -24,8 +24,10 @@ export async function PublicSidebar() {
         collapse: tg("collapse"),
         expand: tg("expand"),
         more: tg("more"),
+        shortcuts: tg("navLabel"),
       }}
       profile={{ initials: "", name: t("appName"), line: t("sideLine"), image: "/brand/badge.png" }}
+      taskbar={false}
       extra={{ bottom: <InstallApp /> }}
       items={LINKS.map(([icon, href, label]) => ({ icon, href, label: t(label) }))}
     />

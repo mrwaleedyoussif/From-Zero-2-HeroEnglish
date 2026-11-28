@@ -22,9 +22,11 @@ export default async function ImportPage({ params }: PageProps<"/[locale]/owner/
           <code dir="ltr" className="block overflow-x-auto rounded bg-muted p-2 text-start">
             {IMPORT_COLUMNS.join(",")}
             <br />
-            RIY01,student,sara.k,Sara K.,,4,4B,ar,yes
+            Riyadh Demo School,RIY01,Sara Khalid,student,4B
             <br />
-            RIY01,teacher,,Mona Ali,mona@school.sa,4,4A,en,
+            Riyadh Demo School,RIY01,Mona Ali,teacher,4B
+            <br />
+            Riyadh Demo School,RIY01,Huda Saleh,vice principal,
           </code>
           <p className="text-muted-foreground">{t("formatHelp")}</p>
         </CardContent>

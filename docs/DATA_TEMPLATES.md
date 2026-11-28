@@ -47,9 +47,13 @@ Put each sheet in Drive `/LinguaPath/01_Content/`. Row 1 = exact column names be
 | GEN | A1 | -3.0 | -1.8 |
 
 ## Users import (CSV or Sheet)
-| school_code | role | username | full_name | email | grade | class | language | consent |
-|---|---|---|---|---|---|---|---|---|
-| RIY01 | student | sara.k | Sara K. | | 4 | 4B | ar | yes |
+| school_name | school_code | full_name | role | class |
+|---|---|---|---|---|
+| Riyadh Demo School | RIY01 | Sara Khalid | student | 4B |
+| Riyadh Demo School | RIY01 | Mona Ali | teacher | 4B |
+| Riyadh Demo School | RIY01 | Huda Saleh | vice principal | |
+
+The app makes each username (`sara.k`, then `sara.k2`) and a 6-digit PIN; everyone signs in with school code + username + PIN, and the login cards are shown once after the import. A missing school (with its current school year), grade or class is created; the grade is read from the start of the class code (`4B` → 4). Optional columns: `username`, `email` (staff with an email sign in by email, no PIN), `grade`, `language`, `consent`.
 
 ## Course units (JSON files, one per unit)
 For courses written as whole units (Reading and Writing): put the files in Drive `/LinguaPath/01_Content/Units/` (any subfolders), or paste any Drive folder link in Owner → Content → "Course units". Each file is one unit with `id`, `strand` (e.g. `RW`), `level` (`A1`, `A1P` … `C2`; `P` is shown as `+`), `unit`, `title`, `title_ar`, `objectives`, `vocabulary`, `hook`, `passage.paragraphs`, `comprehension` (`mcq` with `options`/`answer`/`hints`, `tfng`, `short`, `sequence`), `writing_skill`, `writing_task`. Other strands use their own parts instead of a passage: `script` + `listening` + `speaking_task` (LS), `model_text.chunks` (SH), `context_text` + `grammar_lesson` + `practice` (LU; question types `cloze`, `word_formation`, `error_correction`, `transformation`). When a folder has files named `unit…json`, only those are read. Unknown fields are kept untouched. The import reports each broken file with its reason and skips unchanged ones. Format rules: `src/features/units/schema.ts`.

@@ -50,7 +50,9 @@ export async function GateLayout({
       <FreePeriodBanner actor={actor} />
       <div className="flex flex-1 flex-col md:flex-row">
         <GateNav gate={gate} actor={actor} />
-        <main className="gate-main flex min-w-0 flex-1 flex-col gap-6 p-4 md:p-6">{children}</main>
+        <main className="gate-main flex min-w-0 flex-1 flex-col gap-6 p-4 pb-24 md:p-6 md:pb-24">
+          {children}
+        </main>
       </div>
       {!actor.viewAs && <Heartbeat />}
       <Toaster />

@@ -73,7 +73,7 @@
     "sent": "Check your inbox. If this email belongs to a Zero-2-Hero English account, a sign-in link is on its way.",
     "or": "or",
     "google": "Continue with Google",
-    "studentLink": "Student? Sign in with your school code",
+    "studentLink": "Have a school code, a username and a PIN? Sign in here",
     "staffLink": "Staff? Sign in with email",
     "studentTitle": "Student sign in",
     "studentIntro": "Use the login card from your teacher.",
@@ -316,7 +316,7 @@
     "title": "Import users",
     "intro": "Upload a CSV, check the preview, then apply. Nothing changes until you apply.",
     "format": "File format",
-    "formatHelp": "Row 1 must have these column names. Students need a username; staff need an email. Missing classes and grades are created in the current year. Up to 300 rows per file.",
+    "formatHelp": "Row 1 must have these five column names. The app makes each person's username and PIN; they sign in with the school code, the username and the PIN. A school, grade or class that is not there yet is created. Roles: student, teacher, coach, vice principal, academic vice principal, principal. Leave class empty for roles that cover the whole school. Up to 300 rows per file. Optional extra columns: username, email (staff with an email sign in by email instead of a PIN), grade, language, consent.",
     "readOnly": "Exit “view as” to import.",
     "file": "CSV file",
     "check": "Check file",
@@ -333,31 +333,33 @@
     },
     "notes": {
       "newClass": "will create class {value}",
-      "newGrade": "will create grade {value}"
+      "newGrade": "will create grade {value}",
+      "newSchool": "will create the school {value}"
     },
     "fileErrors": {
       "missingColumn": "Missing column: {value}",
       "tooManyRows": "Too many rows. Split the file into parts of up to {value} rows."
     },
     "rowErrors": {
-      "school_code": "unknown school code",
+      "school_code": "unknown school code (add the school's name to create it)",
       "role": "unknown or switched-off role",
       "username": "username missing or invalid",
       "full_name": "name missing",
       "email": "email missing or invalid",
-      "grade": "grade missing or invalid",
+      "grade": "cannot tell the grade from the class; start the class with its grade (4B) or add a grade column",
       "class": "class missing or invalid",
       "language": "language must be en or ar",
       "consent": "consent must be yes or no",
       "usernameOrEmail": "needs a username or an email",
       "duplicateInFile": "appears twice in this file",
       "roleNotImportable": "platform roles can't be imported",
-      "noCurrentYear": "school has no current year"
+      "noCurrentYear": "school has no current year",
+      "school_name": "school name too short"
     },
     "apply": "Create {count} accounts",
     "applying": "Creating accounts…",
     "done": "Done: {created} created, {failed} failed.",
-    "pinsOnce": "Student PINs are shown only now. Print the cards or download the list before leaving this page.",
+    "pinsOnce": "PINs are shown only now. Print the cards or download the list before leaving this page.",
     "printCards": "Print login cards",
     "downloadCsv": "Download list (CSV)"
   },
@@ -666,7 +668,8 @@
     },
     "collapse": "Fold the menu",
     "expand": "Open the menu",
-    "more": "More"
+    "more": "More",
+    "shortcuts": "Shortcuts"
   },
   "Widgets": {
     "people": "{count} people",

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { gradeOfClass, schoolYear, usernameFor } from "./names";
 import { parseImportCsv } from "./parse";
 
 const header = "school_code,role,username,full_name,email,grade,class,language,consent";
@@ -14,6 +15,7 @@ describe("parseImportCsv", () => {
         line: 2,
         ok: true,
         data: {
+          school_name: undefined,
           school_code: "RIY01",
           role: "student",
           username: "sara.k",
@@ -62,12 +64,42 @@ describe("parseImportCsv", () => {
     const rows = parseImportCsv(csv).rows;
     expect(rows.map((r) => [r.line, r.ok ? "ok" : r.errors.join("+")])).toEqual([
       [2, "ok"],
-      [3, "usernameOrEmail"],
+      [3, "ok"],
       [4, "duplicateInFile"],
       [5, "school_code"],
-      [6, "grade"],
+      [6, "ok"],
       [7, "email"],
     ]);
+  });
+
+  it("needs only five columns: the app makes usernames, and reads roles as people write them", () => {
+    const csv = [
+      "school_name,school_code,full_name,role,class",
+      "Riyadh Demo School,RIY01,Sara Khalid,Student,4B",
+      "Riyadh Demo School,RIY01,Sara Khalid,Student,4B",
+      "Riyadh Demo School,RIY01,Mona Ali,Vice Principal,",
+      "Riyadh Demo School,RIY01,أحمد سالم,طالب,4B",
+    ].join("\n");
+    const { rows, fileErrors } = parseImportCsv(csv);
+    expect(fileErrors).toEqual([]);
+    expect(rows.map((r) => (r.ok ? r.data.role : r.errors.join("+")))).toEqual([
+      "student",
+      "duplicateInFile",
+      "vp",
+      "student",
+    ]);
+    expect(usernameFor("Sara Khalid", () => false)).toBe("sara.k");
+    expect(usernameFor("Sara Khalid", (u) => u === "sara.k")).toBe("sara.k2");
+    expect(usernameFor("أحمد سالم", () => false)).toBe("ahmd.s");
+    expect(usernameFor("؟", () => false)).toBe("user");
+    expect([
+      gradeOfClass("4B"),
+      gradeOfClass("10-A"),
+      gradeOfClass("KG1A"),
+      gradeOfClass("B"),
+    ]).toEqual(["4", "10", "KG1", undefined]);
+    expect(schoolYear(new Date("2026-11-28")).name).toBe("2026-2027");
+    expect(schoolYear(new Date("2027-03-01")).starts_on).toBe("2026-09-01");
   });
 
   it("refuses files over the row limit", () => {

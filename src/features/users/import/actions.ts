@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ActionError, type ActionResult, runAction } from "@/lib/action-result";
 import { assertCan, assertCanWrite } from "@/lib/auth/can";
+import { platformTarget } from "@/lib/auth/scope";
 import { getActor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { type ImportOutcome, applyPlan } from "./apply";
@@ -24,6 +25,9 @@ async function prepare(form: FormData, write: boolean) {
       return s ? [s.id] : [];
     }),
   );
+  // A file that brings a new school needs the right to add schools.
+  if (plan.rows.some((r) => r.notes.some((n) => n.startsWith("newSchool:"))))
+    await (write ? assertCanWrite : assertCan)(actor, "schools:manage", platformTarget);
   for (const id of schoolIds) {
     const target = { school: id, grade: null, class: null, user: null };
     await (write ? assertCanWrite : assertCan)(actor, "users:import", target);

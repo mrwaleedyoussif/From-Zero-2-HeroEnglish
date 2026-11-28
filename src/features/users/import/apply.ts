@@ -3,6 +3,7 @@ import { ActionError, check } from "@/lib/action-result";
 import type { Scope } from "@/lib/auth/engine";
 import type { createClient } from "@/lib/supabase/server";
 import { grantRole, provisionStaff, provisionStudent } from "../provision";
+import { schoolYear } from "./names";
 import type { ImportContext, PlannedRow } from "./resolve";
 
 type Db = Awaited<ReturnType<typeof createClient>>;
@@ -12,7 +13,7 @@ export interface ImportOutcome {
   fullName: string;
   ok: boolean;
   error?: string;
-  /** Students only: credentials, shown once. */
+  /** People who sign in with a PIN: credentials, shown once. */
   schoolCode?: string;
   username?: string;
   pin?: string;
@@ -64,6 +65,29 @@ function structureCache(db: Db, ctx: ImportContext) {
   };
 }
 
+/** A school the file names but the app does not have yet: made with its current school year. */
+async function newSchool(db: Db, ctx: ImportContext, code: string, name: string) {
+  const { data: school } = check(
+    await db
+      .from("schools")
+      .insert({ code, name_en: name, name_ar: name })
+      .select("id, code")
+      .single(),
+  );
+  if (!school) throw new ActionError("failed");
+  const { data: year } = check(
+    await db
+      .from("academic_years")
+      .insert({ school_id: school.id, ...schoolYear(), is_current: true })
+      .select("id, school_id")
+      .single(),
+  );
+  if (!year) throw new ActionError("failed");
+  ctx.school.set(code, school);
+  ctx.year.set(school.id, year);
+  return school;
+}
+
 /** Apply "create" rows one by one; a failing row is reported and the rest continue. */
 export async function applyPlan(
   db: Db,
@@ -75,36 +99,40 @@ export async function applyPlan(
   for (const row of rows) {
     if (row.status !== "create" || !row.data) continue;
     const d = row.data;
-    const school = ctx.school.get(d.school_code);
     const role = ctx.role.get(d.role);
-    if (!school || !role) continue;
+    if (!role) continue;
     try {
+      const school =
+        ctx.school.get(d.school_code) ??
+        (await newSchool(db, ctx, d.school_code, d.school_name ?? d.school_code));
       const classId =
-        d.class && d.grade ? await structure.klass(school.id, d.grade, d.class) : undefined;
-      if (row.isStudent) {
+        d.class && row.grade ? await structure.klass(school.id, row.grade, d.class) : undefined;
+      let scope: Scope = { type: "school", id: school.id };
+      if (role.default_scope_type === "class" && classId) scope = { type: "class", id: classId };
+      if (role.default_scope_type === "grade" && row.grade)
+        scope = { type: "grade", id: await structure.grade(school.id, row.grade) };
+      if (row.username) {
         const { pin } = await provisionStudent(db, {
           schoolId: school.id,
           schoolCode: school.code,
-          classId,
+          classId: row.isStudent ? classId : undefined,
           fullName: d.full_name,
-          username: d.username ?? "",
+          username: row.username,
           consent: d.consent,
           studentRoleId: role.id,
+          locale: d.language,
+          staffScope: row.isStudent ? undefined : scope,
         });
         outcomes.push({
           line: row.line,
           fullName: d.full_name,
           ok: true,
           schoolCode: school.code,
-          username: d.username,
+          username: row.username,
           pin,
           classCode: d.class,
         });
       } else {
-        let scope: Scope = { type: "school", id: school.id };
-        if (role.default_scope_type === "class" && classId) scope = { type: "class", id: classId };
-        if (role.default_scope_type === "grade" && d.grade)
-          scope = { type: "grade", id: await structure.grade(school.id, d.grade) };
         await provisionStaff(
           db,
           {

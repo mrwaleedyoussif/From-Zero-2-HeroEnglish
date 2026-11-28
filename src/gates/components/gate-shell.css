@@ -214,6 +214,34 @@
     visibility 0s 0.3s;
 }
 
+/* The task bar: every page as an icon, along the bottom; the open page is gold with a mark. */
+.side-bar {
+  color: #e2e8f0;
+  background: linear-gradient(100deg, #0e223d, #16356b 55%, #3b2a7a);
+  border-top: 2px solid #e2bd72;
+  scrollbar-width: thin;
+}
+.side-bar-item {
+  position: relative;
+  color: #e2e8f0;
+}
+.side-bar-item:hover .icon-tile {
+  transform: translateY(-2px) scale(1.08);
+}
+.side-bar-item[aria-current="page"] {
+  color: #f6dc9c;
+  font-weight: 700;
+}
+.side-bar-item[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 1.75rem;
+  height: 3px;
+  border-radius: 9999px;
+  background: #f6dc9c;
+}
+
 @keyframes gate-rise {
   from {
     opacity: 0;

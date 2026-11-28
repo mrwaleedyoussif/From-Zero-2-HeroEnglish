@@ -2,7 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { type NavLink, NavItem, useCurrent } from "./gate-nav-links";
 import "./gate-shell.css";
@@ -12,22 +12,27 @@ export interface SidebarLabels {
   collapse: string;
   expand: string;
   more: string;
+  shortcuts: string;
 }
 
 /** How long the open menu waits, with nobody on it, before it tucks itself away again. */
 const IDLE_MS = 6000;
 
+/** How many shortcuts the side menu holds when the gate does not name its main pages. */
+const SHORT = 5;
+
 /**
- * The portal's menu. It stays out of the way as a small button in the middle of the right
- * edge; pressing it slides the menu in, and it closes by itself after a choice, a click outside,
- * Escape, or a few seconds with nobody on it. A long menu turns like a wheel: scrolling past
- * the last item brings the first one round again, without an end.
+ * The portal's navigation, in two parts. A task bar along the bottom of every page holds an
+ * icon for each page (it scrolls sideways when there are many). A small button in the middle
+ * of the right edge opens a short menu with the main pages only; it closes by itself after a
+ * choice, a click outside, Escape, or a few seconds with nobody on it.
  */
 export function GateSidebar({
   items,
   labels,
   profile,
   extra,
+  taskbar = true,
 }: {
   items: readonly NavLink[];
   labels: SidebarLabels;
@@ -35,15 +40,24 @@ export function GateSidebar({
   profile: { initials: string; name: string; line: string; image?: string };
   /** Extra blocks: `top` under the person (a student's "Continue"), `bottom` under the menu. */
   extra?: { top?: ReactNode; bottom?: ReactNode };
+  /** Public pages have a few links only: no task bar, every link in the side menu. */
+  taskbar?: boolean;
 }) {
   const current = useCurrent(items);
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [turn, setTurn] = useState(0);
-  const scroller = useRef<HTMLDivElement>(null);
-  const shift = useRef(0);
+  const bar = useRef<HTMLElement>(null);
   const idle = useRef<ReturnType<typeof setTimeout>>(undefined);
   const waiting = items.reduce((n, i) => n + (i.badge?.n ?? 0), 0);
+  const main = items.filter((i) => i.main);
+  const short = !taskbar ? items : main.length ? main : items.slice(0, SHORT);
+
+  // Keep the open page's icon in view on the task bar.
+  useEffect(() => {
+    bar.current
+      ?.querySelector("[aria-current='page']")
+      ?.scrollIntoView({ inline: "nearest", block: "nearest" });
+  }, [current]);
 
   const rest = useCallback(() => clearTimeout(idle.current), []);
   const tuck = useCallback(() => {
@@ -64,43 +78,6 @@ export function GateSidebar({
       document.removeEventListener("keydown", key);
       clearTimeout(idle.current);
     };
-  }, [open]);
-
-  // The wheel: one row per item (and the extra blocks), turned by `turn`.
-  const rows: { key: string; node: ReactNode; group?: string }[] = [
-    ...(extra?.top ? [{ key: "#top", node: extra.top }] : []),
-    ...items.map((item) => ({
-      key: item.href,
-      group: item.group,
-      node: <NavItem item={item} current={item.href === current} shape="side" />,
-    })),
-    ...(extra?.bottom ? [{ key: "#bottom", node: extra.bottom }] : []),
-  ];
-  const at = ((turn % rows.length) + rows.length) % rows.length;
-  const turned = [...rows.slice(at), ...rows.slice(0, at)];
-
-  const onScroll = () => {
-    const el = scroller.current;
-    if (!el || el.scrollHeight <= el.clientHeight + 8 || shift.current !== 0) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    const last = el.lastElementChild as HTMLElement | null;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 2 && first) {
-      shift.current = -first.offsetHeight;
-      setTurn((t) => t + 1);
-    } else if (el.scrollTop <= 1 && last) {
-      shift.current = last.offsetHeight;
-      setTurn((t) => t - 1);
-    }
-  };
-  // After a row moved to the other end, keep what the person sees where it was.
-  useLayoutEffect(() => {
-    const el = scroller.current;
-    if (el && shift.current !== 0) el.scrollTop += shift.current;
-    shift.current = 0;
-  }, [turn]);
-  useLayoutEffect(() => {
-    const el = scroller.current;
-    if (open && el && el.scrollHeight > el.clientHeight + 8 && el.scrollTop < 2) el.scrollTop = 2;
   }, [open]);
 
   return (
@@ -133,7 +110,7 @@ export function GateSidebar({
       )}
       <nav
         id="side-menu"
-        aria-label={labels.nav}
+        aria-label={labels.shortcuts}
         data-open={open}
         inert={!open}
         onPointerEnter={rest}
@@ -166,24 +143,26 @@ export function GateSidebar({
             <X aria-hidden className="size-5" />
           </button>
         </div>
-        <div
-          ref={scroller}
-          onScroll={onScroll}
-          data-menu-wheel
-          className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain"
-        >
-          {turned.map((row, i) => (
-            <div key={row.key} className="flex shrink-0 flex-col gap-1">
-              {row.group && row.group !== turned[i - 1]?.group && (
-                <p className="side-group px-2.5 pt-3 pb-0.5 text-xs font-semibold tracking-wide uppercase">
-                  {row.group}
-                </p>
-              )}
-              {row.node}
-            </div>
+        <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain">
+          {extra?.top}
+          {short.map((item) => (
+            <NavItem key={item.href} item={item} current={item.href === current} shape="side" />
           ))}
+          {extra?.bottom}
         </div>
       </nav>
+      {taskbar && (
+        <nav
+          ref={bar}
+          aria-label={labels.nav}
+          data-taskbar
+          className="side-bar dark fixed inset-x-0 bottom-0 z-30 flex justify-start gap-1 overflow-x-auto px-2 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] sm:justify-center print:hidden"
+        >
+          {items.map((item) => (
+            <NavItem key={item.href} item={item} current={item.href === current} shape="bar" />
+          ))}
+        </nav>
+      )}
     </>
   );
 }

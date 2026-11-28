@@ -10,6 +10,7 @@ import {
   UnitSpeaking,
 } from "@/features/units/components/unit-speech-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
+import { SpeechLevel } from "@/features/units/components/speech-level";
 import { RecommendButton, RecommendUnit } from "@/features/units/components/recommend-unit";
 import { UnitLocked } from "@/features/units/components/unit-locked";
 import { UnitNav } from "@/features/units/components/unit-nav";
@@ -50,6 +51,7 @@ export default async function UnitPage({
 
   return (
     <>
+      <SpeechLevel level={unit.level} />
       <PageHeader
         title={unit.step ? unit.title : `${t("unitN", { n: unit.unit })} · ${unit.title}`}
         description={`${unit.level}${unit.step ? ` · ${unit.topic}` : ""}${unit.title_ar ? ` · ${unit.title_ar}` : ""}`}

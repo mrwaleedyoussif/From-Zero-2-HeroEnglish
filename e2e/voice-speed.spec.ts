@@ -18,7 +18,7 @@ const unit = JSON.stringify({
     title: "Say it with me",
     chunks: [{ id: "SH-A1-U09-CH01", text: "Reem has a new phone." }],
   },
-  speaking_task: { prompt: { en: "Talk about your phone." }, frames: ["I have a ..."] },
+  speaking_task: { prompt: { en: "Talk about your phone.", ar: "تحدث عن هاتفك." }, frames: ["I have a ..."] },
 });
 
 test("shadowing and speaking: the learner chooses the voice's speed; vocabulary stays at normal speed", async ({

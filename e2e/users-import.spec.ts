@@ -13,6 +13,7 @@ const CSV = [
   "Jeddah New School,JED77,Mona Ali,Teacher,4B",
   "Jeddah New School,JED77,Huda Saleh,Vice Principal,",
   "Jeddah New School,JED77,No Grade,student,B",
+  "Old School,NOYR1,Ahmed Hatem,student,5A",
 ].join("\n");
 
 /** Choose the file once the page listens (a file chosen too early is not noticed). */
@@ -38,21 +39,29 @@ test("a five-column users file makes the school, classes, usernames and PINs; st
   browser,
 }) => {
   test.setTimeout(120_000);
+  // A school made earlier that never got a school year: the import starts one.
+  sql("insert into schools (code, name_en, name_ar) values ('NOYR1', 'Old School', 'Old School')");
   try {
     await signInByEmail(page, "owner@demo.linguapath.test");
     await page.goto("/en/owner/users/import");
     await choose(page);
     await page.getByRole("button", { name: "Check file" }).click();
     await expect(
-      page.getByText("4 to create · 0 already exist (skipped) · 1 with errors"),
+      page.getByText("5 to create · 0 already exist (skipped) · 1 with errors"),
     ).toBeVisible();
     await expect(page.getByText("will create the school Jeddah New School").first()).toBeVisible();
     await expect(page.getByText(/cannot tell the grade from the class/)).toBeVisible();
     // Two people who would get the same username get different ones.
     await expect(page.getByRole("cell", { name: "JED77 · student · sara.k" })).toBeVisible();
     await expect(page.getByRole("cell", { name: "JED77 · student · sami.k" })).toBeVisible();
-    await page.getByRole("button", { name: "Create 4 accounts" }).click();
-    await expect(page.getByText("Done: 4 created, 0 failed.")).toBeVisible();
+    await expect(page.getByText(/will start the current school year/)).toBeVisible();
+    await page.getByRole("button", { name: "Create 5 accounts" }).click();
+    await expect(page.getByText("Done: 5 created, 0 failed.")).toBeVisible();
+    expect(
+      sql(
+        "select count(*) from academic_years y join schools s on s.id = y.school_id where s.code = 'NOYR1' and y.is_current",
+      ),
+    ).toBe("1");
     if (SHOTS) await page.screenshot({ path: `${SHOTS}/imp-cards.png`, fullPage: true });
 
     expect(sql("select name_en from schools where code = 'JED77'")).toBe("Jeddah New School");
@@ -81,14 +90,14 @@ test("a five-column users file makes the school, classes, usernames and PINs; st
     await choose(page);
     await page.getByRole("button", { name: "Check file" }).click();
     await expect(
-      page.getByText("0 to create · 4 already exist (skipped) · 1 with errors"),
+      page.getByText("0 to create · 5 already exist (skipped) · 1 with errors"),
     ).toBeVisible();
   } finally {
     const ids = sql(
-      "select coalesce(string_agg(quote_literal(p.id::text), ','), '') from profiles p join schools s on s.id = p.school_id where s.code = 'JED77'",
+      "select coalesce(string_agg(quote_literal(p.id::text), ','), '') from profiles p join schools s on s.id = p.school_id where s.code in ('JED77', 'NOYR1')",
     );
     if (ids) sql(`delete from auth.users where id::text in (${ids})`);
-    sql("delete from schools where code = 'JED77'");
+    sql("delete from schools where code in ('JED77', 'NOYR1')");
     sql("delete from presence");
   }
 });

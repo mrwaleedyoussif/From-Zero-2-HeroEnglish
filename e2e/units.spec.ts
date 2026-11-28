@@ -118,7 +118,9 @@ test("owner imports unit files from Drive; a unit teaches with hints and keeps t
     await expect(page.locator("[data-word] [data-speech]")).toHaveCount(1);
     const drawn = page.locator("[data-word] img[alt='camera']");
     await expect(drawn).toBeVisible();
-    expect(await drawn.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+    await expect
+      .poll(() => drawn.evaluate((img: HTMLImageElement) => img.naturalWidth))
+      .toBeGreaterThan(0);
     await expect(page.getByRole("button", { name: "Listen to the whole text" })).toBeVisible();
 
     // Nothing is checked until the whole exercise is answered and submitted.

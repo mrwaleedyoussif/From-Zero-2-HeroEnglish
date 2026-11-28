@@ -16,6 +16,12 @@ export const teacherGate = defineGate({
       href: "/teacher/assignments",
       permission: "lessons:assign",
     },
+    {
+      key: "nav.teacher.departments",
+      main: true,
+      href: "/student",
+      permission: "learning:self",
+    },
     { key: "nav.teacher.units", main: true, href: "/teacher/units", permission: "students:view" },
     {
       key: "nav.teacher.monitor",
@@ -24,7 +30,6 @@ export const teacherGate = defineGate({
       permission: "students:view",
     },
     { key: "nav.teacher.messages", main: true, href: "/teacher/messages" },
-    { key: "nav.teacher.online", main: true, href: "/teacher/online", permission: "presence:view" },
     { key: "nav.teacher.groups", href: "/teacher/groups", permission: "students:edit" },
     { key: "nav.teacher.rewards", href: "/teacher/rewards", permission: "rewards:grant" },
     { key: "nav.teacher.reports", href: "/teacher/reports", permission: "reports:view" },

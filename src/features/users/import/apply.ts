@@ -48,8 +48,7 @@ function structureCache(db: Db, ctx: ImportContext) {
       const key = `${schoolId}/${code}`;
       const hit = ctx.klass.get(key);
       if (hit) return hit.id;
-      const year = ctx.year.get(schoolId);
-      if (!year) throw new ActionError("noCurrentYear");
+      const year = ctx.year.get(schoolId) ?? (await newYear(db, ctx, schoolId));
       const gradeId = await this.grade(schoolId, gradeCode);
       const { data } = check(
         await db
@@ -65,6 +64,22 @@ function structureCache(db: Db, ctx: ImportContext) {
   };
 }
 
+/** The current school year of a school that has none yet (or whose years are all past). */
+async function newYear(db: Db, ctx: ImportContext, schoolId: string) {
+  const now = schoolYear();
+  check(await db.from("academic_years").update({ is_current: false }).eq("school_id", schoolId));
+  const { data: year } = check(
+    await db
+      .from("academic_years")
+      .upsert({ school_id: schoolId, ...now, is_current: true }, { onConflict: "school_id,name" })
+      .select("id, school_id")
+      .single(),
+  );
+  if (!year) throw new ActionError("noCurrentYear");
+  ctx.year.set(schoolId, year);
+  return year;
+}
+
 /** A school the file names but the app does not have yet: made with its current school year. */
 async function newSchool(db: Db, ctx: ImportContext, code: string, name: string) {
   const { data: school } = check(
@@ -75,16 +90,8 @@ async function newSchool(db: Db, ctx: ImportContext, code: string, name: string)
       .single(),
   );
   if (!school) throw new ActionError("failed");
-  const { data: year } = check(
-    await db
-      .from("academic_years")
-      .insert({ school_id: school.id, ...schoolYear(), is_current: true })
-      .select("id, school_id")
-      .single(),
-  );
-  if (!year) throw new ActionError("failed");
   ctx.school.set(code, school);
-  ctx.year.set(school.id, year);
+  await newYear(db, ctx, school.id);
   return school;
 }
 

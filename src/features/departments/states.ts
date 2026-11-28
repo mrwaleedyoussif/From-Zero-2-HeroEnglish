@@ -3,8 +3,11 @@ import { cache } from "react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   applyStates,
+  AUDIENCES,
   type Audience,
+  CATALOG,
   type Department,
+  departmentHref,
   type DepartmentState,
   isAudience,
 } from "./catalog";
@@ -33,4 +36,15 @@ export const departmentStates = cache(
 /** The departments an audience sees, in order: open ones, "soon" ones; hidden ones left out. */
 export async function departmentsFor(audience: Audience): Promise<Department[]> {
   return applyStates(audience, (await departmentStates()).get(audience) ?? new Map());
+}
+
+/**
+ * Every department of every list, for staff who may see content: each one that has lessons
+ * behind it can be opened, whatever learners are shown.
+ */
+export function allDepartments(): Department[] {
+  const seen = new Map<string, Department>();
+  for (const d of AUDIENCES.flatMap((a) => CATALOG[a]))
+    if (!seen.has(d.key) || departmentHref(d)) seen.set(d.key, { ...d, soon: !departmentHref(d) });
+  return [...seen.values()];
 }

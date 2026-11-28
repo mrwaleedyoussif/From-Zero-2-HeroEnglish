@@ -27,6 +27,7 @@ test("student takes the GEN placement, resumes after reload, sees result; teache
   page,
   browser,
 }) => {
+  test.setTimeout(90_000); // a long journey: a whole test, then the teacher's scoring
   await studentSignIn(page);
   await expect(page.locator('[data-widget="widget.student.placementCta"]')).toBeVisible();
   await page.goto("/en/student/placement");

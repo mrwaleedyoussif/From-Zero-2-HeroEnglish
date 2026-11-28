@@ -21,7 +21,16 @@ const initials = (name: string) =>
     .join("")
     .toUpperCase();
 
-export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: ReactNode }) {
+export async function SignedInHeader({
+  actor,
+  extra,
+  under,
+}: {
+  actor: Actor;
+  extra?: ReactNode;
+  /** A small line under the person's name (who is online). */
+  under?: ReactNode;
+}) {
   const t = await getTranslations("Shell");
   const locale = await getLocale();
 
@@ -54,38 +63,41 @@ export async function SignedInHeader({ actor, extra }: { actor: Actor; extra?: R
           {extra}
         </div>
         {/* Account menu: language, theme and sign-out live behind the initials (no script needed). */}
-        <details className="relative">
-          <summary className="flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-full pe-3 hover:bg-white/10">
-            <span className="sr-only">{t("account")}</span>
-            <span
-              aria-hidden
-              className="flex size-9 items-center justify-center rounded-full bg-[#f6dc9c] text-sm font-bold text-[#0e223d]"
-            >
-              {initials(actor.real.full_name)}
-            </span>
-            <span className="hidden text-sm font-medium sm:inline">{actor.real.full_name}</span>
-            <ChevronDown aria-hidden className="size-4" />
-          </summary>
-          <div className="absolute end-0 z-50 mt-2 flex w-64 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-xl border border-white/15 bg-[#0e223d] p-3 shadow-xl">
-            <p className="px-1 text-sm font-semibold">{actor.real.full_name}</p>
-            <div className="flex items-center justify-between gap-2">
-              <LocaleSwitcher />
-              <ThemeToggle />
+        <div className="flex shrink-0 flex-col items-end gap-0.5">
+          <details className="relative">
+            <summary className="flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-full pe-3 hover:bg-white/10">
+              <span className="sr-only">{t("account")}</span>
+              <span
+                aria-hidden
+                className="flex size-9 items-center justify-center rounded-full bg-[#f6dc9c] text-sm font-bold text-[#0e223d]"
+              >
+                {initials(actor.real.full_name)}
+              </span>
+              <span className="hidden text-sm font-medium sm:inline">{actor.real.full_name}</span>
+              <ChevronDown aria-hidden className="size-4" />
+            </summary>
+            <div className="absolute end-0 z-50 mt-2 flex w-64 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-xl border border-white/15 bg-[#0e223d] p-3 shadow-xl">
+              <p className="px-1 text-sm font-semibold">{actor.real.full_name}</p>
+              <div className="flex items-center justify-between gap-2">
+                <LocaleSwitcher />
+                <ThemeToggle />
+              </div>
+              {actor.real.kind === "staff" && (
+                <Button asChild variant="outline" size="sm" className="w-full">
+                  <Link href="/account">{t("password")}</Link>
+                </Button>
+              )}
+              <InstallApp />
+              <form action={signOut}>
+                <input type="hidden" name="locale" value={locale} />
+                <Button type="submit" variant="outline" size="sm" className="w-full">
+                  {t("signOut")}
+                </Button>
+              </form>
             </div>
-            {actor.real.kind === "staff" && (
-              <Button asChild variant="outline" size="sm" className="w-full">
-                <Link href="/account">{t("password")}</Link>
-              </Button>
-            )}
-            <InstallApp />
-            <form action={signOut}>
-              <input type="hidden" name="locale" value={locale} />
-              <Button type="submit" variant="outline" size="sm" className="w-full">
-                {t("signOut")}
-              </Button>
-            </form>
-          </div>
-        </details>
+          </details>
+          {under}
+        </div>
       </header>
     </>
   );

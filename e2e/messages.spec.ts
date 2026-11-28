@@ -73,7 +73,28 @@ test("a teacher writes to a class inside the app; the student reads it and canno
     await expect(line.locator("[data-online='true']")).toContainText("Online now");
     await line.getByRole("link").click();
     await expect(teacher.locator("[data-student-work]")).toContainText("Units (0)");
-    await teacher.goto("/en/teacher/online");
+    // The teacher opens every department and its lessons, like a learner.
+    await teacher.goto("/en/teacher");
+    await teacher
+      .locator("[data-taskbar]")
+      .getByRole("link", { name: "Departments & lessons" })
+      .click();
+    await expect(teacher).toHaveURL(/\/en\/student$/);
+    const all = teacher.locator("[data-departments='all']");
+    await expect(all.locator("[data-department]")).toHaveCount(14);
+    await all.locator("[data-department='cursiveHandwriting']").getByRole("link").click();
+    await expect(teacher).toHaveURL(/\/en\/student\/handwriting\/cursive$/);
+    await expect(teacher.locator("[data-step='L-a']")).toBeVisible();
+    await teacher.goto("/en/student/step");
+    await expect(teacher.locator("[data-booklet='mocks']")).toBeVisible();
+    await teacher.goto("/en/teacher");
+    // Who is online sits under the teacher's name, and opens the list.
+    await expect(teacher.locator("[data-online-badge]")).toContainText(/[1-9]\d* online/);
+    await expect(
+      teacher.locator("[data-taskbar]").getByRole("link", { name: "Online now" }),
+    ).toHaveCount(0);
+    await teacher.locator("[data-online-badge]").click();
+    await expect(teacher).toHaveURL(/\/en\/teacher\/online$/);
     await expect(teacher.locator("[data-online='true']", { hasText: "Omar" })).toBeVisible();
   } finally {
     sql(`delete from messages where created_at >= '${since}'`);

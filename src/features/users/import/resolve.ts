@@ -105,8 +105,9 @@ function planRow(ctx: ImportContext, line: number, d: ImportRow): PlannedRow {
   if ((d.class || role?.default_scope_type === "grade") && !grade) errors.push("grade");
   if (grade && school && !ctx.grade.has(`${schoolId}/${grade}`)) notes.push(`newGrade:${grade}`);
   if (d.class && !ctx.klass.has(`${schoolId}/${d.class}`)) {
-    if (school && !ctx.year.has(schoolId)) errors.push("noCurrentYear");
-    else if (school) notes.push(`newClass:${d.class}`);
+    // A school without a current year gets one when the class is made (see apply.ts).
+    if (school && !ctx.year.has(schoolId)) notes.push("newYear");
+    if (school) notes.push(`newClass:${d.class}`);
   }
   const byCode = isStudent || !d.email;
   const named = `${schoolId}/${d.full_name.toLowerCase()}`;

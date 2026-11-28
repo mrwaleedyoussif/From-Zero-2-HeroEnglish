@@ -334,7 +334,8 @@
     "notes": {
       "newClass": "will create class {value}",
       "newGrade": "will create grade {value}",
-      "newSchool": "will create the school {value}"
+      "newSchool": "will create the school {value}",
+      "newYear": "will start the current school year"
     },
     "fileErrors": {
       "missingColumn": "Missing column: {value}",
@@ -509,7 +510,8 @@
         "units": "Course units",
         "messages": "Messages",
         "online": "Online now",
-        "monitor": "Monitor"
+        "monitor": "Monitor",
+        "departments": "Departments & lessons"
       },
       "student": {
         "home": "Home",
@@ -572,7 +574,8 @@
         "units": "Course units",
         "messages": "Messages",
         "online": "Online now",
-        "monitor": "Monitor"
+        "monitor": "Monitor",
+        "departments": "Departments & lessons"
       },
       "student": {
         "home": "Home",
@@ -1689,7 +1692,8 @@
       "performingArts": "Performing Arts",
       "grades3to12": "Grades 3–12"
     },
-    "open": "Open now"
+    "open": "Open now",
+    "allForStaff": "All departments"
   },
   "Units": {
     "listIntro": "{done} of {total} units finished. Work through them in order, or open any unit.",
@@ -1974,7 +1978,8 @@
     "today": "Earlier today ({count})",
     "nobody": "Nobody is online right now.",
     "student": "Student",
-    "staff": "Staff"
+    "staff": "Staff",
+    "badge": "{count} online"
   },
   "Monitor": {
     "title": "Monitor",

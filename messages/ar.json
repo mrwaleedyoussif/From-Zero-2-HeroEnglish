@@ -334,7 +334,8 @@
     "notes": {
       "newClass": "سيُنشأ الفصل {value}",
       "newGrade": "سيُنشأ الصف {value}",
-      "newSchool": "سيُنشئ المدرسة {value}"
+      "newSchool": "سيُنشئ المدرسة {value}",
+      "newYear": "سيبدأ العام الدراسي الحالي"
     },
     "fileErrors": {
       "missingColumn": "عمود مفقود: {value}",
@@ -509,7 +510,8 @@
         "units": "وحدات المقرر",
         "messages": "الرسائل",
         "online": "المتصلون الآن",
-        "monitor": "المتابعة"
+        "monitor": "المتابعة",
+        "departments": "الأقسام والدروس"
       },
       "student": {
         "home": "الرئيسية",
@@ -572,7 +574,8 @@
         "units": "وحدات المقرر",
         "messages": "الرسائل",
         "online": "المتصلون الآن",
-        "monitor": "المتابعة"
+        "monitor": "المتابعة",
+        "departments": "الأقسام والدروس"
       },
       "student": {
         "home": "الرئيسية",
@@ -1689,7 +1692,8 @@
       "performingArts": "الفنون الأدائية",
       "grades3to12": "الصفوف 3–12"
     },
-    "open": "مفتوح الآن"
+    "open": "مفتوح الآن",
+    "allForStaff": "كل الأقسام"
   },
   "Units": {
     "listIntro": "أنهيت {done} من {total} وحدة. تقدَّم بالترتيب أو افتح أي وحدة.",
@@ -1974,7 +1978,8 @@
     "today": "في وقت سابق اليوم ({count})",
     "nobody": "لا أحد متصل الآن.",
     "student": "طالب",
-    "staff": "موظف"
+    "staff": "موظف",
+    "badge": "{count} متصل الآن"
   },
   "Monitor": {
     "title": "المتابعة",

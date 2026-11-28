@@ -50,10 +50,9 @@ test("the Owner opens a department; its units open one after another", async ({ 
     await sw.getByRole("radio", { name: "Open" }).click();
     await expect(sw).toHaveAttribute("data-state", "open");
     // Hiding one takes it off the public list.
-    await owner
-      .locator("[data-switch='andalus-international:phonics']")
-      .getByRole("radio", { name: "Hidden" })
-      .click();
+    const phonics = owner.locator("[data-switch='andalus-international:phonics']");
+    await phonics.getByRole("radio", { name: "Hidden" }).click();
+    await expect(phonics).toHaveAttribute("data-state", "hidden"); // saved before leaving
     await owner.goto("/en/departments/andalus-international");
     await expect(owner.locator("[data-department='phonics']")).toHaveCount(0);
     await expect(owner.locator("[data-department='readingWriting']")).not.toHaveAttribute(

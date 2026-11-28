@@ -2,23 +2,24 @@
 
 import { Play, Square } from "lucide-react";
 import { useState } from "react";
+import { speak } from "../voice";
 import { playRecording, stopSound } from "./speak-button";
 
 /**
  * Plays a whole script: the full recording when there is one (`src`), else each line's
- * recording in turn, else the device's voices (each speaker at a different pitch).
- * `rate` slows the device voice for shadowing.
+ * recording in turn, else the device's voices (a different voice for each speaker where the
+ * device has them), at the unit's level. `slow` slows the device voice a little for shadowing.
  */
 export function PlayScript({
   lines,
   labels,
   src,
-  rate = 0.9,
+  slow,
 }: {
   lines: { speaker?: string; text: string; src?: string }[];
   labels: { play: string; stop: string };
   src?: string;
-  rate?: number;
+  slow?: boolean;
 }) {
   const [playing, setPlaying] = useState(false);
   const stop = () => {
@@ -40,14 +41,13 @@ export function PlayScript({
     try {
       const speakers = [...new Set(lines.map((l) => l.speaker ?? ""))];
       stopSound();
-      lines.forEach((line, i) => {
-        const say = new SpeechSynthesisUtterance(line.text);
-        say.lang = "en-GB";
-        say.rate = rate;
-        say.pitch = 0.8 + 0.35 * speakers.indexOf(line.speaker ?? "");
-        if (i === lines.length - 1) say.onend = end;
-        window.speechSynthesis.speak(say);
-      });
+      lines.forEach((line, i) =>
+        speak(line.text, {
+          speaker: speakers.indexOf(line.speaker ?? ""),
+          slow,
+          onEnd: i === lines.length - 1 ? end : undefined,
+        }),
+      );
     } catch {
       end(); // no speech on this device: the written script is still there
     }

@@ -76,6 +76,8 @@ test("the Owner opens a department; its units open one after another", async ({ 
     await expect(teacher.locator("[data-recommend-hint]")).toBeVisible();
     await teacher.goto("/en/student/units/RW/RW-A1-U02");
     const panel = teacher.locator("[data-part='recommend']");
+    await expect(panel).toHaveCount(0); // opens from the button beside the title
+    await teacher.locator("[data-recommend-open]").click();
     await panel
       .getByRole("navigation", { name: "Choose a class" })
       .getByRole("link")

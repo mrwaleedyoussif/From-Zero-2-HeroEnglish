@@ -104,7 +104,7 @@ export async function UnitShadow({
     <UnitPanel hue="violet" icon={Repeat2} title={model.title} part="shadow">
       <p className="text-muted-foreground">{t("shadowHelp")}</p>
       <PlayScript
-        rate={0.8}
+        slow
         src={audio[`${unitId}-SPD01`]}
         lines={model.chunks.map((c) => ({ text: c.text, src: audio[c.id] }))}
         labels={{ play: t("playAll"), stop: t("stop") }}

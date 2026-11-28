@@ -57,6 +57,10 @@ test("rewards: first badge, class leaderboard, teacher switches it off, kudos", 
   await expect(teacher.getByText("Kudos sent")).toBeVisible();
   await lama.goto("/en/student/rewards");
   await expect(lama.locator('[data-board="class"]')).toContainText("Lama Fahad");
-  await lama.locator("[data-notifications] summary").click();
-  await expect(lama.getByText(/Kudos from Demo Teacher/)).toBeVisible();
+  // The bell may still be loading when it is pressed: press again until the list is open.
+  await expect(async () => {
+    if (!(await lama.locator("[data-notifications][open]").count()))
+      await lama.locator("[data-notifications] summary").click();
+    await expect(lama.getByText(/Kudos from Demo Teacher/)).toBeVisible({ timeout: 2_000 });
+  }).toPass({ timeout: 15_000 });
 });

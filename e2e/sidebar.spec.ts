@@ -8,6 +8,14 @@ test("owner: a task bar of icons, a short side menu that closes by itself, and g
   await signInByEmail(page, "owner@demo.linguapath.test");
   await page.goto("/en/owner");
 
+  // The top bar fills the screen with the app, and gives the browser back.
+  const full = page.locator("[data-full-screen]");
+  await full.click();
+  await expect(full).toHaveAttribute("aria-pressed", "true");
+  await expect(full).toHaveAccessibleName("Leave full screen");
+  await full.click();
+  await expect(full).toHaveAttribute("aria-pressed", "false");
+
   // Every page has an icon on the task bar along the bottom.
   const bar = page.locator("[data-taskbar]");
   await expect(bar.getByRole("link", { name: "Audit log", exact: true })).toBeAttached();

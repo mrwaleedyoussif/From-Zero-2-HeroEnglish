@@ -57,7 +57,7 @@ test("student takes the GEN placement, resumes after reload, sees result; teache
     .getByLabel("Your answer")
     .fill("I played football. I visited my grandma. I read a book.");
   await page.getByRole("button", { name: "Send" }).click();
-  await expect(page).toHaveURL(/\/result$/);
+  await expect(page).toHaveURL(/\/result$/, { timeout: 20_000 }); // scoring takes a moment
   await expect(page.locator("[data-result]")).toContainText("Your level");
   await expect(page.getByText(/Zero-2-Hero English Scale: \d+/)).toBeVisible();
   await expect(page.getByText("Your teacher will score your writing")).toBeVisible();

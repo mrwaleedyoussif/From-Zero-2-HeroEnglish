@@ -1,6 +1,7 @@
 "use client";
 
 import { Volume2 } from "lucide-react";
+import { speak } from "../voice";
 
 let current: HTMLAudioElement | null = null;
 
@@ -38,10 +39,7 @@ export function SpeakButton({ text, label, src }: { text: string; label: string;
         if (src && playRecording(src)) return;
         try {
           stopSound();
-          const say = new SpeechSynthesisUtterance(text);
-          say.lang = "en-GB";
-          say.rate = 0.9;
-          window.speechSynthesis.speak(say);
+          speak(text, {});
         } catch {
           // no speech on this device: the written word is still there
         }

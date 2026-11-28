@@ -10,7 +10,7 @@ import {
   UnitSpeaking,
 } from "@/features/units/components/unit-speech-sections";
 import { UnitSkill } from "@/features/units/components/unit-skill";
-import { RecommendUnit } from "@/features/units/components/recommend-unit";
+import { RecommendButton, RecommendUnit } from "@/features/units/components/recommend-unit";
 import { UnitLocked } from "@/features/units/components/unit-locked";
 import { UnitNav } from "@/features/units/components/unit-nav";
 import { UnitNotes } from "@/features/units/components/unit-notes";
@@ -31,7 +31,7 @@ export default async function UnitPage({
   searchParams,
 }: PageProps<"/[locale]/student/units/[strand]/[unit]">) {
   const { locale, strand, unit: unitId } = await params;
-  const { class: classId } = await searchParams;
+  const { class: classId, recommend } = await searchParams;
   setRequestLocale(locale);
   const actor = await requirePermission(locale, "learning:self", "page.student.units");
   const all = await strandUnits(actor, strand);
@@ -45,6 +45,8 @@ export default async function UnitPage({
   const skill = unit.writing_skill;
   const task = unit.writing_task;
   const grammar = unit.grammar_lesson;
+  const here = `/student/units/${strand}/${unit.id}`;
+  const mayRecommend = !actor.viewAs && (await canSomewhere(actor, "lessons:assign"));
 
   return (
     <>
@@ -52,15 +54,26 @@ export default async function UnitPage({
         title={unit.step ? unit.title : `${t("unitN", { n: unit.unit })} · ${unit.title}`}
         description={`${unit.level}${unit.step ? ` · ${unit.topic}` : ""}${unit.title_ar ? ` · ${unit.title_ar}` : ""}`}
         actions={
-          <Link
-            href={`/student/units/${strand}`}
-            className="inline-flex min-h-10 items-center gap-1 rounded-full border border-white/30 px-4 text-sm font-semibold hover:bg-white/10"
-          >
-            <ChevronLeft aria-hidden className="size-4 rtl:rotate-180" />
-            {t("allUnits")}
-          </Link>
+          <>
+            {mayRecommend && <RecommendButton here={here} label={t("recommend.send")} />}
+            <Link
+              href={`/student/units/${strand}`}
+              className="inline-flex min-h-10 items-center gap-1 rounded-full border border-white/30 px-4 text-sm font-semibold hover:bg-white/10"
+            >
+              <ChevronLeft aria-hidden className="size-4 rtl:rotate-180" />
+              {t("allUnits")}
+            </Link>
+          </>
         }
       />
+      {mayRecommend && (recommend || classId) && (
+        <RecommendUnit
+          actor={actor}
+          unitId={unit.id}
+          here={here}
+          classId={typeof classId === "string" ? classId : undefined}
+        />
+      )}
       {unit.objectives.length > 0 && (
         <UnitPanel hue="blue" icon={Target} title={t("objectives")} part="objectives">
           <ul className="flex flex-col gap-2">
@@ -178,12 +191,6 @@ export default async function UnitPage({
           )}
         </UnitPanel>
       )}
-      <RecommendUnit
-        actor={actor}
-        unitId={unit.id}
-        here={`/student/units/${strand}/${unit.id}`}
-        classId={typeof classId === "string" ? classId : undefined}
-      />
       <UnitNav strand={strand} next={next} />
     </>
   );

@@ -111,3 +111,17 @@ export async function RecommendUnit({
     </UnitPanel>
   );
 }
+
+/** Beside the unit's title: opens the panel above. Only shown to people who may recommend. */
+export function RecommendButton({ here, label }: { here: string; label: string }) {
+  return (
+    <Link
+      href={`${here}?recommend=1`}
+      data-recommend-open
+      className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white px-4 text-sm font-bold text-slate-900 hover:bg-white/90"
+    >
+      <Send aria-hidden className="size-4" />
+      {label}
+    </Link>
+  );
+}

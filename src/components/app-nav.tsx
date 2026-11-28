@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowLeft, CloudDownload, RefreshCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
+import { FullScreenButton } from "@/components/full-screen-button";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/navigation";
 
@@ -22,7 +23,7 @@ async function updateApp() {
 
 /**
  * The app's own buttons, on every page: home (the logo), back, refresh (fresh data for this
- * page) and update (newest version of the app). Useful where the browser's are hidden, as on
+ * page), update (newest version of the app) and full screen. Useful where the browser's are hidden, as on
  * a phone's home-screen app.
  */
 export function AppNav({ home = "/" }: { home?: "/" | "/home" }) {
@@ -70,6 +71,7 @@ export function AppNav({ home = "/" }: { home?: "/" | "/home" }) {
       >
         <CloudDownload aria-hidden className="text-violet-300" />
       </Button>
+      <FullScreenButton />
     </nav>
   );
 }

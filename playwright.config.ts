@@ -13,6 +13,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",
+  // A dev server compiles each page on first visit: waits of 5 s fail at random on a busy machine.
+  expect: { timeout: 12_000 },
   use: { baseURL, trace: "off" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   // Starts the app unless E2E_BASE_URL points at a deployed site (Phase 9 smoke on production).

@@ -174,7 +174,8 @@
     "requested": "Request sent to your teacher",
     "redeemed": "It's yours!",
     "kudosSent": "Kudos sent",
-    "messageSent": "Message sent"
+    "messageSent": "Message sent",
+    "recommended": "Recommended"
   },
   "Scopes": {
     "platform": "Whole platform",
@@ -1138,7 +1139,8 @@
     "due": "due {date}",
     "level_up": "Level up! You are now a {name} 🚀",
     "redemption": "{approved, select, yes {Your reward request was approved} other {Your reward request was declined; coins returned}}",
-    "message": "New message from {from}"
+    "message": "New message from {from}",
+    "recommendation": "{from} recommends: {unit}"
   },
   "Rewards": {
     "title": "My rewards",
@@ -1614,7 +1616,17 @@
     "noEnd": "No end date",
     "startTrial": "Start free trial",
     "trialUntil": "On a free trial until {date}",
-    "trialOver": "Free trial ended"
+    "trialOver": "Free trial ended",
+    "teachersTitle": "Learners and their teachers",
+    "teachersHelp": "A general learner is seen by you alone. Tick one or more learners and choose a teacher to give them to that teacher; no other teacher sees them.",
+    "noLearners": "No approved learners yet.",
+    "onlyYou": "Seen by you only",
+    "seenBy": "Teacher: {names}",
+    "teacher": "Teacher",
+    "chooseTeacher": "Choose a teacher",
+    "assign": "Give to this teacher",
+    "pair": "{learner} is with {teacher}",
+    "takeBack": "Take back"
   },
   "Journey": {
     "morning": "Good morning, {name}",
@@ -1876,7 +1888,18 @@
     "forTeachers": "For teachers",
     "quiz": "Lesson quiz · {n} questions",
     "playRecording": "Play the recording",
-    "finishToOpen": "Finish this lesson to open the next one."
+    "finishToOpen": "Finish this lesson to open the next one.",
+    "recommend": {
+      "title": "Recommend this unit",
+      "help": "Choose who should do this unit. They get a notice, see it on their home page and can open it at once.",
+      "already": "Already recommended to {count, plural, one {# student} other {# students}}.",
+      "pickClass": "Choose a class",
+      "wholeClass": "The whole class {name}",
+      "note": "A short note (optional)",
+      "send": "Recommend",
+      "badge": "Recommended by your teacher",
+      "from": "Recommended by {name}"
+    }
   },
   "OwnerDepartments": {
     "title": "Departments",

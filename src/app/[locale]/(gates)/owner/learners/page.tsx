@@ -12,6 +12,7 @@ import {
   rejectLearner,
   startTrial,
 } from "@/features/learners/owner-actions";
+import { LearnerTeachers } from "@/features/learners/components/learner-teachers";
 import { inviteState } from "@/features/learners/invite-state";
 import { requirePermission } from "@/lib/auth/guard";
 import { formatDate } from "@/lib/i18n-names";
@@ -95,6 +96,8 @@ export default async function OwnerLearnersPage({ params }: PageProps<"/[locale]
           ))}
         </CardContent>
       </Card>
+
+      <LearnerTeachers readOnly={!!actor.viewAs} />
 
       <Card>
         <CardHeader>

@@ -45,12 +45,14 @@ export interface UnitCard {
   done: boolean;
   /** Not open yet: the learner finishes the unit before it first (see order.ts). */
   locked: boolean;
+  /** Recommended to this learner by a teacher. */
+  recommended: boolean;
 }
 
 /** A strand's units in course order, with the learner's progress on each. */
 export async function strandUnits(actor: Actor, strand: string): Promise<UnitCard[]> {
   const admin = createAdminClient();
-  const [{ data: units }, { data: progress }] = await Promise.all([
+  const [{ data: units }, { data: progress }, { data: recs }] = await Promise.all([
     admin
       .from("course_units")
       .select("id, level, unit, title, title_ar")
@@ -62,7 +64,14 @@ export async function strandUnits(actor: Actor, strand: string): Promise<UnitCar
       .select("unit_id, correct, total, completed_at")
       .eq("student_id", actor.effective.id)
       .limit(1000),
+    admin
+      .from("unit_recommendations")
+      .select("unit_id")
+      .eq("student_id", actor.effective.id)
+      .limit(1000),
   ]);
+  // A unit the teacher recommended is open to the learner wherever it sits in the course.
+  const recommended = new Set((recs ?? []).map((r) => r.unit_id));
   const mine = new Map((progress ?? []).map((p) => [p.unit_id, p]));
   const order = (l: string) => LEVELS.indexOf(l as Level);
   const cards = (units ?? [])
@@ -76,11 +85,12 @@ export async function strandUnits(actor: Actor, strand: string): Promise<UnitCar
       total: mine.get(u.id)?.total ?? 0,
       done: !!mine.get(u.id)?.completed_at,
       locked: false,
+      recommended: recommended.has(u.id),
     }))
     .sort((a, b) => order(a.level) - order(b.level) || a.unit - b.unit);
   if (!(await stepByStep(actor))) return cards;
   const open = openUnits(cards, await placedLevel(actor.effective.id));
-  return cards.map((c) => ({ ...c, locked: !open.has(c.id) }));
+  return cards.map((c) => ({ ...c, locked: !open.has(c.id) && !c.recommended }));
 }
 
 /** Learners go unit by unit (the Owner can switch this off: feature.unitOrder); staff never. */

@@ -2075,6 +2075,50 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"unit_recommendations": {
+                  Row: {
+                    "class_id": string | null,"created_at": string,"id": string,"note": string | null,"recommended_by": string | null,"school_id": string,"student_id": string,"unit_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "class_id"?: string | null,"created_at"?: string,"id"?: string,"note"?: string | null,"recommended_by"?: string | null,"school_id": string,"student_id": string,"unit_id": string
+                  }
+                  Update: {
+                    "class_id"?: string | null,"created_at"?: string,"id"?: string,"note"?: string | null,"recommended_by"?: string | null,"school_id"?: string,"student_id"?: string,"unit_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "unit_recommendations_class_id_fkey"
+      columns: ["class_id"]
+isOneToOne: false
+      referencedRelation: "classes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "unit_recommendations_recommended_by_fkey"
+      columns: ["recommended_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "unit_recommendations_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "unit_recommendations_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "unit_recommendations_unit_id_fkey"
+      columns: ["unit_id"]
+isOneToOne: false
+      referencedRelation: "course_units"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"usage_counters": {
                   Row: {
                     "count": number,"day": string,"kind": string
@@ -2269,6 +2313,9 @@ isOneToOne: false
 "assign_class":
 { Args: { "p_class": string,"p_role": string,"p_user": string }; Returns: undefined
                            },
+"assign_learner_teacher":
+{ Args: { "p_learner": string,"p_teacher": string }; Returns: string
+                           },
 "assign_lesson":
 { Args: { "p_class": string,"p_due": string,"p_lesson": string,"p_note": string,"p_required": boolean,"p_targets": Json }; Returns: string
                            },
@@ -2402,6 +2449,9 @@ isOneToOne: false
               "full_name": string,"kind": string,"school_id": string,"seen_at": string,"user_id": string
             }[]
                            },
+"recommend_unit":
+{ Args: { "p_class": string,"p_note": string,"p_targets": Json,"p_unit": string }; Returns: number
+                           },
 "redeem_item":
 { Args: { "p_item": string }; Returns: string
                            },
@@ -2465,6 +2515,9 @@ isOneToOne: false
                            },
 "touch_presence":
 { Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"unassign_learner_teacher":
+{ Args: { "p_learner": string,"p_teacher": string }; Returns: undefined
                            },
 "user_contexts":
 { Args: { "p_user": string }; Returns: {

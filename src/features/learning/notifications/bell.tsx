@@ -11,6 +11,7 @@ function textParams(params: unknown, locale: string) {
   return {
     name: str(locale === "ar" ? p.name_ar : p.name_en),
     from: str(p.from),
+    unit: str(p.unit),
     approved: p.approved === true ? "yes" : "no",
   };
 }

@@ -84,6 +84,18 @@ export const registry = [
   ...pages(12, ["teacher.units"]),
   ...pages(13, ["owner.departments"]),
   ...pages(14, ["student.step", "student.mocks"]),
+  ...pages(15, [
+    "owner.messages",
+    "leadership.messages",
+    "coach.messages",
+    "teacher.messages",
+    "student.messages",
+    "owner.online",
+    "leadership.online",
+    "teacher.online",
+    "teacher.monitor",
+    "student.handwriting",
+  ]),
 
   ...group("widget", 2, ["owner.schools", "owner.auditLog"]),
   ...group("widget", 4, ["student.placementCta"]),
@@ -125,6 +137,7 @@ export const registry = [
   ...group("feature", 4, ["placementWriting", "placementSpeaking"]),
   ...group("feature", 6, ["leaderboards", "coins", "streaks", "kaganTeams"]),
   ...group("feature", 13, ["unitOrder"]),
+  ...group("feature", 15, ["learnerTrial"], false),
   ...group("feature", 99, ["webPush", "parentGate"], false),
 
   ...group("limit", 2, ["students", "staff", "aiScoringPerMonth"]),

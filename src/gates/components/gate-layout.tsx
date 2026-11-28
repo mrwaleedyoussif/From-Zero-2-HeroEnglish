@@ -1,7 +1,10 @@
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { SignedInHeader } from "@/features/auth/components/signed-in-header";
+import { trialIsOver } from "@/features/learners/trial";
+import { Heartbeat } from "@/features/presence/components/heartbeat";
 import { NotificationBell } from "@/features/learning/notifications/bell";
 import { enterableGates, requireGate } from "../access";
 import type { GateConfig } from "../types";
@@ -24,6 +27,7 @@ export async function GateLayout({
   const { locale } = await params;
   setRequestLocale(locale);
   const actor = await requireGate(locale, gate);
+  if (await trialIsOver(actor)) redirect({ href: "/learner/pending?trial=over", locale });
   const others = await enterableGates(actor);
   const schoolId = actor.effective.school_id;
 
@@ -46,10 +50,9 @@ export async function GateLayout({
       <FreePeriodBanner actor={actor} />
       <div className="flex flex-1 flex-col md:flex-row">
         <GateNav gate={gate} actor={actor} />
-        <main className="gate-main flex min-w-0 flex-1 flex-col gap-6 p-4 pb-24 md:p-6">
-          {children}
-        </main>
+        <main className="gate-main flex min-w-0 flex-1 flex-col gap-6 p-4 md:p-6">{children}</main>
       </div>
+      {!actor.viewAs && <Heartbeat />}
       <Toaster />
     </div>
   );

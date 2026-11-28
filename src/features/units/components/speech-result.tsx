@@ -24,6 +24,31 @@ export function SpeechResult({
       <p>
         <strong>{t("speechHeard")}</strong> <span dir="ltr">{heard || "—"}</span>
       </p>
+      {result?.marks && (
+        <p data-word-marks>
+          <strong>{t("speechWords")}</strong>{" "}
+          <span dir="ltr" className="inline-flex flex-wrap gap-1">
+            {result.marks.map((m, i) => (
+              <span
+                key={i}
+                data-word={m.ok ? "right" : "wrong"}
+                className={
+                  m.ok
+                    ? "rounded bg-success/15 px-1 font-semibold text-success"
+                    : "rounded bg-destructive/15 px-1 font-semibold text-destructive underline decoration-wavy"
+                }
+              >
+                {m.ok ? "✓" : "✗"} {m.text}
+              </span>
+            ))}
+          </span>
+        </p>
+      )}
+      {result?.extra && result.extra.length > 0 && (
+        <p data-word-extra>
+          <strong>{t("speechExtra")}</strong> <span dir="ltr">{result.extra.join(" · ")}</span>
+        </p>
+      )}
       {recording && (
         <audio
           controls

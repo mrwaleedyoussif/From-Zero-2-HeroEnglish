@@ -108,8 +108,12 @@ export function UnitQuestion({
       )}
       <div aria-live="polite">
         {checked?.correct && (
-          <p className="unit-feedback rounded-xl px-3 py-2 font-semibold" data-kind="right">
-            ⭐ {t("right")}
+          <p
+            className="unit-feedback rounded-xl px-3 py-2 font-semibold"
+            data-kind="right"
+            data-verdict="right"
+          >
+            ✓ {t("right")}
           </p>
         )}
         {checked?.correct === false && !done && (
@@ -125,6 +129,11 @@ export function UnitQuestion({
         )}
         {done && (
           <div className="unit-feedback mt-2 rounded-xl px-3 py-2" data-kind="answer">
+            {checked.correct === false && (
+              <p className="font-semibold text-destructive" data-verdict="wrong">
+                ✗ {t("wrong")}
+              </p>
+            )}
             <p>
               <strong>{checked.correct === null ? t("model") : t("answer")}:</strong>{" "}
               {checked.answer}

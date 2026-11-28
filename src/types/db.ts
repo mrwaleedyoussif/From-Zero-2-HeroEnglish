@@ -661,6 +661,52 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"handwriting_progress": {
+                  Row: {
+                    "best": number,"mode": string,"school_id": string | null,"step_id": string,"student_id": string,"style": string,"tries": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "best": number,"mode": string,"school_id"?: string | null,"step_id": string,"student_id": string,"style": string,"tries"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "best"?: number,"mode"?: string,"school_id"?: string | null,"step_id"?: string,"student_id"?: string,"style"?: string,"tries"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "handwriting_progress_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "handwriting_progress_step_id_fkey"
+      columns: ["step_id"]
+isOneToOne: false
+      referencedRelation: "handwriting_steps"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "handwriting_progress_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"handwriting_steps": {
+                  Row: {
+                    "id": string,"sort_order": number,"stage": string,"status": string,"styles": (string)[],"text": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "id": string,"sort_order": number,"stage": string,"status"?: string,"styles"?: (string)[],"text": string
+                  }
+                  Update: {
+                    "id"?: string,"sort_order"?: number,"stage"?: string,"status"?: string,"styles"?: (string)[],"text"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"import_jobs": {
                   Row: {
                     "applied_at": string | null,"created_at": string,"errors": NonNullable<Json>,"id": string,"missing_media": NonNullable<Json>,"payload": Json | null,"started_by": string | null,"status": string,"summary": NonNullable<Json>,"updated_at": string
@@ -827,14 +873,14 @@ isOneToOne: true
                   ]
                 },"learner_requests": {
                   Row: {
-                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"invite_id": string | null,"status": string,"updated_at": string,"user_id": string
+                    "created_at": string,"decided_at": string | null,"decided_by": string | null,"invite_id": string | null,"status": string,"trial_ends_at": string | null,"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"invite_id"?: string | null,"status"?: string,"updated_at"?: string,"user_id": string
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"invite_id"?: string | null,"status"?: string,"trial_ends_at"?: string | null,"updated_at"?: string,"user_id": string
                   }
                   Update: {
-                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"invite_id"?: string | null,"status"?: string,"updated_at"?: string,"user_id"?: string
+                    "created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"invite_id"?: string | null,"status"?: string,"trial_ends_at"?: string | null,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -974,6 +1020,58 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"message_recipients": {
+                  Row: {
+                    "message_id": string,"read_at": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "message_id": string,"read_at"?: string | null,"user_id": string
+                  }
+                  Update: {
+                    "message_id"?: string,"read_at"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "message_recipients_message_id_fkey"
+      columns: ["message_id"]
+isOneToOne: false
+      referencedRelation: "messages"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "message_recipients_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"messages": {
+                  Row: {
+                    "audience": string,"body": string,"created_at": string,"id": string,"recipients": number,"school_id": string,"sender_id": string,"to_names": (string)[]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "audience": string,"body": string,"created_at"?: string,"id"?: string,"recipients"?: number,"school_id": string,"sender_id": string,"to_names"?: (string)[]
+                  }
+                  Update: {
+                    "audience"?: string,"body"?: string,"created_at"?: string,"id"?: string,"recipients"?: number,"school_id"?: string,"sender_id"?: string,"to_names"?: (string)[]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "messages_school_id_fkey"
+      columns: ["school_id"]
+isOneToOne: false
+      referencedRelation: "schools"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "messages_sender_id_fkey"
+      columns: ["sender_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"mock_attempts": {
                   Row: {
@@ -1190,6 +1288,26 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"presence": {
+                  Row: {
+                    "seen_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "seen_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "seen_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "presence_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"productive_submissions": {
                   Row: {
@@ -2166,6 +2284,9 @@ isOneToOne: false
 "auth_can_user":
 { Args: { "p_perm": string,"p_target": string }; Returns: boolean
                            },
+"auth_got_message":
+{ Args: { "p_message": string }; Returns: boolean
+                           },
 "auth_holds":
 { Args: { "p_perm": string }; Returns: boolean
                            },
@@ -2180,6 +2301,9 @@ isOneToOne: false
                            },
 "auth_sees_class":
 { Args: { "p_class": string }; Returns: boolean
+                           },
+"auth_sent_message":
+{ Args: { "p_message": string }; Returns: boolean
                            },
 "auth_supervises":
 { Args: { "p_user": string }; Returns: boolean
@@ -2273,6 +2397,11 @@ isOneToOne: false
 "my_school_id":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"presence_list":
+{ Args: { "p_minutes"?: number }; Returns: {
+              "full_name": string,"kind": string,"school_id": string,"seen_at": string,"user_id": string
+            }[]
+                           },
 "redeem_item":
 { Args: { "p_item": string }; Returns: string
                            },
@@ -2306,6 +2435,9 @@ isOneToOne: false
 "sees_class":
 { Args: { "p_class": string,"p_user": string }; Returns: boolean
                            },
+"send_message":
+{ Args: { "p_audience": string,"p_body": string,"p_targets": Json }; Returns: string
+                           },
 "staff_last_seen":
 { Args: { "p_school": string }; Returns: {
               "last_sign_in_at": string,"user_id": string
@@ -2330,6 +2462,9 @@ isOneToOne: false
 { Args: { "p_class": string,"p_since": string }; Returns: {
               "baseline": number,"challenge": number,"current": number,"student_id": string,"team_id": string,"team_name": string
             }[]
+                           },
+"touch_presence":
+{ Args: Record<PropertyKey, never>; Returns: undefined
                            },
 "user_contexts":
 { Args: { "p_user": string }; Returns: {

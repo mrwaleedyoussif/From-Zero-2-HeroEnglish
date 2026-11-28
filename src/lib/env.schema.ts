@@ -52,6 +52,7 @@ export const serverEnvSchema = publicEnvSchema
     OWNER_NOTIFY_EMAIL: optionalString.pipe(z.email().optional()),
     /** New general learners allowed per day: protects the free database and email budget. */
     GENERAL_DAILY_SIGNUPS: z.coerce.number().int().min(0).max(10000).default(50),
+    LEARNER_TRIAL_DAYS: z.coerce.number().int().min(1).max(60).default(3),
     BILLING_ENABLED: flag(false),
     /** AI feedback on writing and answers (lib/ai). Needs ANTHROPIC_API_KEY; off = rules only. */
     AI_ENABLED: flag(false),

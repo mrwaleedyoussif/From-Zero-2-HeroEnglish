@@ -45,6 +45,7 @@ test("the site can be installed as an app", async ({ page, request }) => {
   await page.goto("/en/login");
   await expect(page.locator('link[rel="manifest"]')).toHaveCount(1);
   // No one-tap install in the test browser: the button explains how instead.
+  await page.locator("[data-menu-button]").click();
   await page.getByRole("button", { name: "Install the app" }).click();
   await expect(page.getByRole("status").filter({ hasText: /Install app|Add to/ })).toBeVisible();
 });

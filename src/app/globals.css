@@ -338,3 +338,13 @@
   --hue-fg: #e7b98f;
   --hue-on: #0e223d;
 }
+[data-hue="slate"] {
+  --hue-bg: #e2e8f0;
+  --hue-fg: #334155;
+  --hue-on: #ffffff;
+}
+.dark [data-hue="slate"] {
+  --hue-bg: color-mix(in srgb, #cbd5e1 18%, transparent);
+  --hue-fg: #cbd5e1;
+  --hue-on: #0e223d;
+}

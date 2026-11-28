@@ -1,5 +1,6 @@
 import { GraduationCap } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { DROPPED } from "@/features/step/lesson";
 import type { Unit } from "../schema";
 import { UnitPanel } from "./unit-panel";
 
@@ -28,12 +29,12 @@ function Line({ text }: { text: string }) {
 }
 
 /**
- * The teaching part of a STEP lesson, section by section (Objectives, Form, Use, Strategy …).
+ * The teaching part of a STEP lesson, section by section (Objectives, Form, Use …).
  * Classroom activities are for teachers: learners do not see them.
  */
 export async function UnitNotes({ notes, staff }: { notes: Unit["notes"]; staff: boolean }) {
   const t = await getTranslations("Units");
-  const shown = notes.filter((s) => staff || !s.staff);
+  const shown = notes.filter((s) => (staff || !s.staff) && !DROPPED.test(s.heading));
   if (shown.length === 0) return null;
   return (
     <UnitPanel hue="indigo" icon={GraduationCap} title={t("lesson")} part="notes">

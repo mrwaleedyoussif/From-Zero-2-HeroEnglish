@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scoreRepeat, scoreTargets } from "./speech";
+import { markWords, scoreRepeat, scoreTargets } from "./speech";
 
 describe("marking speech from the heard words", () => {
   it("scores a repeated chunk by the model words said in order", () => {
@@ -23,5 +23,19 @@ describe("marking speech from the heard words", () => {
     expect(out.usedStructures).toEqual(["How much is / are ...?"]);
     expect(out.score).toBe(60);
     expect(scoreTargets({ words: [], structures: [] }, "hi").score).toBe(0);
+  });
+
+  it("marks each model word right or wrong, and lists added words", () => {
+    const r = markWords("The cat sat on the mat.", "the cat is on a mat");
+    expect(r.marks.map((m) => `${m.ok ? "+" : "-"}${m.text}`)).toEqual([
+      "+The",
+      "+cat",
+      "-sat",
+      "+on",
+      "-the",
+      "+mat.",
+    ]);
+    expect(r.extra).toEqual(["is", "a"]);
+    expect(markWords("Hello", "").marks).toEqual([{ text: "Hello", ok: false }]);
   });
 });

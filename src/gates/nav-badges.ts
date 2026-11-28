@@ -1,5 +1,6 @@
 import "server-only";
 import { classStats } from "@/features/insights/queries";
+import { unreadMessages } from "@/features/messages/queries";
 import type { Actor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 
@@ -64,7 +65,11 @@ const COUNTERS: Record<string, Counter> = {
 /** Counters for a gate's menu; only those above zero. The menu must never fail because of them. */
 export async function navBadges(actor: Actor, gateKey: string): Promise<Badges> {
   try {
-    const all = (await COUNTERS[gateKey]?.(actor)) ?? {};
+    const [counted, unread] = await Promise.all([
+      COUNTERS[gateKey]?.(actor) ?? {},
+      unreadMessages(actor),
+    ]);
+    const all: Badges = { ...counted, [`nav.${gateKey}.messages`]: { n: unread, tone: "rose" } };
     return Object.fromEntries(Object.entries(all).filter(([, b]) => b.n > 0));
   } catch {
     return {};

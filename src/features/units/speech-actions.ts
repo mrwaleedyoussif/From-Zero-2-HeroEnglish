@@ -5,6 +5,7 @@ import { ActionError, type ActionResult, runAction } from "@/lib/action-result";
 import { getActor } from "@/lib/auth/session";
 import { saveProgress } from "./progress";
 import { loadUnit } from "./queries";
+import { markWords, type WordMark } from "./speech";
 import {
   chunkCriteria,
   type Criterion,
@@ -17,6 +18,9 @@ export interface SpeechFeedback {
   score: number;
   best: number;
   criteria: Criterion[];
+  /** The model word by word (shadowing and vocabulary), wrong words marked. */
+  marks?: WordMark[];
+  extra?: string[];
 }
 
 const voice = z
@@ -85,6 +89,7 @@ export async function checkSpeech(
           },
         },
       });
-    return { score, best, criteria };
+    const model = chunk?.text ?? word?.word;
+    return { score, best, criteria, ...(model ? markWords(model, said) : {}) };
   });
 }

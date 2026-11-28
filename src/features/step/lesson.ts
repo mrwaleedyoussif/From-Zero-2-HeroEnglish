@@ -27,6 +27,8 @@ const HEADINGS = [
   /^Unit \d Review Game\b/,
 ];
 const STAFF = /^(Classroom Corner|Unit \d Review Game)\b/;
+/** Sections the Owner took out of the lessons; also hidden in lessons imported before that. */
+export const DROPPED = /^(STEP )?Strateg(y|ies)$/;
 
 /** Split a lesson's teaching lines into sections at the booklets' fixed headings. */
 export function readNotes(lines: readonly string[]): NoteSection[] {
@@ -46,7 +48,7 @@ export function readNotes(lines: readonly string[]): NoteSection[] {
     }
     current.lines.push(line);
   }
-  return out.filter((s) => s.heading || s.lines.length);
+  return out.filter((s) => (s.heading || s.lines.length) && !DROPPED.test(s.heading));
 }
 
 export interface WritingTask {

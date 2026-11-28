@@ -61,6 +61,10 @@
   --dept-bg: #7c2d12;
   --dept-line: #e7b98f;
 }
+.dept-card[data-hue="slate"] {
+  --dept-bg: #334155;
+  --dept-line: #cbd5e1;
+}
 .dept-card[data-soon] {
   border-style: dashed;
   border-inline-start-style: solid;

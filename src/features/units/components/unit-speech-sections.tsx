@@ -6,9 +6,17 @@ import { PlayScript } from "./play-script";
 import { SpeakButton } from "./speak-button";
 import { SpeechCheck } from "./speech-check";
 import { Bi, UnitPanel } from "./unit-panel";
+import { VoiceSpeed } from "./voice-speed";
 import type { Audio } from "./unit-sections";
 
 const pad = (n: number) => String(n).padStart(2, "0");
+type T = Awaited<ReturnType<typeof getTranslations<"Units">>>;
+const speedNames = (t: T) => ({
+  "0.6": t("speed.verySlow"),
+  "0.8": t("speed.slow"),
+  "1": t("speed.normal"),
+  "1.2": t("speed.fast"),
+});
 
 /** Listening: hear the script first; the written script stays folded until asked for. */
 export async function UnitScript({
@@ -74,6 +82,7 @@ export async function UnitSpeaking({
           ))}
         </ul>
       )}
+      {task.frames.length > 0 && <VoiceSpeed label={t("speed.label")} names={speedNames(t)} />}
       <ul dir="ltr" className="flex flex-col gap-2">
         {task.frames.map((f) => (
           <li key={f} className="flex items-center gap-2">
@@ -103,6 +112,7 @@ export async function UnitShadow({
   return (
     <UnitPanel hue="violet" icon={Repeat2} title={model.title} part="shadow">
       <p className="text-muted-foreground">{t("shadowHelp")}</p>
+      <VoiceSpeed label={t("speed.label")} names={speedNames(t)} />
       <PlayScript
         slow
         src={audio[`${unitId}-SPD01`]}

@@ -50,13 +50,33 @@ let level: string | undefined;
 /** The unit on screen sets its level; every Listen button on the page follows it. */
 export const setSpeechLevel = (l?: string) => void (level = l);
 
+/** The learner's own choice of speed (Voice speed buttons), kept on the device. */
+export const SPEEDS = [0.6, 0.8, 1, 1.2] as const;
+let speed = 1;
+const watchers = new Set<() => void>();
+export const voiceSpeed = () => speed;
+export function setVoiceSpeed(v: number, save = true) {
+  speed = (SPEEDS as readonly number[]).includes(v) ? v : 1;
+  try {
+    if (save) localStorage.setItem("voiceSpeed", String(speed));
+  } catch {
+    // private browsing: the choice lasts for this page only
+  }
+  watchers.forEach((w) => w());
+}
+export function watchVoiceSpeed(w: () => void) {
+  watchers.add(w);
+  return () => void watchers.delete(w);
+}
+
 /**
  * Queue one speaker's line. `speaker` picks a different voice for each person when the device
- * has more than one good voice; `slow` is for shadowing.
+ * has more than one good voice; `slow` is for shadowing; `natural` says a word or
+ * phrase at the voice's own normal speed, whatever the level (vocabulary).
  */
 export function speak(
   text: string,
-  opts: { speaker?: number; slow?: boolean; onEnd?: () => void },
+  opts: { speaker?: number; slow?: boolean; natural?: boolean; onEnd?: () => void },
 ) {
   const synth = window.speechSynthesis;
   const ranked = rankVoices(synth.getVoices());
@@ -69,7 +89,7 @@ export function speak(
     const say = new SpeechSynthesisUtterance(part);
     if (voice) say.voice = voice;
     say.lang = voice?.lang ?? "en-GB";
-    say.rate = paceFor(level) * (opts.slow ? 0.9 : 1);
+    say.rate = opts.natural ? 1 : paceFor(level) * (opts.slow ? 0.9 : 1) * speed;
     // One voice for several people: a small change of pitch tells them apart.
     say.pitch = good.length > 1 ? 1 : ([1, 0.9, 1.1][who % 3] ?? 1);
     if (i === parts.length - 1 && opts.onEnd) say.onend = opts.onEnd;

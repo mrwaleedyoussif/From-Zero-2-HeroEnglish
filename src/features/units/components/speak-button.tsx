@@ -1,16 +1,17 @@
 "use client";
 
 import { Volume2 } from "lucide-react";
-import { speak } from "../voice";
+import { speak, voiceSpeed } from "../voice";
 
 let current: HTMLAudioElement | null = null;
 
 /** Play a recording, stopping whatever was playing; false when it cannot be played. */
-export function playRecording(src: string, onEnd?: () => void): boolean {
+export function playRecording(src: string, onEnd?: () => void, rate = voiceSpeed()): boolean {
   try {
     current?.pause();
     window.speechSynthesis?.cancel();
     current = new Audio(src);
+    current.playbackRate = rate; // the browser keeps the voice's pitch
     if (onEnd) current.onended = onEnd;
     void current.play().catch(() => onEnd?.());
     return true;
@@ -26,9 +27,19 @@ export function stopSound(): void {
 
 /**
  * Plays an English word or sentence: the recorded audio when the Owner has provided it,
- * otherwise the device's own voice.
+ * otherwise the device's own voice. `natural` (vocabulary) keeps the normal speed of speech.
  */
-export function SpeakButton({ text, label, src }: { text: string; label: string; src?: string }) {
+export function SpeakButton({
+  text,
+  label,
+  src,
+  natural,
+}: {
+  text: string;
+  label: string;
+  src?: string;
+  natural?: boolean;
+}) {
   return (
     <button
       type="button"
@@ -36,10 +47,10 @@ export function SpeakButton({ text, label, src }: { text: string; label: string;
       title={label}
       data-recorded={src ? "" : undefined}
       onClick={() => {
-        if (src && playRecording(src)) return;
+        if (src && playRecording(src, undefined, natural ? 1 : undefined)) return;
         try {
           stopSound();
-          speak(text, {});
+          speak(text, { natural });
         } catch {
           // no speech on this device: the written word is still there
         }

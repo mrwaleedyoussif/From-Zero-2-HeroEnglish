@@ -1903,6 +1903,13 @@
       "from": "Recommended by {name}",
       "hint": "Teachers: open any unit below and press \"Recommend\" beside its title to send it to a class, a group or a student.",
       "noClass": "You do not teach a class yet. Ask the Owner to add you to a class, or to give you general learners, then you can recommend this unit."
+    },
+    "speed": {
+      "label": "Voice speed",
+      "verySlow": "Very slow",
+      "slow": "Slow",
+      "normal": "Normal",
+      "fast": "Fast"
     }
   },
   "OwnerDepartments": {

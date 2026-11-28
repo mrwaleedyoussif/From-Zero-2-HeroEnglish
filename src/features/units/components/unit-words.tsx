@@ -45,7 +45,7 @@ export async function UnitWords({
               )}
               <div className="flex min-w-0 flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <SpeakButton text={w.word} label={t("listen")} src={audio[w.id]} />
+                  <SpeakButton text={w.word} label={t("listen")} src={audio[w.id]} natural />
                   <strong className="text-lg">{w.word}</strong>
                   {w.pos && <span className="unit-chip rounded-full px-2 text-xs">{w.pos}</span>}
                 </div>

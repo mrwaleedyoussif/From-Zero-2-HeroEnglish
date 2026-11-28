@@ -7,6 +7,7 @@ import { CATALOG } from "@/features/departments/catalog";
 import { mayOpenStrand, strandUnits } from "@/features/units/queries";
 import { LEVELS } from "@/features/units/schema";
 import { Link } from "@/i18n/navigation";
+import { canSomewhere } from "@/lib/auth/can";
 import { requirePermission } from "@/lib/auth/guard";
 
 const STEP_BOOKLETS = ["SG", "SR", "SL", "SC"];
@@ -28,6 +29,7 @@ export default async function UnitsPage({ params }: PageProps<"/[locale]/student
     .find((d) => d.strand === strand);
   const units = await strandUnits(actor, strand);
   const done = units.filter((u) => u.done).length;
+  const mayRecommend = !actor.viewAs && (await canSomewhere(actor, "lessons:assign"));
 
   return (
     <>
@@ -41,6 +43,14 @@ export default async function UnitsPage({ params }: PageProps<"/[locale]/student
         }
         description={t("listIntro", { done, total: units.length })}
       />
+      {mayRecommend && (
+        <p
+          data-recommend-hint
+          className="rounded-xl border border-border bg-muted px-4 py-3 text-sm font-semibold"
+        >
+          {t("recommend.hint")}
+        </p>
+      )}
       {units.length === 0 && <p className="text-muted-foreground">{t("none")}</p>}
       {LEVELS.filter((level) => units.some((u) => u.level === level)).map((level, i) => (
         <section

@@ -1898,7 +1898,9 @@
       "note": "A short note (optional)",
       "send": "Recommend",
       "badge": "Recommended by your teacher",
-      "from": "Recommended by {name}"
+      "from": "Recommended by {name}",
+      "hint": "Teachers: open any unit below and use \"Recommend this unit\" at the bottom to send it to a class, a group or a student.",
+      "noClass": "You do not teach a class yet. Ask the Owner to add you to a class, or to give you general learners, then you can recommend this unit."
     }
   },
   "OwnerDepartments": {

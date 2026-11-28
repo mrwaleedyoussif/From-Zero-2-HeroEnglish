@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { HowTo } from "@/features/handwriting/components/how-to";
-import { familyOf, fontClass, isStyle } from "@/features/handwriting/fonts";
+import { StrokeThumb } from "@/features/handwriting/components/stroke-thumb";
 import { mayOpenHandwriting, STAGES, stepsFor } from "@/features/handwriting/queries";
-import { starsOf } from "@/features/handwriting/score";
+import { PASS, starsOf } from "@/features/handwriting/strokes/grade";
+import { isStyle } from "@/features/handwriting/types";
 import { Link } from "@/i18n/navigation";
 import { requirePermission } from "@/lib/auth/guard";
 import "@/features/units/components/units.css";
@@ -19,14 +20,14 @@ export default async function HandwritingStylePage({
   if (!isStyle(style) || !(await mayOpenHandwriting(actor, style))) notFound();
   const t = await getTranslations("Handwriting");
   const steps = await stepsFor(actor, style);
-  const done = steps.filter((s) => (s.trace ?? 0) >= 70 && (s.write ?? 0) >= 50).length;
+  const done = steps.filter((s) => (s.trace ?? 0) >= PASS && (s.write ?? 0) >= PASS).length;
   return (
     <>
       <PageHeader
         title={t(`styles.${style}`)}
         description={`${t(`styleHelp.${style}`)} ${t("progress", { done, total: steps.length })}`}
       />
-      <HowTo family={familyOf(style)} sample="Hello" />
+      <HowTo style={style} sample="Hello" />
       {steps.length === 0 && <p className="text-muted-foreground">{t("none")}</p>}
       {STAGES.map((stage) => {
         const mine = steps.filter((s) => s.stage === stage);
@@ -37,24 +38,23 @@ export default async function HandwritingStylePage({
             <h2 className="text-lg font-bold">{t(`stages.${stage}`)}</h2>
             <ul className={long ? "flex flex-col gap-2" : "flex flex-wrap gap-2"}>
               {mine.map((s) => {
-                const stars = Math.min(
-                  starsOf(s.trace ?? 0),
-                  starsOf(Math.max(s.write ?? 0, 0) + 15),
-                );
+                const stars = starsOf(((s.trace ?? 0) + (s.write ?? 0)) / 2);
                 return (
                   <li key={s.id}>
                     <Link
                       href={`/student/handwriting/${style}/${s.id}`}
                       data-step={s.id}
                       data-hue={stars >= 2 ? "green" : "blue"}
-                      className={`unit-panel flex min-h-14 items-center gap-2 rounded-xl px-4 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ring ${long ? "" : "min-w-20 justify-center"}`}
+                      aria-label={long ? undefined : s.text}
+                      className={`unit-panel flex min-h-14 items-center gap-2 rounded-xl px-4 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ring ${long ? "" : "w-28 flex-col justify-center"}`}
                     >
-                      <span
-                        dir="ltr"
-                        className={`${fontClass(style)} ${long ? "line-clamp-1 text-lg" : "text-2xl"}`}
-                      >
-                        {s.text}
-                      </span>
+                      {long ? (
+                        <span dir="ltr" className="line-clamp-1 text-lg">
+                          {s.text}
+                        </span>
+                      ) : (
+                        <StrokeThumb style={style} text={s.text} />
+                      )}
                       <span className="text-xs" aria-label={stars ? t("done") : t("notYet")}>
                         {"⭐".repeat(stars)}
                       </span>

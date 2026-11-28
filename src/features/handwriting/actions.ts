@@ -4,7 +4,7 @@ import { z } from "zod";
 import { ActionError, type ActionResult, runAction } from "@/lib/action-result";
 import { getActor } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { isStyle } from "./fonts";
+import { isStyle } from "./types";
 import { mayOpenHandwriting } from "./queries";
 
 const input = z.object({
